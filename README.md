@@ -53,8 +53,9 @@ example swagger link
 http://localhost:8080/swagger-ui/index.html
 
 
-## Project Build
-./gradlew build
+## Project Build and Run
+`./gradlew build` build the project. <br>
+`gradle bootRun`  run the project
 
 ## Licence
 
