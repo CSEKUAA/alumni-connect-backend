@@ -15,36 +15,36 @@ If Docker is not installed, you will need to provide MySQL connection properties
 
 ## Project Structure
 This is a Gradle multi-module project that follows a modular architecture to organize different components.
-
-├── build.gradle             # root gradle file
-├── settings.gradle          # Gradle settings file
-├── api
-│ ├── src/
-│ │  ├── main/
-│ │  │  ├── java/
-│ │  │  ├── resources/       # project static file and external configuration
-│ │  ├── test/
-│ └── build.gradle           # module dependency
-├── domain-model
-│ ├── src/
-│ │  ├── main/
-│ │  │  ├── java/
-│ │  ├── test/
-│ └── build.gradle           # module dependency
-├── repository
-│ ├── src/
-│ │  ├── main/
-│ │  │  ├── java/
-│ │  ├── test/
-│ └── build.gradle           # module dependency
-├── service
-│ ├── src/
-│ │  ├── main/
-│ │  │  ├── java/
-│ │  ├── test/
-│ └── build.gradle           # module dependency
-└── docker-compose.yaml      # project docker compose file
-└── README.md
+        .
+        ├── build.gradle             # root gradle file
+        ├── settings.gradle          # Gradle settings file
+        ├── api
+        │ ├── src/
+        │ │  ├── main/
+        │ │  │  ├── java/
+        │ │  │  ├── resources/       # project static file and external configuration
+        │ │  ├── test/
+        │ └── build.gradle           # module dependency
+        ├── domain-model
+        │ ├── src/
+        │ │  ├── main/
+        │ │  │  ├── java/
+        │ │  ├── test/
+        │ └── build.gradle           # module dependency
+        ├── repository
+        │ ├── src/
+        │ │  ├── main/
+        │ │  │  ├── java/
+        │ │  ├── test/
+        │ └── build.gradle           # module dependency
+        ├── service
+        │ ├── src/
+        │ │  ├── main/
+        │ │  │  ├── java/
+        │ │  ├── test/
+        │ └── build.gradle           # module dependency
+        └── docker-compose.yaml      # project docker compose file
+        └── README.md
 
 ## Project URL
 http://host:port/swagger-ui/index.html
