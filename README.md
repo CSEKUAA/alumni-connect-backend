@@ -11,7 +11,7 @@
 ## Install and Run the Project
 If Docker is installed on your local machine, the MySQL container will automatically be installed and run with the required configurations.
 
-If Docker is not installed, you will need to provide MySQL connection properties in the application.properties file.
+If Docker is not installed, you will need to provide MySQL connection properties in the `application.properties` file.
 
 ## Project Structure
 This is a Gradle multi-module project that follows a modular architecture to organize different components.
