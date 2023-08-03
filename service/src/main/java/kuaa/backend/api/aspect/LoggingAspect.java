@@ -1,4 +1,4 @@
-package org.kuaa.aspect;
+package kuaa.backend.api.aspect;
 
 
 import lombok.extern.slf4j.Slf4j;
@@ -14,18 +14,18 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LoggingAspect {
 
-    @Before("execution(* org.kuaa.service.impl.*.*(..))")
+    @Before("execution(* kuaa.backend.api.service.impl.*.*(..))")
     public void beforeMethodExecution(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
         log.info("Entering method: {}", methodName);
     }
 
-    @AfterReturning(value = "execution(* org.kuaa.service.impl.*.*(..))", returning = "o")
+    @AfterReturning(value = "execution(* kuaa.backend.api.service.impl.*.*(..))", returning = "o")
     public void afterMethodExecution(JoinPoint joinPoint, Object o) {
         log.info("after execution from  return value {}", o);
     }
 
-    @AfterThrowing(value = "execution(* org.kuaa.service.impl.*.*(..))", throwing = "ex")
+    @AfterThrowing(value = "execution(* kuaa.backend.api.service.impl.*.*(..))", throwing = "ex")
     public void afterThrowingError(Exception ex) {
         log.error(String.valueOf(ex));
     }

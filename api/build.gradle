@@ -1,5 +1,6 @@
 dependencies {
-   compileOnly project(":service")
+    compileOnly project(":service")
+    compileOnly project(":domain-model")
 }
 
 test {

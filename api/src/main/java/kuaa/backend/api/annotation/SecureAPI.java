@@ -1,4 +1,4 @@
-package org.kuaa.annotation;
+package kuaa.backend.api.annotation;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
