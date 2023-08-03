@@ -48,8 +48,8 @@ This is a Gradle multi-module project that follows a modular architecture to org
         └── README.md
 
 ## Project URL
-http://host:port/swagger-ui/index.html
-example swagger link
+`http://host:port/swagger-ui/index.html` <br>
+example swagger link <br>
 http://localhost:8080/swagger-ui/index.html
 
 
