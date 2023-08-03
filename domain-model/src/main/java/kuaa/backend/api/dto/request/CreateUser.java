@@ -10,10 +10,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateUser {
-    @NotBlank(message = "user name can't be blank")
+    @NotBlank()
     private String name;
 
-    @Email(message = "error.notfound")
+    @Email(message = "{invalid.email}")
     private String email;
 
     private String password;
