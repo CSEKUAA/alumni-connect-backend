@@ -1,6 +1,3 @@
 rootProject.name = 'alumni-connect-backend'
-include 'api'
-include 'repository'
-include 'service'
-include 'domain-model'
+
 

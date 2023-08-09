@@ -5,17 +5,10 @@ plugins {
 	id 'org.flywaydb.flyway' version '6.4.3'
 }
 
-allprojects {
-	group = 'org.kuaa'
-	version = '0.0.1-SNAPSHOT'
-}
 
-subprojects {
-	apply plugin: 'org.springframework.boot'
-	apply plugin: 'io.spring.dependency-management'
-	//apply plugin: 'java-library'
-	apply plugin: 'java'
-	apply plugin: 'project-report'
+group = 'org.csekuaa'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
 
 	springBoot {
 		buildInfo()
@@ -51,7 +44,7 @@ subprojects {
 	test {
 		useJUnitPlatform()
 	}
-}
+
 
 bootJar {
 	enabled = true
