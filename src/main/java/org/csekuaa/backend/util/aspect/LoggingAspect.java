@@ -20,12 +20,12 @@ public class LoggingAspect {
         log.info("Entering method: {}", methodName);
     }
 
-    @AfterReturning(value = "execution(* kuaa.backend.api.service.impl.*.*(..))", returning = "o")
+    @AfterReturning(value = "execution(* org.csekuaa.backend.service.*.*(..))", returning = "o")
     public void afterMethodExecution(JoinPoint joinPoint, Object o) {
         log.info("after execution from  return value {}", o);
     }
 
-    @AfterThrowing(value = "execution(* kuaa.backend.api.service.impl.*.*(..))", throwing = "ex")
+    @AfterThrowing(value = "execution(* org.csekuaa.backend.service.*(..))", throwing = "ex")
     public void afterThrowingError(Exception ex) {
         log.error(String.valueOf(ex));
     }
