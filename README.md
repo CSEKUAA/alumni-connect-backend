@@ -37,5 +37,17 @@ http://localhost:8080/swagger-ui/index.html
 `./gradlew build` build the project. <br>
 `gradle bootRun`  run the project
 
+
+## Git Branch Naming Convention
+ `<type>/<name>/<short-description>`
+
+- `<type>`: Represents the type of the branch (e.g., feature, bugfix, enhancement).
+- `<name>`: Name of the contributor
+- `<short-description>`: A concise description of the task or purpose.
+
+Example:
+- `feature/mazhar/user-authentication`: Adding user authentication feature.
+
+
 ## Licence
 
