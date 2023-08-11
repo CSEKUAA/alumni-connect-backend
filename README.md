@@ -46,7 +46,7 @@ http://localhost:8080/swagger-ui/index.html
 - `<short-description>`: A concise description of the task or purpose.
 
 Example:
-- `feature/mazhar/user-authentication`: Adding user authentication feature.
+- `feature/mazhar/update-project-skeleton`: Adding user authentication feature.
 
 
 ## Licence
