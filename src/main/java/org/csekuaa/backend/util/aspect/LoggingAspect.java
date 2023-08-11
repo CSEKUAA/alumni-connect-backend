@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LoggingAspect {
 
-    @Before("execution(* org.csekuaa.backend.*.*(..))")
+    @Before("execution(* org.csekuaa.backend.service.*.*(..))")
     public void beforeMethodExecution(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
         log.info("Entering method: {}", methodName);
@@ -25,7 +25,7 @@ public class LoggingAspect {
         log.info("after execution from  return value {}", o);
     }
 
-    @AfterThrowing(value = "execution(* org.csekuaa.backend.service.*(..))", throwing = "ex")
+    @AfterThrowing(value = "execution(* org.csekuaa.backend.service.*.*(..))", throwing = "ex")
     public void afterThrowingError(Exception ex) {
         log.error(String.valueOf(ex));
     }
