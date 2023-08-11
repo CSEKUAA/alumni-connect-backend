@@ -37,5 +37,41 @@ http://localhost:8080/swagger-ui/index.html
 `./gradlew build` build the project. <br>
 `gradle bootRun`  run the project
 
+
+## Git Branch Naming Convention
+ `<type>/<name>/<short-description>`
+
+- `<type>`: Represents the type of the branch (e.g., feature, bugfix, enhancement, hotfix).
+- `<name>`: Name of the contributor
+- `<short-description>`: A concise description of the task or purpose.
+
+Example:
+- `feature/mazhar/user-authentication`: Adding user authentication feature.
+
+# Database Versioning
+
+We utilize the Flyway community version to manage our database versioning.
+
+## Migration Script Naming Convention
+
+The naming convention for migration scripts is as follows:
+
+
+Here's the breakdown of the parts: <br>
+
+- `Prefix`: V for versioned (configurable)
+- `Version`: Use dots or underscores to separate as many parts as necessary (not applicable for repeatable migrations)
+- `Separator`: `__` (two underscores) (configurable)
+- `Description`: Use underscores or spaces to separate words in the description
+- `Suffix`: `.sql`
+
+For example:
+
+```sql
+V1__create_user_table.sql
+```
+ ## Run Migration
+`gradle flywayMigrate -i`
+
 ## Licence
 
