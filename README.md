@@ -40,7 +40,6 @@ http://localhost:8080/swagger-ui/index.html
 
 ## Git Branch Naming Convention
  `<type>/<name>/<short-description>`
-
 - `<type>`: Represents the type of the branch (e.g., feature, bugfix, enhancement, hotfix).
 - `<name>`: Name of the contributor
 - `<short-description>`: A concise description of the task or purpose.
@@ -55,7 +54,6 @@ We utilize the Flyway community version to manage our database versioning.
 ## Migration Script Naming Convention
 
 The naming convention for migration scripts is as follows:
-
 
 Here's the breakdown of the parts: <br>
 
@@ -72,6 +70,8 @@ V1__create_user_table.sql
 ```
  ## Run Migration
 `gradle flywayMigrate -i`
+=======
+- `feature/mazhar/update-project-skeleton`: Adding user authentication feature.
 
 ## Licence
 
