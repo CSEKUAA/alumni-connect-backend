@@ -19,31 +19,11 @@ This is a Gradle multi-module project that follows a modular architecture to org
 
         ├── build.gradle             # root gradle file
         ├── settings.gradle          # Gradle settings file
-        ├── api
-        │ ├── src/
-        │ │  ├── main/
-        │ │  │  ├── java/
-        │ │  │  ├── resources/       # project static file and external configuration
-        │ │  ├── test/
-        │ └── build.gradle           # module dependency
-        ├── domain-model
-        │ ├── src/
-        │ │  ├── main/
-        │ │  │  ├── java/
-        │ │  ├── test/
-        │ └── build.gradle           # module dependency
-        ├── repository
-        │ ├── src/
-        │ │  ├── main/
-        │ │  │  ├── java/
-        │ │  ├── test/
-        │ └── build.gradle           # module dependency
-        ├── service
-        │ ├── src/
-        │ │  ├── main/
-        │ │  │  ├── java/
-        │ │  ├── test/
-        │ └── build.gradle           # module dependency
+        ├── src/
+        │  ├── main/
+        │  │  ├── java/
+        │  │  ├── resources/         # project static file and external configuration
+        │  ├── test/
         └── docker-compose.yaml      # project docker compose file
         └── README.md
 
@@ -56,6 +36,18 @@ http://localhost:8080/swagger-ui/index.html
 ## Project Build and Run
 `./gradlew build` build the project. <br>
 `gradle bootRun`  run the project
+
+
+## Git Branch Naming Convention
+ `<type>/<name>/<short-description>`
+
+- `<type>`: Represents the type of the branch (e.g., feature, bugfix, enhancement).
+- `<name>`: Name of the contributor
+- `<short-description>`: A concise description of the task or purpose.
+
+Example:
+- `feature/mazhar/update-project-skeleton`: Adding user authentication feature.
+
 
 ## Licence
 
