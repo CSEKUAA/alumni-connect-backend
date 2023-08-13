@@ -1,5 +1,6 @@
 package org.csekuaa.backend.util.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.csekuaa.backend.dto.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -11,9 +12,11 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestControllerAdvice
+@Slf4j
 public class SystemExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -29,10 +32,11 @@ public class SystemExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorMessage globalExceptionHandler(Exception ex, WebRequest request) {
+        log.error(Arrays.toString(ex.getStackTrace()));
         return new ErrorMessage(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 LocalDate.now(),
-                ex.getMessage(),
+                "Something went wrong!",
                 request.getDescription(false));
     }
 
