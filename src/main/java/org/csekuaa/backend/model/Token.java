@@ -20,7 +20,7 @@ public class Token {
     private int tokenId;
 
     @Column(name = "token")
-    private String token;
+    private String tokenValue;
 
     @Column(name = "token_start_time")
     private LocalDateTime tokenStartTime;
