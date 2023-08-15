@@ -50,6 +50,26 @@ flyway {
     password = 'rootroot'
 }
 
+tasks.register('installLocalGitHook', Copy) {
+    from file('hooks/pre-commit')
+    into file('.git/hooks')
+
+    doLast {
+        if (System.getProperty('os.name').toLowerCase().contains('win')) {
+            // Windows-specific handling
+            def hookFile = file('.git/hooks/pre-commit')
+            hookFile.text = hookFile.text.replaceAll('\r\n', '\n') // Convert Windows line endings to Unix style
+        } else {
+            // Unix-like systems (macOS and Linux)
+            def hookFile = file('.git/hooks/pre-commit')
+            hookFile.setExecutable(true) // Make the script executable
+        }
+        println "Git hook installed successfully."
+    }
+}
+
+build.dependsOn installLocalGitHook
+
 
 bootJar {
     enabled = true
