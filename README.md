@@ -8,12 +8,12 @@
 - Gradle: 8.2.* or later
 - MySQL: 8.5 or later
 
-## Install and Run the Project
+# Install and Run the Project
 If Docker is installed on your local machine, the MySQL container will automatically be installed and run with the required configurations.
 
 If Docker is not installed, you will need to provide MySQL connection properties in the `application.properties` file.
 
-## Project Structure
+# Project Structure
 This is a Gradle multi-module project that follows a modular architecture to organize different components.
 
 
@@ -33,12 +33,13 @@ example swagger link <br>
 http://localhost:8080/swagger-ui/index.html
 
 
-## Project Build and Run
+# Project Build and Run
 `./gradlew build` build the project. <br>
 `gradle bootRun`  run the project
 
 
-## Git Branch Naming Convention
+
+# Git Branch Naming Convention
  `<type>/<name>/<short-description>`
 - `<type>`: Represents the type of the branch (e.g., feature, bugfix, enhancement, hotfix).
 - `<name>`: Name of the contributor
@@ -70,8 +71,28 @@ V1__create_user_table.sql
 ```
  ## Run Migration
 `gradle flywayMigrate -i`
-=======
-- `feature/mazhar/update-project-skeleton`: Adding user authentication feature.
 
-## Licence
+# Activate Pre-commit hook
+before activate pre-commit hook you need to install `gpg` (is the GNU Privacy Guard)
+
+### For Mac
+```
+brew install gnupg
+
+```
+
+### For Ubuntu / Debian:
+
+```
+sudo apt-get update
+sudo apt-get install gnupg
+
+```
+### For Windows
+- Download Gpg4win from the official website: https://gpg4win.org/
+- Install Gpg4win, which includes gpg and related tools.
+
+hen run `./gradlew build`.
+
+
 
