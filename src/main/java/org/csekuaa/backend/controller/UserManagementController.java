@@ -1,10 +1,9 @@
 package org.csekuaa.backend.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-@RequestMapping("/api/")
+import org.csekuaa.backend.util.annotation.FineTunedRestController;
+@FineTunedRestController
 @RequiredArgsConstructor
-public class UserManagementController {}
+public class UserManagementController {
+
+}
