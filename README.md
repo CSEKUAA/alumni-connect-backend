@@ -92,7 +92,7 @@ sudo apt-get install gnupg
 - Download Gpg4win from the official website: https://gpg4win.org/
 - Install Gpg4win, which includes gpg and related tools.
 
-hen run `./gradlew build`.
+Then run `./gradlew build`.
 
 
 
