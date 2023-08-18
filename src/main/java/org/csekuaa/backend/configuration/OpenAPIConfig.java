@@ -1,4 +1,4 @@
-package org.csekuaa.backend.util.config;
+package org.csekuaa.backend.configuration;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;

@@ -1,4 +1,4 @@
-package org.csekuaa.backend.util.config;
+package org.csekuaa.backend.configuration;
 
 import java.util.Locale;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package org.csekuaa.backend.model;
+package org.csekuaa.backend.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

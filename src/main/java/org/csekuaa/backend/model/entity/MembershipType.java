@@ -1,4 +1,4 @@
-package org.csekuaa.backend.model;
+package org.csekuaa.backend.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,7 +21,7 @@ public class MembershipType {
     private int membershipTypeId;
 
     @Column(name = "membership_type")
-    private String memberShipType;
+    private String type;
 
     @Column(name = "membership_fee")
     private BigDecimal membershipFee;
