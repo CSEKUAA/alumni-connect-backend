@@ -20,7 +20,7 @@ import java.util.List;
 public class SystemExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+          @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorMessage resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         return new ErrorMessage(
                 HttpStatus.NOT_FOUND,
