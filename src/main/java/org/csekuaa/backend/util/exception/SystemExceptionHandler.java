@@ -23,7 +23,7 @@ public class SystemExceptionHandler {
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorMessage resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         return new ErrorMessage(
-                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND,
                 LocalDate.now(),
                 ex.getMessage(),
                 request.getDescription(false));
@@ -34,7 +34,7 @@ public class SystemExceptionHandler {
     public ErrorMessage globalExceptionHandler(Exception ex, WebRequest request) {
         log.error(Arrays.toString(ex.getStackTrace()));
         return new ErrorMessage(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.INTERNAL_SERVER_ERROR,
                 LocalDate.now(),
                 "Something went wrong!",
                 request.getDescription(false));
@@ -51,7 +51,7 @@ public class SystemExceptionHandler {
                 .date(LocalDate.now())
                 .message(String.join("/n", fieldValidationErrors))
                 .description(null)
-                .value( HttpStatus.BAD_REQUEST.value())
+                .statusCode( HttpStatus.BAD_REQUEST)
                 .build();
     }
 }
