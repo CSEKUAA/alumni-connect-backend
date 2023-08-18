@@ -18,10 +18,9 @@ import org.springframework.web.context.request.WebRequest;
 @Slf4j
 public class SystemExceptionHandler {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-  public ErrorMessage resourceNotFoundException(ResourceNotFoundException ex, WebRequest request)
-   {
+  @ExceptionHandler(ResourceNotFoundException.class)
+  @ResponseStatus(value = HttpStatus.NOT_FOUND)
+  public ErrorMessage resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
     return new ErrorMessage(
         HttpStatus.NOT_FOUND, LocalDate.now(), ex.getMessage(), request.getDescription(false));
   }
