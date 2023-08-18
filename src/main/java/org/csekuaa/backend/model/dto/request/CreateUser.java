@@ -1,4 +1,4 @@
-package org.csekuaa.backend.dto.request;
+package org.csekuaa.backend.model.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -10,11 +10,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateUser {
-    @NotBlank()
-    private String name;
+  @NotBlank() private String name;
 
-    @Email(message = "{invalid.email}")
-    private String email;
+  @Email(message = "{invalid.email}")
+  private String email;
 
-    private String password;
+  private String password;
 }
