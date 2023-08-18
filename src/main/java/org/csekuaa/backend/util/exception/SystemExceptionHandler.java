@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestControllerAdvice
-@Slf4j
+  @Slf4j
 public class SystemExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
