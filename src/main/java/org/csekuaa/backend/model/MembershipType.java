@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -15,18 +16,18 @@ import java.util.Set;
 @Table(name = "membership_type")
 public class MembershipType {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "membership_type_id")
-    private int membershipTypeId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "membership_type_id", nullable = false,columnDefinition = "bit")
+    private Integer membershipTypeId;
 
-    @Column(name = "membership_type")
-    private String memberShipType;
+    @Column(name = "membership_type", length = 45)
+    private String membershipType;
 
-    @Column(name = "membership_fee")
+    @Column(name = "membership_fee", nullable = false, precision = 2)
     private BigDecimal membershipFee;
 
     @OneToMany(mappedBy = "membershipType")
-    private Set<Membership> membership;
+    private Set<Membership> memberships;
 
 }

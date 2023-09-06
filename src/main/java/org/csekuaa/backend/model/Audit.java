@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @NoArgsConstructor
 @Getter
@@ -14,25 +14,25 @@ import java.time.LocalDateTime;
 @Table(name = "audit")
 public class Audit {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "audit_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "audit_id", nullable = false)
     private int auditId;
-
-    @Column(name = "api")
+      
+    @Column(name = "api", nullable = false, length = 200)
     private String api;
-
-    @Column(name = "ip")
+      
+    @Column(name = "ip", nullable = false, length = 45)
     private String ip;
-
-    @Column(name = "audit_time")
-    private LocalDateTime auditTime;
-
-    @Column(name = "remarks")
+      
+    @Column(name = "audit_time", nullable = false)
+    private Timestamp auditTime;
+      
+    @Column(name = "remarks", length = 45)
     private String remarks;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
 }

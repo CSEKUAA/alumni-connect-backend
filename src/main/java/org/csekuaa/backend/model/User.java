@@ -14,28 +14,32 @@ import java.util.Set;
 @Table(name = "user")
 public class User {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", nullable = false)
     private int userId;
-
-    @Column(name = "roll")
+       
+    @Column(name = "roll", nullable = false, length = 10)
     private String roll;
-
-    @Column(name = "password")
+       
+    @Column(name = "password", nullable = false, length = 100)
     private String password;
-
-    @Column(name = "is_enabled")
+       
+    @Column(name = "is_enabled", nullable = false)
     private boolean isEnabled;
-
-    @Column(name = "is_account_non_expired")
+       
+    @Column(name = "is_account_non_expired", nullable = false)
     private boolean isAccountNonExpired;
-
-    @Column(name = "is_account_non_locked")
+       
+    @Column(name = "is_account_non_locked", nullable = false)
     private boolean isAccountNonLocked;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
+    private Role role;
+
     @OneToMany(mappedBy = "user")
-    private Set<Alumni> alumni;
+    private Set<Alumni> alumnis;
 
     @OneToMany(mappedBy = "user")
     private Set<Audit> audits;
@@ -44,13 +48,9 @@ public class User {
     private Set<Membership> memberships;
 
     @OneToMany(mappedBy = "user")
-    private Set<PasswordReset> passwordReset;
+    private Set<PasswordReset> passwordResets;
 
     @OneToMany(mappedBy = "user")
     private Set<Token> tokens;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
-    private Role role;
 
 }

@@ -5,106 +5,97 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Set;
 
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "alumni")
 @Entity
+@Table(name = "alumni")
 public class Alumni {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "alumni_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "alumni_id", nullable = false)
     private int alumniId;
-
-    @Column(name = "roll")
+     
+    @Column(name = "roll", nullable = false, length = 10)
     private String roll;
-
-    @Column(name = "name")
+     
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
-
-    @Column(name = "nick")
-    private String nickName;
-
-    @Column(name = "birth_date")
-    private LocalDateTime birthDate;
-
-    @Column(name = "blood_group")
+     
+    @Column(name = "nick", nullable = true, length = 100)
+    private String nick;
+     
+    @Column(name = "birth_date", nullable = true)
+    private Timestamp birthDate;
+     
+    @Column(name = "blood_group", nullable = true, length = 10)
     private String bloodGroup;
-
-    @Column(name = "photo")
+     
+    @Column(name = "photo", nullable = true, length = 255)
     private String photo;
-
-    @Column(name = "present_address")
+     
+    @Column(name = "present_address", nullable = true, length = 200)
     private String presentAddress;
-
-    @Column(name = "present_city")
+     
+    @Column(name = "present_city", nullable = true, length = 45)
     private String presentCity;
-
-    @Column(name = "present_country")
+     
+    @Column(name = "present_country", nullable = true, length = 45)
     private String presentCountry;
-
-    @Column(name = "permanent_address")
+     
+    @Column(name = "permanent_address", nullable = true, length = 200)
     private String permanentAddress;
-
-    @Column(name = "permanent_city")
+     
+    @Column(name = "permanent_city", nullable = true, length = 45)
     private String permanentCity;
-
-    @Column(name = "permanent_country")
+     
+    @Column(name = "permanent_country", nullable = true, length = 45)
     private String permanentCountry;
-
-    @Column(name = "phone")
+     
+    @Column(name = "phone", nullable = true, length = 45)
     private String phone;
-
-    @Column(name = "email")
+     
+    @Column(name = "email", nullable = false, length = 100)
     private String email;
-
-    @Column(name = "profession")
+     
+    @Column(name = "profession", nullable = true, length = 100)
     private String profession;
-
-    @Column(name = "designation")
+     
+    @Column(name = "designation", nullable = true, length = 100)
     private String designation;
-
-    @Column(name = "company")
+     
+    @Column(name = "company", nullable = true, length = 50)
     private String company;
-
-    @Column(name = "company_address")
+     
+    @Column(name = "company_address", nullable = true, length = 200)
     private String companyAddress;
-
-    @Column(name = "creation_time")
+     
+    @Column(name = "creation_time", nullable = true)
     private Timestamp creationTime;
-
+     
     @Column(name = "modified_time")
     private Timestamp modifiedTime;
-
+     
     @Column(name = "approval_date")
-    private LocalDate approvalDate;
-
+    private Date approvalDate;
+     
     @Column(name = "membership_type")
     private Integer membershipType;
-
-    @Column(name = "facebook")
-    private String facebook;
-
-    @Column(name = "linkedin")
-    private String linkedin;
-
-    @Column(name = "github")
-    private String github;
-
-    @Column(name = "twitter")
-    private String twitter;
+     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "discipline_id", referencedColumnName = "discipline_id", nullable = false, columnDefinition = "bit")
+    private Discipline discipline;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "discipline_id", referencedColumnName = "discipline_id")
-    private Discipline discipline;
+    @OneToMany(mappedBy = "alumni")
+    private Set<AlumniExternalLink> alumniExternalLinks;
 
 }

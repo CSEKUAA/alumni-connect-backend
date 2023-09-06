@@ -5,34 +5,34 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "token")
 @Entity
+@Table(name = "token")
 public class Token {
-
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+   
     @Id
-    @Column(name = "token_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "token_id", nullable = false)
     private int tokenId;
-
-    @Column(name = "token")
-    private String tokenValue;
-
-    @Column(name = "token_start_time")
-    private LocalDateTime tokenStartTime;
-
-    @Column(name = "token_end_time")
-    private LocalDateTime tokenEndTime;
-
-    @Column(name = "ip")
+       
+    @Column(name = "token", nullable = false, length = 500)
+    private String tokenName;
+       
+    @Column(name = "token_start_time", nullable = false)
+    private Timestamp tokenStartTime;
+       
+    @Column(name = "token_end_time", nullable = false)
+    private Timestamp tokenEndTime;
+       
+    @Column(name = "ip", nullable = false, length = 45)
     private String ip;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
 }

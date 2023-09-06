@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @NoArgsConstructor
 @Getter
@@ -14,29 +14,29 @@ import java.time.LocalDateTime;
 @Table(name = "membership")
 public class Membership {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "membership_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "membership_id", nullable = false)
     private int membershipId;
-
-    @Column(name = "is_approved")
+       
+    @Column(name = "is_approved", nullable = false)
     private boolean isApproved;
-
-    @Column(name = "membership_end_time")
-    private LocalDateTime membershipEndTime;
-
-    @Column(name = "membership_approved_by")
+       
+    @Column(name = "membership_end_time", nullable = false)
+    private Timestamp membershipEndTime;
+       
+    @Column(name = "membership_approved_by", nullable = false)
     private int membershipApprovedBy;
-
-    @Column(name = "membership_approved_time")
-    private LocalDateTime membershipApprovedTime;
+       
+    @Column(name = "membership_approved_time", nullable = false)
+    private Timestamp membershipApprovedTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "membership_type_id")
+    @JoinColumn(name = "membership_type_id", referencedColumnName = "membership_type_id", nullable = false,columnDefinition = "bit")
     private MembershipType membershipType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
 }

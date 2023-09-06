@@ -1,10 +1,8 @@
 package org.csekuaa.backend.service;
 
-import org.csekuaa.backend.dto.request.CreateUser;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService {
 
-    public void createUser(CreateUser createUser) {
-
-    }
 }

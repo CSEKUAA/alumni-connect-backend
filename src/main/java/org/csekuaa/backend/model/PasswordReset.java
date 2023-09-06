@@ -14,25 +14,25 @@ import java.sql.Timestamp;
 @Table(name = "password_reset")
 public class PasswordReset {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "reset_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "reset_id", nullable = false)
     private int resetId;
-
-    @Column(name = "email_mobile")
+       
+    @Column(name = "email_mobile", nullable = false, length = 100)
     private String emailMobile;
-
-    @Column(name = "otp")
+       
+    @Column(name = "otp", nullable = false, length = 10)
     private String otp;
-
-    @Column(name = "created_time")
+       
+    @Column(name = "created_time", nullable = false)
     private Timestamp createdTime;
-
+       
     @Column(name = "is_reset")
     private Boolean isReset;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
 }
