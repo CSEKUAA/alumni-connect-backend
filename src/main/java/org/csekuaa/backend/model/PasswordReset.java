@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -26,7 +26,7 @@ public class PasswordReset {
     private String otp;
        
     @Column(name = "created_time", nullable = false)
-    private Timestamp createdTime;
+    private LocalDateTime createdTime;
        
     @Column(name = "is_reset")
     private Boolean isReset;

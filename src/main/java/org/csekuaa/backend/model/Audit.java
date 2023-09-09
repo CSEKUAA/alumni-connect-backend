@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -26,7 +26,7 @@ public class Audit {
     private String ip;
       
     @Column(name = "audit_time", nullable = false)
-    private Timestamp auditTime;
+    private LocalDateTime auditTime;
       
     @Column(name = "remarks", length = 45)
     private String remarks;

@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -23,10 +23,10 @@ public class Token {
     private String tokenName;
        
     @Column(name = "token_start_time", nullable = false)
-    private Timestamp tokenStartTime;
+    private LocalDateTime tokenStartTime;
        
     @Column(name = "token_end_time", nullable = false)
-    private Timestamp tokenEndTime;
+    private LocalDateTime tokenEndTime;
        
     @Column(name = "ip", nullable = false, length = 45)
     private String ip;

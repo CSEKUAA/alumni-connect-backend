@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -29,7 +30,7 @@ public class Membership {
     private int membershipApprovedBy;
        
     @Column(name = "membership_approved_time", nullable = false)
-    private Timestamp membershipApprovedTime;
+    private LocalDateTime membershipApprovedTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "membership_type_id", referencedColumnName = "membership_type_id", nullable = false,columnDefinition = "bit")
