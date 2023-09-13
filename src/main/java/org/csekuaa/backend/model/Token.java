@@ -10,29 +10,29 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "token")
 @Entity
+@Table(name = "token")
 public class Token {
-
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+   
     @Id
-    @Column(name = "token_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "token_id", nullable = false)
     private int tokenId;
-
-    @Column(name = "token")
-    private String tokenValue;
-
-    @Column(name = "token_start_time")
+       
+    @Column(name = "token", nullable = false, length = 500)
+    private String tokenName;
+       
+    @Column(name = "token_start_time", nullable = false)
     private LocalDateTime tokenStartTime;
-
-    @Column(name = "token_end_time")
+       
+    @Column(name = "token_end_time", nullable = false)
     private LocalDateTime tokenEndTime;
-
-    @Column(name = "ip")
+       
+    @Column(name = "ip", nullable = false, length = 45)
     private String ip;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
 }
