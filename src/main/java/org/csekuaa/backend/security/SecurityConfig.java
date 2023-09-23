@@ -1,6 +1,7 @@
 package org.csekuaa.backend.security;
 
 import lombok.RequiredArgsConstructor;
+import org.csekuaa.backend.service.AlumniUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,12 +15,14 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    //private final SecurityFilter securityFilter;
+    private final SecurityFilter securityFilter;
+    private final AlumniUserDetailsService userDetailsService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -33,20 +36,20 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizer->
                         authorizer.anyRequest().authenticated())
-                .sessionManagement(e -> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        //.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(e -> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
-    //@Bean
+    @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        //authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
 
-    // @Bean
+    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
@@ -61,7 +64,7 @@ public class SecurityConfig {
                         "/swagger*/**",
                         "/webjars/**",
                         "/swagger-ui/**",
-                        "/api/create",
+                        "/api/**",
                         "/api/login",
                         "/actuator/**"
                 )

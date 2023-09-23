@@ -34,7 +34,7 @@ public class User {
     @Column(name = "is_account_non_locked", nullable = false)
     private boolean isAccountNonLocked;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
     private Role role;
 
