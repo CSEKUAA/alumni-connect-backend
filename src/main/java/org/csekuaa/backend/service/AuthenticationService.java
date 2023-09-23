@@ -1,10 +1,12 @@
 package org.csekuaa.backend.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.dto.request.LogInRequestDTO;
 import org.csekuaa.backend.dto.request.ResetPasswordRequestDTO;
 import org.csekuaa.backend.dto.response.LoginResponse;
+import org.csekuaa.backend.jwt.EncryptionUtil;
 import org.csekuaa.backend.jwt.JWTTokenService;
 import org.csekuaa.backend.model.Alumni;
 import org.csekuaa.backend.model.PasswordReset;
@@ -24,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
 
 @Service
@@ -39,25 +42,14 @@ public class AuthenticationService {
     private final PasswordResetRepository passwordResetRepository;
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
+    private final SecretKey aesKey;
 
     public LoginResponse login(LogInRequestDTO logInRequestDTO, String ipAddress) {
         Alumni alumni = alumniRepository.findByEmail(logInRequestDTO.getEmail())
                 .orElseThrow(() -> new RuntimeException("invalid email!"));
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(logInRequestDTO.getEmail(), logInRequestDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtTokenService.generateToken(alumni);
-        LoginResponse loginResponseDTO = new LoginResponse();
-        loginResponseDTO.setToken(token);
-        loginResponseDTO.setRefreshToken(jwtTokenService.generateRefreshToken());
-        loginResponseDTO.setExpireTime(tokenExpireTime + " minutes");
-        Token createToken = new Token();
-        createToken.setTokenName(token);
-        createToken.setTokenStartTime(LocalDateTime.now());
-        createToken.setTokenEndTime(LocalDateTime.now().plusMinutes(tokenExpireTime));
-        createToken.setIp(ipAddress);
-        createToken.setUser(alumni.getUser());
-        tokenRepository.save(createToken);
-        return loginResponseDTO;
+        return createTokenResponse(ipAddress, alumni);
     }
 
     public void logout(String token) {
@@ -68,14 +60,18 @@ public class AuthenticationService {
     public LoginResponse createRefreshToken(String refreshToken,String existenceToken, String ipAddress) {
         tokenRepository.findByTokenName(existenceToken)
                 .ifPresent(tokenRepository::delete);
-        String email = jwtTokenService.extractEmail(existenceToken);
+        jwtTokenService.validateToken(refreshToken);
+        String dcryptedToken = EncryptionUtil.decryptJWT(existenceToken, aesKey);
+        String email = jwtTokenService.extractEmail(dcryptedToken);
         Alumni alumni = alumniRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("invalid email!"));
-       // Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, ""));
-       // SecurityContextHolder.getContext().setAuthentication(authentication);
+        return createTokenResponse(ipAddress, alumni);
+    }
+
+    private LoginResponse createTokenResponse(String ipAddress, Alumni alumni) {
         String token = jwtTokenService.generateToken(alumni);
         LoginResponse loginResponseDTO = new LoginResponse();
-        loginResponseDTO.setToken(token);
+        loginResponseDTO.setToken(EncryptionUtil.encryptJWT(token,aesKey));
         loginResponseDTO.setRefreshToken(jwtTokenService.generateRefreshToken());
         loginResponseDTO.setExpireTime(tokenExpireTime + " minutes");
         Token createToken = new Token();
@@ -88,11 +84,14 @@ public class AuthenticationService {
         return loginResponseDTO;
     }
 
+    @Transactional
     public void resetPassword(ResetPasswordRequestDTO logInRequestDTO) {
         PasswordReset passwordReset = passwordResetRepository.findByOtp(logInRequestDTO.getToken())
                 .orElseThrow(()-> new ResourceNotFoundException("invalid otp!"));
         User user = passwordReset.getUser();
         user.setPassword(encoder.encode(logInRequestDTO.getPassword()));
+        passwordReset.setIsReset(true);
+        passwordResetRepository.save(passwordReset);
         userRepository.save(user);
     }
 

@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.csekuaa.backend.model.Alumni;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -21,15 +23,20 @@ import java.util.Locale;
 public class EmailService {
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
+    @Value("${spring.mail.username}")
+    private String fromMail;
+    private final MessageSource messageSource;
+
     @SneakyThrows
     public void sentResetPasswordMail(Alumni alumni, String token) {
         try {
+            Locale locale = new Locale(Locale.ENGLISH.getDisplayLanguage());
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-            message.setSubject("Password Reset");
-            message.setFrom("mazhar1322@cseku.ac.bd");
+            message.setSubject(messageSource.getMessage("reset.password.email.subject",null,locale));
+            message.setFrom(fromMail);
             message.setTo(alumni.getEmail());
-            Locale locale = new Locale(Locale.ENGLISH.getDisplayLanguage());
+
             final Context context = new Context();
             context.setLocale(locale);
             context.setVariable("name", alumni.getFullName());
@@ -40,9 +47,7 @@ public class EmailService {
 
             javaMailSender.send(message.getMimeMessage());
             log.info("email sent successfully to {}", alumni.getEmail());
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        } catch (MailException e) {
+        } catch (MessagingException | MailException e) {
             throw new RuntimeException(e);
         }
 
