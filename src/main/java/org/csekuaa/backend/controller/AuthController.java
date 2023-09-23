@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.dto.request.LogInRequestDTO;
+import org.csekuaa.backend.dto.request.ResetPasswordRequestDTO;
 import org.csekuaa.backend.dto.response.LoginResponse;
 import org.csekuaa.backend.service.AuthenticationService;
 import org.csekuaa.backend.util.annotation.SecureAPI;
@@ -42,15 +43,15 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@Valid @RequestBody LogInRequestDTO logInRequestDTO) {
-        authenticationService.resetPassword(logInRequestDTO);
-        return ResponseEntity.ok("loginResponse");
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequestDTO resetPasswordRequestDTO) {
+        authenticationService.resetPassword(resetPasswordRequestDTO);
+        return ResponseEntity.ok("password reset successfully!");
     }
 
     @PostMapping("/forget-password")
-    public ResponseEntity<?> forgetPassword(@Valid @RequestBody LogInRequestDTO logInRequestDTO) {
-        authenticationService.forgetPassword(logInRequestDTO);
-        return ResponseEntity.ok("");
+    public ResponseEntity<?> forgetPassword(@Valid @RequestBody String email) {
+        authenticationService.forgetPassword(email);
+        return ResponseEntity.ok("password reset token successfully sent to your email address!");
     }
 
     @PostMapping("/logout")
