@@ -20,6 +20,15 @@ import java.util.List;
 @Slf4j
 public class SystemExceptionHandler {
 
+    @ExceptionHandler(SecurityException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public ErrorMessage resourceNotFoundException(SecurityException ex, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.UNAUTHORIZED.value(),
+                LocalDate.now(),
+                ex.getMessage(),
+                request.getDescription(false));
+    }
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorMessage resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
