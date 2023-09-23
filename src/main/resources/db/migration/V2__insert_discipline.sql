@@ -1,0 +1,2 @@
+INSERT INTO csekuaa.discipline (discipline_code, discipline_short_name, discipline_full_name) VALUES('01', 'ARCH', 'Architecture');
+INSERT INTO csekuaa.discipline (discipline_code, discipline_short_name, discipline_full_name) VALUES('02', 'CSE', 'Computer Science & Engineering');
