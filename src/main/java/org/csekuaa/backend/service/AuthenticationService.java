@@ -18,6 +18,7 @@ import org.csekuaa.backend.repository.TokenRepository;
 import org.csekuaa.backend.repository.UserRepository;
 import org.csekuaa.backend.service.event.ForgetPasswordEvent;
 import org.csekuaa.backend.service.event.ForgetPasswordEventListener;
+import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,6 +44,7 @@ public class AuthenticationService {
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
     private final SecretKey aesKey;
+    private final ApplicationMessageResolver messageResolver;
 
     public LoginResponse login(LogInRequestDTO logInRequestDTO, String ipAddress) {
         Alumni alumni = alumniRepository.findByEmail(logInRequestDTO.getEmail())
@@ -97,7 +99,7 @@ public class AuthenticationService {
 
     public void forgetPassword(String email) {
         Alumni alumni = alumniRepository.findByEmail(email)
-                .orElseThrow(()-> new RuntimeException("no user is associated with this email address"));
+                .orElseThrow(()-> new ResourceNotFoundException(messageResolver.getMessage("auth.user.not.found")));
         listener.onApplicationEvent(new ForgetPasswordEvent(alumni));
     }
 }

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.csekuaa.backend.model.Alumni;
+import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.MailException;
@@ -25,7 +26,7 @@ public class EmailService {
     private final TemplateEngine templateEngine;
     @Value("${spring.mail.username}")
     private String fromMail;
-    private final MessageSource messageSource;
+    private final ApplicationMessageResolver messageSource;
 
     @SneakyThrows
     public void sentResetPasswordMail(Alumni alumni, String token) {
@@ -33,7 +34,7 @@ public class EmailService {
             Locale locale = new Locale(Locale.ENGLISH.getDisplayLanguage());
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-            message.setSubject(messageSource.getMessage("reset.password.email.subject",null,locale));
+            message.setSubject(messageSource.getMessage("reset.password.email.subject"));
             message.setFrom(fromMail);
             message.setTo(alumni.getEmail());
 

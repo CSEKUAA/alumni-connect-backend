@@ -8,6 +8,7 @@ import org.csekuaa.backend.dto.request.LogInRequestDTO;
 import org.csekuaa.backend.dto.request.ResetPasswordRequestDTO;
 import org.csekuaa.backend.dto.response.LoginResponse;
 import org.csekuaa.backend.service.AuthenticationService;
+import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.csekuaa.backend.util.annotation.SecureAPI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Authentication Manager")
 public class AuthController {
     private final AuthenticationService authenticationService;
+    private final ApplicationMessageResolver messageResolver;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LogInRequestDTO logInRequestDTO, HttpServletRequest servletRequest) {
@@ -34,7 +36,7 @@ public class AuthController {
     public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody String refreshToken, HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null) {
-            throw new SecurityException("UnAuthorized access!");
+            throw new SecurityException(messageResolver.getMessage("auth.unauthorized"));
         }
         String token = authHeader.substring(7);
         String ipAddress = request.getRemoteAddr();
@@ -45,13 +47,13 @@ public class AuthController {
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequestDTO resetPasswordRequestDTO) {
         authenticationService.resetPassword(resetPasswordRequestDTO);
-        return ResponseEntity.ok("password reset successfully!");
+        return ResponseEntity.ok(messageResolver.getMessage("auth.reset.password"));
     }
 
     @PostMapping("/forget-password")
     public ResponseEntity<?> forgetPassword(@Valid @RequestBody String email) {
         authenticationService.forgetPassword(email);
-        return ResponseEntity.ok("password reset token successfully sent to your email address!");
+        return ResponseEntity.ok(messageResolver.getMessage("auth.reset.email.success"));
     }
 
     @PostMapping("/logout")
@@ -59,10 +61,10 @@ public class AuthController {
     public ResponseEntity<?> logout(HttpServletRequest servletRequest) {
         String authHeader = servletRequest.getHeader("Authorization");
         if (authHeader == null) {
-            throw new SecurityException("UnAuthorized access!");
+            throw new SecurityException(messageResolver.getMessage("auth.unauthorized"));
         }
         String token = authHeader.substring(7);
         authenticationService.logout(token);
-        return ResponseEntity.ok("logout Successfully!");
+        return ResponseEntity.ok(messageResolver.getMessage("auth.logout"));
     }
 }
