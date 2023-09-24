@@ -49,6 +49,8 @@ Example:
 - `feature/mazhar/user-authentication`: Adding user authentication feature.
 
 # Database Versioning
+<span style="color:red; font-weight:bold">If you have a pre-existing database schema, kindly remove the comment from the `spring.flyway.baseline-on-migrate=true` configuration line in the `application.properties` file. </span>
+
 
 We utilize the Flyway community version to manage our database versioning.
 
