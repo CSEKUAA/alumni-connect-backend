@@ -2,6 +2,7 @@ package org.csekuaa.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.dto.alumni.CreateAlumni;
+import org.csekuaa.backend.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.dto.request.DisciplineDTO;
 import org.csekuaa.backend.model.Alumni;
 import org.csekuaa.backend.model.Discipline;
@@ -25,8 +26,8 @@ public class UserManagementService {
     private final PasswordEncoder encoder;
     public void createUser(CreateAlumni createAlumni) {
         Discipline discipline = disciplineRepository.findById(createAlumni.getDisciplineId())
-                .orElseThrow(() -> new RuntimeException("Discipline not found!"));
-        Role role = roleRepository.findById(2).orElseThrow(() -> new RuntimeException("Role not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Discipline not found!"));
+        Role role = roleRepository.findById(2).orElseThrow(() -> new ResourceNotFoundException("Role not found"));
 
         User user = new User();
         user.setRoll(createAlumni.getRoll());
