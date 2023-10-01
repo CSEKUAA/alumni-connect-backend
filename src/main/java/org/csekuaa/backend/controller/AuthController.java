@@ -56,7 +56,7 @@ public class AuthController {
         return ResponseEntity.ok(messageResolver.getMessage("auth.reset.email.success"));
     }
 
-    @PostMapping("/logout")
+    @PostMapping(value = "/logout",produces = "application/json;charset=UTF-8")
     @SecureAPI
     public ResponseEntity<?> logout(HttpServletRequest servletRequest) {
         String authHeader = servletRequest.getHeader("Authorization");
