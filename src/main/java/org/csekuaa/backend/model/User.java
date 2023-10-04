@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.csekuaa.backend.dto.exception.ResourceNotFoundException;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -34,11 +36,38 @@ public class User {
     @Column(name = "is_account_non_locked", nullable = false)
     private boolean isAccountNonLocked;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", columnDefinition = "tinyint"))
     private Set<Role> roles;
+
+    public void setRoles(Set<Role> roles) {
+        if(this.roles==null) {
+            this.roles = new HashSet<>();
+        }
+        this.roles.addAll(roles);
+    }
+    public void addRole(Role role) {
+        if(this.roles==null) {
+            this.roles = new HashSet<>();
+        }
+        this.roles.add(role);
+    }
+
+    public void removeRole(Role role) {
+        if(this.roles==null) {
+            throw new ResourceNotFoundException("no role is assigned!");
+        }
+        this.roles.remove(role);
+    }
+
+    public Set<Role> getRoles(){
+        if(this.roles==null) {
+            return new HashSet<>();
+        }
+       return this.roles;
+    }
 
 
     @OneToMany(mappedBy = "user")
