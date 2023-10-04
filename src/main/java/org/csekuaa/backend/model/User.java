@@ -34,9 +34,12 @@ public class User {
     @Column(name = "is_account_non_locked", nullable = false)
     private boolean isAccountNonLocked;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
-    @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
-    private Role role;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", columnDefinition = "tinyint"))
+    private Set<Role> roles;
+
 
     @OneToMany(mappedBy = "user")
     private Set<Alumni> alumnis;
