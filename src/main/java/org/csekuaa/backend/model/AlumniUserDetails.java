@@ -6,15 +6,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 
 @AllArgsConstructor
 public class AlumniUserDetails implements UserDetails {
     private final User user;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(user.getRole().getRoleName());
-        return List.of(simpleGrantedAuthority);
+        return user.getRoles().stream().map(e-> new SimpleGrantedAuthority(e.getRoleName())).toList();
     }
 
     @Override
@@ -22,9 +20,7 @@ public class AlumniUserDetails implements UserDetails {
         return user.getPassword();
     }
 
-    /*
-    * user can log in with their email or roll number.
-    * */
+
     @Override
     public String getUsername() {
         return user.getAlumnis().stream().map(Alumni::getEmail)
