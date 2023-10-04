@@ -3,6 +3,7 @@ package org.csekuaa.backend.util.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.csekuaa.backend.dto.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,11 +20,29 @@ import java.util.List;
 @Slf4j
 public class SystemExceptionHandler {
 
+    @ExceptionHandler(SecurityException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public ErrorMessage resourceNotFoundException(SecurityException ex, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.UNAUTHORIZED.value(),
+                LocalDate.now(),
+                ex.getMessage(),
+                request.getDescription(false));
+    }
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorMessage resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         return new ErrorMessage(
                 HttpStatus.NOT_FOUND.value(),
+                LocalDate.now(),
+                ex.getMessage(),
+                request.getDescription(false));
+    }
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage resourceNotFoundException(HttpMessageNotReadableException ex, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
                 LocalDate.now(),
                 ex.getMessage(),
                 request.getDescription(false));

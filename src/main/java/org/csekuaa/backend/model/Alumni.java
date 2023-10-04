@@ -95,7 +95,7 @@ public class Alumni {
     @JoinColumn(name = "discipline_id", referencedColumnName = "discipline_id", nullable = false, columnDefinition = "bit")
     private Discipline discipline;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 

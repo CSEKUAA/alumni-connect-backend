@@ -1,155 +1,223 @@
-CREATE TABLE alumni
+create table discipline
 (
-    roll              VARCHAR(10)            NOT NULL,
-    discipline_id     INT                    NOT NULL,
-    name              VARCHAR(100)           NOT NULL,
-    nick              VARCHAR(100)           NULL,
-    birth_date        datetime               NULL,
-    blood_group       VARCHAR(10)            NULL,
-    photo             VARCHAR(255)           NULL,
-    present_address   VARCHAR(200)           NULL,
-    present_city      VARCHAR(45)            NULL,
-    present_country   VARCHAR(45)            NULL,
-    permanent_address VARCHAR(200)           NULL,
-    permanent_city    VARCHAR(45)            NULL,
-    permanent_country VARCHAR(45)            NULL,
-    phone             VARCHAR(45)            NULL,
-    email             VARCHAR(100)           NOT NULL,
-    profession        VARCHAR(100)           NULL,
-    designation       VARCHAR(100)           NULL,
-    company           VARCHAR(50)            NULL,
-    company_address   VARCHAR(200)           NULL,
-    creation_time     datetime DEFAULT NOW() NULL,
-    modified_time     datetime               NULL,
-    approval_date     date                   NULL,
-    membership_type   INT                    NULL,
-    facebook          VARCHAR(200)           NULL,
-    linkedin          VARCHAR(200)           NULL,
-    alumni_id         INT AUTO_INCREMENT     NOT NULL,
-    github            VARCHAR(200)           NULL,
-    twitter           VARCHAR(200)           NULL,
-    user_id           INT                    NOT NULL,
-    CONSTRAINT PK_ALUMNI PRIMARY KEY (alumni_id)
+    discipline_id         tinyint(1) auto_increment
+        primary key,
+    discipline_code       varchar(10)  not null,
+    discipline_short_name varchar(10)  not null,
+    discipline_full_name  varchar(200) not null
 );
 
-CREATE TABLE audit
+create table external_link_type
 (
-    audit_id   INT AUTO_INCREMENT NOT NULL,
-    user_id    INT                NOT NULL,
-    api        VARCHAR(200)       NOT NULL,
-    ip         VARCHAR(45)        NOT NULL,
-    audit_time datetime           NOT NULL,
-    remarks    VARCHAR(45)        NULL,
-    CONSTRAINT PK_AUDIT PRIMARY KEY (audit_id)
+    external_link_type_id   tinyint auto_increment
+        primary key,
+    external_link_type_name varchar(45) not null
 );
 
-CREATE TABLE discipline
+create table external_link
 (
-    discipline_id         INT AUTO_INCREMENT NOT NULL,
-    discipline_code       VARCHAR(10)        NOT NULL,
-    discipline_short_name VARCHAR(10)        NOT NULL,
-    discipline_full_name  VARCHAR(200)       NOT NULL,
-    CONSTRAINT PK_DISCIPLINE PRIMARY KEY (discipline_id)
+    external_link_id      int auto_increment
+        primary key,
+    external_link_name    varchar(45)  not null,
+    external_link_type_id tinyint      not null,
+    external_link_url     varchar(200) not null,
+    constraint fk_external_link_type
+        foreign key (external_link_type_id) references external_link_type (external_link_type_id)
 );
 
-CREATE TABLE membership
+create index fk_external_link_type_idx
+    on external_link (external_link_type_id);
+
+create table membership_type
 (
-    membership_id            INT AUTO_INCREMENT NOT NULL,
-    membership_type_id       INT                NOT NULL,
-    user_id                  INT                NOT NULL,
-    is_approved              BIT(1)             NOT NULL,
-    membership_end_time      datetime           NOT NULL,
-    membership_approved_by   INT                NOT NULL,
-    membership_approved_time datetime           NOT NULL,
-    CONSTRAINT PK_MEMBERSHIP PRIMARY KEY (membership_id)
+    membership_type_id tinyint(1) auto_increment
+        primary key,
+    membership_type    varchar(45)    null,
+    membership_fee     decimal(10, 2) not null
 );
 
-CREATE TABLE membership_type
+create table menu
 (
-    membership_type_id INT AUTO_INCREMENT NOT NULL,
-    membership_type    VARCHAR(45)        NULL,
-    membership_fee     DECIMAL(10, 2)     NOT NULL,
-    CONSTRAINT PK_MEMBERSHIP_TYPE PRIMARY KEY (membership_type_id)
+    menu_id        smallint     not null
+        primary key,
+    menu_name      varchar(200) not null,
+    parent_menu_id smallint     null,
+    menu_order     smallint     null,
+    menu_link      varchar(200) null,
+    is_active      bit          not null
 );
 
-CREATE TABLE password_reset
+create table role
 (
-    reset_id     INT AUTO_INCREMENT NOT NULL,
-    email_mobile VARCHAR(100)       NOT NULL,
-    otp          VARCHAR(10)        NOT NULL,
-    created_time datetime           NOT NULL,
-    is_reset     BIT(1)             NULL,
-    user_id      INT                NOT NULL,
-    CONSTRAINT PK_PASSWORD_RESET PRIMARY KEY (reset_id)
+    role_id   tinyint(1) auto_increment
+        primary key,
+    role_name varchar(20) not null
 );
 
-CREATE TABLE `role`
+create table menu_role
 (
-    role_id   INT AUTO_INCREMENT NOT NULL,
-    role_name VARCHAR(20)        NOT NULL,
-    CONSTRAINT PK_ROLE PRIMARY KEY (role_id)
+    menu_role_id smallint   not null
+        primary key,
+    role_id      tinyint(1) not null,
+    menu_id      smallint   not null,
+    constraint fk_menu_menurole
+        foreign key (menu_id) references menu (menu_id),
+    constraint fk_role_menurole
+        foreign key (role_id) references role (role_id)
 );
 
-CREATE TABLE token
+create index fk_menu_menurole_idx
+    on menu_role (menu_id);
+
+create index fk_role_menurole_idx
+    on menu_role (role_id);
+
+create table user
 (
-    token_id         INT AUTO_INCREMENT NOT NULL,
-    user_id          INT                NOT NULL,
-    token            VARCHAR(500)       NOT NULL,
-    token_start_time datetime           NOT NULL,
-    token_end_time   datetime           NOT NULL,
-    ip               VARCHAR(45)        NOT NULL,
-    CONSTRAINT PK_TOKEN PRIMARY KEY (token_id)
+    user_id                int auto_increment
+        primary key,
+    roll                   varchar(10)  not null,
+    password               varchar(100) not null,
+    role_id                tinyint(1)   not null,
+    is_enabled             bit          not null,
+    is_account_non_expired bit          not null,
+    is_account_non_locked  bit          not null,
+    constraint roll_UNIQUE
+        unique (roll),
+    constraint fk_user_role
+        foreign key (role_id) references role (role_id)
 );
 
-CREATE TABLE user
+create table alumni
 (
-    user_id                INT AUTO_INCREMENT NOT NULL,
-    roll                   VARCHAR(10)        NOT NULL,
-    password               VARCHAR(100)       NOT NULL,
-    role_id                INT                NOT NULL,
-    is_enabled             BIT(1)             NOT NULL,
-    is_account_non_expired BIT(1)             NOT NULL,
-    is_account_non_locked  BIT(1)             NOT NULL,
-    CONSTRAINT PK_USER PRIMARY KEY (user_id),
-    UNIQUE (roll)
+    alumni_id         int auto_increment
+        primary key,
+    roll              varchar(10)                        not null,
+    discipline_id     tinyint(1)                         not null,
+    name              varchar(100)                       not null,
+    nick              varchar(100)                       null,
+    birth_date        datetime                           null,
+    blood_group       varchar(10)                        null,
+    photo             varchar(255)                       null,
+    present_address   varchar(200)                       null,
+    present_city      varchar(45)                        null,
+    present_country   varchar(45)                        null,
+    permanent_address varchar(200)                       null,
+    permanent_city    varchar(45)                        null,
+    permanent_country varchar(45)                        null,
+    phone             varchar(45)                        null,
+    email             varchar(100)                       not null,
+    profession        varchar(100)                       null,
+    designation       varchar(100)                       null,
+    company           varchar(50)                        null,
+    company_address   varchar(200)                       null,
+    creation_time     datetime default CURRENT_TIMESTAMP null,
+    modified_time     datetime                           null,
+    approval_date     date                               null,
+    membership_type   int                                null,
+    user_id           int                                not null,
+    constraint fk_discipline_alumni
+        foreign key (discipline_id) references discipline (discipline_id),
+    constraint fk_user_alumni
+        foreign key (user_id) references user (user_id)
 );
 
-CREATE INDEX fk_discipline_alumni_idx ON alumni (discipline_id);
+create index fk_discipline_alumni_idx
+    on alumni (discipline_id);
 
-CREATE INDEX fk_membership_membership_type_idx ON membership (membership_type_id);
+create index fk_user_alumni_idx
+    on alumni (user_id);
 
-CREATE INDEX fk_membership_user_idx ON membership (user_id);
+create table alumni_external_link
+(
+    alumni_external_link_id int auto_increment
+        primary key,
+    alumni_id               int          not null,
+    url                     varchar(200) null,
+    description             varchar(500) null,
+    external_link_id        int          not null,
+    constraint fk_alumni
+        foreign key (alumni_id) references alumni (alumni_id),
+    constraint fk_external_link
+        foreign key (external_link_id) references external_link (external_link_id)
+);
 
-CREATE INDEX fk_user_alumni_idx ON alumni (user_id);
+create index fk_alumni_idx
+    on alumni_external_link (alumni_id);
 
-CREATE INDEX fk_user_audit_idx ON audit (user_id);
+create index fk_external_link_idx
+    on alumni_external_link (external_link_id);
 
-CREATE INDEX fk_user_password_idx ON password_reset (user_id);
+create table audit
+(
+    audit_id   int auto_increment
+        primary key,
+    user_id    int          not null,
+    api        varchar(200) not null,
+    ip         varchar(45)  not null,
+    audit_time datetime     not null,
+    remarks    varchar(45)  null,
+    constraint fk_user_audit
+        foreign key (user_id) references user (user_id)
+);
 
-CREATE INDEX fk_user_role_idx ON user (role_id);
+create index fk_user_audit_idx
+    on audit (user_id);
 
-CREATE INDEX fk_user_token_idx ON token (user_id);
+create table membership
+(
+    membership_id            int auto_increment
+        primary key,
+    membership_type_id       tinyint(1) not null,
+    user_id                  int        not null,
+    is_approved              bit        not null,
+    membership_end_time      datetime   not null,
+    membership_approved_by   int        not null,
+    membership_approved_time datetime   not null,
+    constraint fk_membership_membership_type
+        foreign key (membership_type_id) references membership_type (membership_type_id),
+    constraint fk_membership_user
+        foreign key (user_id) references user (user_id)
+);
 
-ALTER TABLE alumni
-    ADD CONSTRAINT fk_discipline_alumni FOREIGN KEY (discipline_id) REFERENCES discipline (discipline_id) ON UPDATE RESTRICT ON DELETE RESTRICT;
+create index fk_membership_membership_type_idx
+    on membership (membership_type_id);
 
-ALTER TABLE membership
-    ADD CONSTRAINT fk_membership_membership_type FOREIGN KEY (membership_type_id) REFERENCES membership_type (membership_type_id) ON UPDATE RESTRICT ON DELETE RESTRICT;
+create index fk_membership_user_idx
+    on membership (user_id);
 
-ALTER TABLE membership
-    ADD CONSTRAINT fk_membership_user FOREIGN KEY (user_id) REFERENCES user (user_id) ON UPDATE RESTRICT ON DELETE RESTRICT;
+create table password_reset
+(
+    reset_id     int auto_increment
+        primary key,
+    email_mobile varchar(100) not null,
+    otp          varchar(10)  not null,
+    created_time datetime     not null,
+    is_reset     bit          null,
+    user_id      int          not null,
+    constraint fk_user_password
+        foreign key (user_id) references user (user_id)
+);
 
-ALTER TABLE alumni
-    ADD CONSTRAINT fk_user_alumni FOREIGN KEY (user_id) REFERENCES user (user_id) ON UPDATE RESTRICT ON DELETE RESTRICT;
+create index fk_user_password_idx
+    on password_reset (user_id);
 
-ALTER TABLE audit
-    ADD CONSTRAINT fk_user_audit FOREIGN KEY (user_id) REFERENCES user (user_id) ON UPDATE RESTRICT ON DELETE RESTRICT;
+create table token
+(
+    token_id         int auto_increment
+        primary key,
+    user_id          int          not null,
+    token            varchar(500) not null,
+    token_start_time datetime     not null,
+    token_end_time   datetime     not null,
+    ip               varchar(45)  not null,
+    constraint fk_user_token
+        foreign key (user_id) references user (user_id)
+);
 
-ALTER TABLE password_reset
-    ADD CONSTRAINT fk_user_password FOREIGN KEY (user_id) REFERENCES user (user_id) ON UPDATE RESTRICT ON DELETE RESTRICT;
+create index fk_user_token_idx
+    on token (user_id);
 
-ALTER TABLE user
-    ADD CONSTRAINT fk_user_role FOREIGN KEY (role_id) REFERENCES `role` (role_id) ON UPDATE RESTRICT ON DELETE RESTRICT;
+create index fk_user_role_idx
+    on user (role_id);
 
-ALTER TABLE token
-    ADD CONSTRAINT fk_user_token FOREIGN KEY (user_id) REFERENCES user (user_id) ON UPDATE RESTRICT ON DELETE RESTRICT;
