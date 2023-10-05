@@ -27,7 +27,7 @@ public class UserManagementService {
     public void createUser(CreateAlumni createAlumni) {
         Discipline discipline = disciplineRepository.findById(createAlumni.getDisciplineId())
                 .orElseThrow(() -> new ResourceNotFoundException("Discipline not found!"));
-        Role role = roleRepository.findById(2).orElseThrow(() -> new ResourceNotFoundException("Role not found"));
+        Role role = roleRepository.findByRoleName("USER").orElseThrow(() -> new ResourceNotFoundException("Role not found"));
 
         User user = new User();
         user.setRoll(createAlumni.getRoll());

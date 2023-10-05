@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Collection;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -16,18 +15,18 @@ import java.util.Set;
 public class Menu {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "menu_id", nullable = false)
-    private short menuId;
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "menu_id", nullable = false,columnDefinition = "smallint")
+    private Integer menuId;
        
     @Column(name = "menu_name", nullable = false, length = 200)
     private String menuName;
        
-    @Column(name = "parent_menu_id")
-    private Short parentMenuId;
+    @Column(name = "parent_menu_id",columnDefinition = "smallint")
+    private int parentMenuId;
        
-    @Column(name = "menu_order")
-    private Short menuOrder;
+    @Column(name = "menu_order",columnDefinition = "smallint")
+    private int menuOrder;
        
     @Column(name = "menu_link", length = 200)
     private String menuLink;
@@ -35,7 +34,7 @@ public class Menu {
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
-    @OneToMany(mappedBy = "menu")
-    private Set<MenuRole> menuRoles;
+    @ManyToMany(mappedBy = "menus")
+    private Set<Role> roles;
 
 }

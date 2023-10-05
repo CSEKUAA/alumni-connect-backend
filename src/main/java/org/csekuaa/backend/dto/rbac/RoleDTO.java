@@ -2,11 +2,10 @@ package org.csekuaa.backend.dto.rbac;
 
 import lombok.Data;
 
-import java.security.Permission;
 import java.util.List;
 
 @Data
 public class RoleDTO {
-    private String roles;
+    private String role;
     private List<PermissionDTO> permissions;
 }

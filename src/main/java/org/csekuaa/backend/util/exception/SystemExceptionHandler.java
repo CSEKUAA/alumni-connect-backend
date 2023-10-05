@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.csekuaa.backend.dto.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -45,6 +46,17 @@ public class SystemExceptionHandler {
                 HttpStatus.BAD_REQUEST.value(),
                 LocalDate.now(),
                 ex.getMessage(),
+                request.getDescription(false));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public ErrorMessage accessDeniedException(AccessDeniedException ex, WebRequest request) {
+        log.error(Arrays.toString(ex.getStackTrace()));
+        return new ErrorMessage(
+                HttpStatus.FORBIDDEN.value(),
+                LocalDate.now(),
+                "the user has no permission to perform the operation",
                 request.getDescription(false));
     }
 

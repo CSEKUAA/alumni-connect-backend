@@ -30,8 +30,8 @@ public class SecurityFilter extends OncePerRequestFilter {
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String jwt = authorizationHeader.substring(7);
-            validateToken(jwt);
             String token = EncryptionUtil.decryptJWT(jwt, secretKey);
+            validateToken(token);
             if(SecurityContextHolder.getContext().getAuthentication() == null){
                 List<String> authorities = jwtTokenService.extractAuthorities(token);
                 List<SimpleGrantedAuthority> simpleGrantedAuthorities = authorities.stream().map(SimpleGrantedAuthority::new).toList();
