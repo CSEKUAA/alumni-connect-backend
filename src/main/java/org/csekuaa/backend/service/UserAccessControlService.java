@@ -96,7 +96,7 @@ public class UserAccessControlService {
         Menu menu = new Menu();
         menu.setMenuId(menuDto.getMenuId());
         menu.setMenuName(menuDto.getName());
-        menu.setParentMenuId(0);
+        menu.setParentMenuId(menuDto.getParentId());
         menu.setMenuOrder(menuDto.getOrder());
         menu.setMenuLink(menuDto.getLink());
         menu.setActive(true);
