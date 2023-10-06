@@ -2,8 +2,8 @@ package org.csekuaa.backend.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.csekuaa.backend.jwt.EncryptionUtil;
-import org.csekuaa.backend.jwt.JWTTokenService;
+import org.csekuaa.backend.util.EncryptionUtil;
+import org.csekuaa.backend.security.jwt.JWTTokenService;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;

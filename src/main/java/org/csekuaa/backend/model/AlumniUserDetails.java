@@ -1,6 +1,8 @@
 package org.csekuaa.backend.model;
 
 import lombok.AllArgsConstructor;
+import org.csekuaa.backend.model.entity.Alumni;
+import org.csekuaa.backend.model.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,6 +1,6 @@
 package org.csekuaa.backend.repository;
 
-import org.csekuaa.backend.model.Alumni;
+import org.csekuaa.backend.model.entity.Alumni;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

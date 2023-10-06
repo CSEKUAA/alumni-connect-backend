@@ -1,6 +1,6 @@
 package org.csekuaa.backend.repository;
 
-import org.csekuaa.backend.model.Token;
+import org.csekuaa.backend.model.entity.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -3,12 +3,12 @@ package org.csekuaa.backend.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.csekuaa.backend.dto.rbac.PermissionDTO;
-import org.csekuaa.backend.dto.rbac.RoleDTO;
+import org.csekuaa.backend.model.dto.rbac.PermissionDTO;
+import org.csekuaa.backend.model.dto.rbac.RoleDTO;
 import org.csekuaa.backend.service.UserAccessControlService;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
-import org.csekuaa.backend.util.annotation.ADMIN;
-import org.csekuaa.backend.util.annotation.SecureAPI;
+import org.csekuaa.backend.annotation.ADMIN;
+import org.csekuaa.backend.annotation.SecureAPI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

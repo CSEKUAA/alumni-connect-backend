@@ -1,13 +1,13 @@
 package org.csekuaa.backend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.csekuaa.backend.dto.alumni.CreateAlumni;
-import org.csekuaa.backend.dto.exception.ResourceNotFoundException;
-import org.csekuaa.backend.dto.request.DisciplineDTO;
-import org.csekuaa.backend.model.Alumni;
-import org.csekuaa.backend.model.Discipline;
-import org.csekuaa.backend.model.Role;
-import org.csekuaa.backend.model.User;
+import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
+import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
+import org.csekuaa.backend.model.dto.request.DisciplineDTO;
+import org.csekuaa.backend.model.entity.Alumni;
+import org.csekuaa.backend.model.entity.Discipline;
+import org.csekuaa.backend.model.entity.Role;
+import org.csekuaa.backend.model.entity.User;
 import org.csekuaa.backend.repository.AlumniRepository;
 import org.csekuaa.backend.repository.DisciplineRepository;
 import org.csekuaa.backend.repository.RoleRepository;
@@ -24,14 +24,14 @@ public class UserManagementService {
     private final DisciplineRepository disciplineRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
-    public void createUser(CreateAlumni createAlumni) {
-        Discipline discipline = disciplineRepository.findById(createAlumni.getDisciplineId())
+    public void createUser(AlumniUserDTO alumniUserDTO) {
+        Discipline discipline = disciplineRepository.findById(alumniUserDTO.getDisciplineId())
                 .orElseThrow(() -> new ResourceNotFoundException("Discipline not found!"));
         Role role = roleRepository.findByRoleName("USER").orElseThrow(() -> new ResourceNotFoundException("Role not found"));
 
         User user = new User();
-        user.setRoll(createAlumni.getRoll());
-        user.setPassword(encoder.encode(createAlumni.getPassword()));
+        user.setRoll(alumniUserDTO.getRoll());
+        user.setPassword(encoder.encode(alumniUserDTO.getPassword()));
         user.setEnabled(true);
         user.setAccountNonExpired(true);
         user.setAccountNonLocked(true);
@@ -39,11 +39,11 @@ public class UserManagementService {
 
 
         Alumni alumni = new Alumni();
-        alumni.setRoll(createAlumni.getRoll());
-        alumni.setFullName(createAlumni.getFirstname()+ createAlumni.getLastName());
-        alumni.setNickName(createAlumni.getNickName());
-        alumni.setBirthDate(createAlumni.getDob().atStartOfDay());
-        alumni.setBloodGroup(createAlumni.getBloodGroup());
+        alumni.setRoll(alumniUserDTO.getRoll());
+        alumni.setFullName(alumniUserDTO.getFirstname()+ alumniUserDTO.getLastName());
+        alumni.setNickName(alumniUserDTO.getNickName());
+        alumni.setBirthDate(alumniUserDTO.getDob().atStartOfDay());
+        alumni.setBloodGroup(alumniUserDTO.getBloodGroup());
         alumni.setPhoto("");
         alumni.setPresentAddress("");
         alumni.setPresentCity("");
@@ -51,10 +51,10 @@ public class UserManagementService {
         alumni.setPermanentAddress("");
         alumni.setPermanentCity("");
         alumni.setPermanentCountry("");
-        alumni.setPhone(createAlumni.getPhoneNumber());
-        alumni.setEmail(createAlumni.getEmail());
-        alumni.setProfession(createAlumni.getProfession());
-        alumni.setDesignation(createAlumni.getDesignation());
+        alumni.setPhone(alumniUserDTO.getPhoneNumber());
+        alumni.setEmail(alumniUserDTO.getEmail());
+        alumni.setProfession(alumniUserDTO.getProfession());
+        alumni.setDesignation(alumniUserDTO.getDesignation());
         alumni.setCompany("");
         alumni.setCompanyAddress("");
         alumni.setCreationTime(LocalDateTime.now());

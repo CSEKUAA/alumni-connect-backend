@@ -1,12 +1,12 @@
 package org.csekuaa.backend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.csekuaa.backend.dto.exception.ResourceNotFoundException;
-import org.csekuaa.backend.dto.rbac.PermissionDTO;
-import org.csekuaa.backend.dto.rbac.RoleDTO;
-import org.csekuaa.backend.model.Menu;
-import org.csekuaa.backend.model.Role;
-import org.csekuaa.backend.model.User;
+import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
+import org.csekuaa.backend.model.dto.rbac.PermissionDTO;
+import org.csekuaa.backend.model.dto.rbac.RoleDTO;
+import org.csekuaa.backend.model.entity.Menu;
+import org.csekuaa.backend.model.entity.Role;
+import org.csekuaa.backend.model.entity.User;
 import org.csekuaa.backend.repository.MenuRepository;
 import org.csekuaa.backend.repository.RoleRepository;
 import org.csekuaa.backend.repository.UserRepository;

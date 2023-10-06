@@ -2,7 +2,7 @@ package org.csekuaa.backend.service.event;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.csekuaa.backend.model.PasswordReset;
+import org.csekuaa.backend.model.entity.PasswordReset;
 import org.csekuaa.backend.repository.PasswordResetRepository;
 import org.csekuaa.backend.service.EmailService;
 import org.springframework.context.ApplicationListener;
