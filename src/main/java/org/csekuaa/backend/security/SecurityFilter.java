@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.jwt.EncryptionUtil;
 import org.csekuaa.backend.jwt.JWTTokenService;
+import org.csekuaa.backend.model.Token;
 import org.csekuaa.backend.repository.TokenRepository;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Configuration
@@ -47,7 +49,10 @@ public class SecurityFilter extends OncePerRequestFilter {
     }
 
     private void validateToken(String jwt) {
-        tokenRepository.findByTokenName(jwt)
+        Token token = tokenRepository.findByTokenName(jwt)
                 .orElseThrow(() -> new SecurityException("token not found"));
+        if(token.getTokenEndTime().isBefore(LocalDateTime.now())) {
+            throw new SecurityException("token is expired. login again");
+        }
     }
 }

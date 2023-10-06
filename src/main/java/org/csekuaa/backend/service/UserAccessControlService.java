@@ -1,6 +1,7 @@
 package org.csekuaa.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.csekuaa.backend.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.dto.rbac.PermissionDTO;
 import org.csekuaa.backend.dto.rbac.RoleDTO;
 import org.csekuaa.backend.model.Menu;
@@ -9,6 +10,7 @@ import org.csekuaa.backend.model.User;
 import org.csekuaa.backend.repository.MenuRepository;
 import org.csekuaa.backend.repository.RoleRepository;
 import org.csekuaa.backend.repository.UserRepository;
+import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -21,16 +23,17 @@ public class UserAccessControlService {
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
     private final UserDetailsParser detailsParser;
+    private final ApplicationMessageResolver messageResolver;
     public void addRoleToUser(Integer userId,String roleName) {
-        Role role = roleRepository.findByRoleName(roleName).orElseThrow();
-        User user = userRepository.findById(userId).orElseThrow();
+        Role role = roleRepository.findByRoleName(roleName).orElseThrow(()-> new ResourceNotFoundException(messageResolver.getMessage("role.not.found")));
+        User user = userRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException(messageResolver.getMessage("user.not.found")));
         user.addRole(role);
         userRepository.save(user);
     }
 
     public void removeRoleFromUser(Integer userId, String roleName) {
-        Role role = roleRepository.findByRoleName(roleName).orElseThrow();
-        User user = userRepository.findById(userId).orElseThrow();
+        Role role = roleRepository.findByRoleName(roleName).orElseThrow(()-> new ResourceNotFoundException(messageResolver.getMessage("role.not.found")));
+        User user = userRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException(messageResolver.getMessage("user.not.found")));
         user.removeRole(role);
         userRepository.save(user);
     }
@@ -68,23 +71,23 @@ public class UserAccessControlService {
     }
 
     public List<RoleDTO> getUserRoles(Integer userId) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException(messageResolver.getMessage("user.not.found")));
         return user.getRoles().stream()
                 .map(this::mapToRoleDTO).toList();
     }
 
     public void addMenuToRole(String roleName, String menuName) {
         Role role = roleRepository.findByRoleName(roleName)
-                .orElseThrow();
-        Menu menu = menuRepository.findByMenuName(menuName).orElseThrow();
+                .orElseThrow(()-> new ResourceNotFoundException(messageResolver.getMessage("role.not.found")));
+        Menu menu = menuRepository.findByMenuName(menuName).orElseThrow(()-> new ResourceNotFoundException(messageResolver.getMessage("menu.not.found")));
         role.addMenu(menu);
         roleRepository.save(role);
     }
 
     public void removeMenuFromRole(String roleName, String menuName) {
         Role role = roleRepository.findByRoleName(roleName)
-                .orElseThrow();
-        Menu menu = menuRepository.findByMenuName(menuName).orElseThrow();
+                .orElseThrow(()-> new ResourceNotFoundException(messageResolver.getMessage("role.not.found")));
+        Menu menu = menuRepository.findByMenuName(menuName).orElseThrow(()-> new ResourceNotFoundException(messageResolver.getMessage("menu.not.found")));
         role.removeMenu(menu);
         roleRepository.save(role);
     }
@@ -100,12 +103,16 @@ public class UserAccessControlService {
         menuRepository.save(menu);
     }
 
-    public void updateMenuVisibility(String menu) {
+    public void updateMenuVisibility(String menuName) {
+        Menu menu = menuRepository.findByMenuName(menuName)
+                .orElseThrow(()-> new ResourceNotFoundException(messageResolver.getMessage("menu.not.found")));
+        menu.setActive(!menu.isActive());
+        menuRepository.save(menu);
     }
 
     public List<PermissionDTO> getCurrentUserMenus() {
         int currentUserId = detailsParser.getCurrentUseId();
-        User user = userRepository.findById(currentUserId).orElseThrow();
+        User user = userRepository.findById(currentUserId).orElseThrow(()-> new ResourceNotFoundException(messageResolver.getMessage("user.not.found")));
         return user.getRoles().stream()
                 .map(Role::getMenus)
                 .flatMap(Collection::stream)

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.dto.rbac.PermissionDTO;
 import org.csekuaa.backend.dto.rbac.RoleDTO;
 import org.csekuaa.backend.service.UserAccessControlService;
+import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.csekuaa.backend.util.annotation.ADMIN;
 import org.csekuaa.backend.util.annotation.SecureAPI;
 import org.springframework.http.ResponseEntity;
@@ -20,24 +21,25 @@ import java.util.List;
 @SecureAPI
 public class UserAccessControlController {
     private final UserAccessControlService accessControlService;
+    private final ApplicationMessageResolver messageResolver;
 
     //add role to user [admin/system admin permission]
-    @PostMapping("user-role/{user_id}/{role}")
+    @PostMapping("user-role/{user_id}/{roleName}")
     @Operation(summary = "add role to user", description = "only admin role permission user is capable to assign a role to specific user")
     @ADMIN
-    public ResponseEntity<?> addRoleToUser(@PathVariable("user_id") Integer userId,@PathVariable("role") String role) {
+    public ResponseEntity<?> addRoleToUser(@PathVariable("user_id") Integer userId,@PathVariable("roleName") String role) {
         accessControlService.addRoleToUser(userId,role);
-        return ResponseEntity.ok("role assigned to user!");
+        return ResponseEntity.ok(messageResolver.getMessage("acl.role.menu.assigned"));
     }
 
 
     //remove role from a user [system/admin]
-    @DeleteMapping("user-role/{user_id}/{role}")
+    @DeleteMapping("user-role/{user_id}/{roleName}")
     @Operation(summary = "remove role from user", description = "only admin role permission user is capable to remove a role from a user")
     @ADMIN
-    public ResponseEntity<?> removeRoleToUser(@PathVariable("user_id") Integer userId,@PathVariable("role") String role) {
+    public ResponseEntity<?> removeRoleToUser(@PathVariable("user_id") Integer userId,@PathVariable("roleName") String role) {
         accessControlService.removeRoleFromUser(userId,role);
-        return ResponseEntity.ok("role assigned to user!");
+        return ResponseEntity.ok(messageResolver.getMessage("acl.role.menu.removed"));
     }
 
     //get all available role [admin]
@@ -72,7 +74,7 @@ public class UserAccessControlController {
     @ADMIN
     public ResponseEntity<?> createMenu(@RequestBody PermissionDTO menu) {
         accessControlService.createMenu(menu);
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(messageResolver.getMessage("acl.menu.create"));
     }
 
     //get current user all menu items
@@ -84,28 +86,28 @@ public class UserAccessControlController {
     }
 
     //assign menu to a role
-    @PostMapping("menu/{role}/{menu}")
+    @PostMapping("menu/{roleName}/{menuName}")
     @Operation(summary = "assign a menu to a specific role", description = "only admin can assign a menu to a role")
     @ADMIN
-    public ResponseEntity<?> addMenuToRole(@PathVariable("role") String role, @PathVariable("menu") String menu) {
+    public ResponseEntity<?> addMenuToRole(@PathVariable("roleName") String role, @PathVariable("menuName") String menu) {
         accessControlService.addMenuToRole(role,menu);
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(messageResolver.getMessage("acl.menu.role.assigned"));
     }
 
     //remove menu access from a role
-    @DeleteMapping("menu/{role}/{menu}")
+    @DeleteMapping("menu/{roleName}/{menuName}")
     @Operation(summary = "remove menu from a role", description = "only admin can remove a menu permission from a role")
     @ADMIN
-    public ResponseEntity<?> removeMenuFromRole(@PathVariable("role") String role, @PathVariable("menu") String menu) {
+    public ResponseEntity<?> removeMenuFromRole(@PathVariable("roleName") String role, @PathVariable("menuName") String menu) {
         accessControlService.removeMenuFromRole(role,menu);
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(messageResolver.getMessage("acl.menu.role.removed"));
     }
 
-    @PutMapping("menu/{menu}")
+    @PutMapping("menu/{menuName}")
     @Operation(summary = "update menu status", description = "only admin is capable of active or deactivate a menu")
     @ADMIN
-    public ResponseEntity<?> updateMenuVisibility(@PathVariable("menu") String menu) {
+    public ResponseEntity<?> updateMenuVisibility(@PathVariable("menuName") String menu) {
         accessControlService.updateMenuVisibility(menu);
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(messageResolver.getMessage("acl.menu.update"));
     }
 }
