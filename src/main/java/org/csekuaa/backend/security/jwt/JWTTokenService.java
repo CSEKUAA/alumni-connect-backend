@@ -17,6 +17,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@SuppressWarnings("unchecked")
 public class JWTTokenService {
     @Value("${jwt-secret}")
     private String secret;
