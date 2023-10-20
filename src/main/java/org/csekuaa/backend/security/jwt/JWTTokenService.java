@@ -34,6 +34,7 @@ public class JWTTokenService {
         List<String> authorities = new ArrayList<>();
         return Jwts.builder()
                 .claim("id", user.getUserId())
+                .claim("roll", alumni.getRoll())
                 .claim("name", alumni.getFullName())
                 .claim("email", alumni.getEmail())
                 .claim("authorities", authorities)
@@ -64,6 +65,11 @@ public class JWTTokenService {
     public String extractEmail(String jwt) {
         if (jwt == null) return null;
         return parseClaimsFromJWT(jwt).get("email").toString();
+    }
+
+    public String extractRollNumber(String jwt) {
+        if (jwt == null) return null;
+        return parseClaimsFromJWT(jwt).get("roll").toString();
     }
 
     public List<String> extractAuthorities(String jwt) {
