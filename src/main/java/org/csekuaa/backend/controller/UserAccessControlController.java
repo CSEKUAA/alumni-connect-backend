@@ -24,20 +24,20 @@ public class UserAccessControlController {
     private final ApplicationMessageResolver messageResolver;
 
     //add role to user [admin/system admin permission]
-    @PostMapping("user-role/{user_id}/{roleName}")
+    @PostMapping("user-role/{userId}/{roleName}")
     @Operation(summary = "add role to user", description = "only admin role permission user is capable to assign a role to specific user")
     @ADMIN
-    public ResponseEntity<?> addRoleToUser(@PathVariable("user_id") Integer userId,@PathVariable("roleName") String role) {
+    public ResponseEntity<?> addRoleToUser(@PathVariable("userId") Integer userId,@PathVariable("roleName") String role) {
         accessControlService.addRoleToUser(userId,role);
         return ResponseEntity.ok(messageResolver.getMessage("acl.role.menu.assigned"));
     }
 
 
     //remove role from a user [system/admin]
-    @DeleteMapping("user-role/{user_id}/{roleName}")
+    @DeleteMapping("user-role/{userId}/{roleName}")
     @Operation(summary = "remove role from user", description = "only admin role permission user is capable to remove a role from a user")
     @ADMIN
-    public ResponseEntity<?> removeRoleToUser(@PathVariable("user_id") Integer userId,@PathVariable("roleName") String role) {
+    public ResponseEntity<?> removeRoleToUser(@PathVariable("userId") Integer userId,@PathVariable("roleName") String role) {
         accessControlService.removeRoleFromUser(userId,role);
         return ResponseEntity.ok(messageResolver.getMessage("acl.role.menu.removed"));
     }
@@ -52,10 +52,10 @@ public class UserAccessControlController {
     }
 
     //get a user role
-    @GetMapping("user-role/{user_id}")
+    @GetMapping("user-role/{userId}")
     @Operation(summary = "a specific user role", description = "only admin can fetch a specific user's role")
     @ADMIN
-    public ResponseEntity<?> getAllRoles(@PathVariable("user_id") Integer userId) {
+    public ResponseEntity<?> getAllRoles(@PathVariable("userId") Integer userId) {
         List<RoleDTO> roles =accessControlService.getUserRoles(userId);
         return ResponseEntity.ok(roles);
     }
