@@ -2,7 +2,8 @@ FROM openjdk:latest
 
 WORKDIR /app
 
-COPY build/libs/alumni-connect-backend-0.0.1-SNAPSHOT.jar app.jar
+
+COPY ../build/libs/alumni-connect-backend-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8081
 
