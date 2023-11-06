@@ -3,10 +3,10 @@ package org.csekuaa.backend.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.csekuaa.backend.dto.alumni.CreateAlumni;
-import org.csekuaa.backend.dto.request.DisciplineDTO;
+import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
+import org.csekuaa.backend.model.dto.request.DisciplineDTO;
 import org.csekuaa.backend.service.UserManagementService;
-import org.csekuaa.backend.util.annotation.SecureAPI;
+import org.csekuaa.backend.annotation.SecureAPI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +20,8 @@ public class UserManagementController {
     private final UserManagementService userManagementService;
 
     @PostMapping("alumni")
-    public ResponseEntity<?> createAlumni(@Valid @RequestBody CreateAlumni createAlumni){
-        userManagementService.createUser(createAlumni);
+    public ResponseEntity<?> createAlumni(@Valid @RequestBody AlumniUserDTO alumniUserDTO){
+        userManagementService.createUser(alumniUserDTO);
         return ResponseEntity.ok("success fully user created!");
     }
 

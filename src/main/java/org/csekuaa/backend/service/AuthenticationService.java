@@ -2,23 +2,24 @@ package org.csekuaa.backend.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.csekuaa.backend.dto.exception.ResourceNotFoundException;
-import org.csekuaa.backend.dto.request.LogInRequestDTO;
-import org.csekuaa.backend.dto.request.ResetPasswordRequestDTO;
-import org.csekuaa.backend.dto.response.LoginResponse;
-import org.csekuaa.backend.jwt.EncryptionUtil;
-import org.csekuaa.backend.jwt.JWTTokenService;
-import org.csekuaa.backend.model.Alumni;
-import org.csekuaa.backend.model.PasswordReset;
-import org.csekuaa.backend.model.Token;
-import org.csekuaa.backend.model.User;
+import org.csekuaa.backend.model.dto.auth.LogInRequestDTO;
+import org.csekuaa.backend.model.dto.auth.LoginResponse;
+import org.csekuaa.backend.model.dto.auth.ResetPasswordRequestDTO;
+import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
+import org.csekuaa.backend.model.entity.Alumni;
+import org.csekuaa.backend.model.entity.PasswordReset;
+import org.csekuaa.backend.model.entity.Token;
+import org.csekuaa.backend.model.entity.User;
+import org.csekuaa.backend.model.enums.LogInType;
 import org.csekuaa.backend.repository.AlumniRepository;
 import org.csekuaa.backend.repository.PasswordResetRepository;
 import org.csekuaa.backend.repository.TokenRepository;
 import org.csekuaa.backend.repository.UserRepository;
+import org.csekuaa.backend.security.jwt.JWTTokenService;
 import org.csekuaa.backend.service.event.ForgetPasswordEvent;
 import org.csekuaa.backend.service.event.ForgetPasswordEventListener;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
+import org.csekuaa.backend.util.EncryptionUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -47,9 +48,15 @@ public class AuthenticationService {
     private final ApplicationMessageResolver messageResolver;
 
     public LoginResponse login(LogInRequestDTO logInRequestDTO, String ipAddress) {
-        Alumni alumni = alumniRepository.findByEmail(logInRequestDTO.getEmail())
-                .orElseThrow(() -> new RuntimeException("invalid email!"));
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(logInRequestDTO.getEmail(), logInRequestDTO.getPassword()));
+        Alumni alumni;
+        if(logInRequestDTO.getLoginType().equals(LogInType.ROLL)) {
+            User user = userRepository.findByRoll(logInRequestDTO.getIdentifier()).orElseThrow(()-> new ResourceNotFoundException(messageResolver.getMessage("")));
+            alumni = user.getAlumnis().stream().findFirst().orElseThrow(()-> new ResourceNotFoundException("user is not registered yet"));
+        }
+        else {
+            alumni = alumniRepository.findByEmail(logInRequestDTO.getIdentifier()).orElseThrow(()-> new RuntimeException("User not found"));
+        }
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(logInRequestDTO.getIdentifier(), logInRequestDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return createTokenResponse(ipAddress, alumni);
     }
@@ -66,7 +73,7 @@ public class AuthenticationService {
         String dcryptedToken = EncryptionUtil.decryptJWT(existenceToken, aesKey);
         String email = jwtTokenService.extractEmail(dcryptedToken);
         Alumni alumni = alumniRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("invalid email!"));
+                .orElseThrow(() -> new ResourceNotFoundException("invalid email!"));
         return createTokenResponse(ipAddress, alumni);
     }
 

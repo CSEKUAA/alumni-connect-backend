@@ -1,9 +1,9 @@
 package org.csekuaa.backend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.csekuaa.backend.model.Alumni;
+import org.csekuaa.backend.model.entity.Alumni;
 import org.csekuaa.backend.model.AlumniUserDetails;
-import org.csekuaa.backend.model.User;
+import org.csekuaa.backend.model.entity.User;
 import org.csekuaa.backend.repository.AlumniRepository;
 import org.csekuaa.backend.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;

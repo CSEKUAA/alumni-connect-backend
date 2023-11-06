@@ -38,3 +38,4 @@ out/
 .vscode/
 /logs/application.log
 /.env
+/.jpb/jpb-settings.xml

@@ -2,7 +2,7 @@ package org.csekuaa.backend.service.event;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.csekuaa.backend.model.Alumni;
+import org.csekuaa.backend.model.entity.Alumni;
 import org.springframework.context.ApplicationEvent;
 
 @Getter
