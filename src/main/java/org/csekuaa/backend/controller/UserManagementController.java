@@ -3,6 +3,9 @@ package org.csekuaa.backend.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileDTO;
+import org.csekuaa.backend.model.dto.alumni.MembershipDTO;
+import org.csekuaa.backend.model.dto.alumni.MembershipTypeDTO;
 import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
 import org.csekuaa.backend.service.UserManagementService;
@@ -26,8 +29,29 @@ public class UserManagementController {
     }
 
     @GetMapping("discipline")
-    @SecureAPI
     public ResponseEntity<List<DisciplineDTO>> getAllDiscipline() {
        return ResponseEntity.ok(userManagementService.getAllDiscipline());
     }
+
+    @PostMapping("user-info")
+    @SecureAPI
+    public ResponseEntity<?> createUserInfo(@Valid @RequestBody AlumniUserProfileDTO userInfo){
+        userManagementService.createUserInfo(userInfo);
+        return ResponseEntity.ok("successfully user info updated");
+    }
+
+    @GetMapping("user/membership-type")
+    public ResponseEntity<?> getAlumniMemberShip(){
+        List<MembershipTypeDTO> membershipTypes=userManagementService.getMemberShipTypes();
+        return ResponseEntity.ok(membershipTypes);
+    }
+    @PostMapping("user/membership")
+    @SecureAPI
+    public ResponseEntity<?> addUserMemberShip(@Valid @RequestBody MembershipDTO membershipDTO){
+        userManagementService.addUserMembership(membershipDTO);
+        return ResponseEntity.ok("successfully user info updated");
+    }
+
+
+
 }

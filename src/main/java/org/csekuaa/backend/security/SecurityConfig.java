@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizer->
-                        authorizer.anyRequest().permitAll())
+                        authorizer.anyRequest().authenticated())
                 .sessionManagement(e -> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -69,6 +69,8 @@ public class SecurityConfig {
                         "/api/login",
                         "/actuator/**"
                 )
-                .requestMatchers(HttpMethod.POST, "/api/users");
+                .requestMatchers(HttpMethod.POST, "/api/users")
+                .requestMatchers(HttpMethod.GET, "/api/discipline")
+                .requestMatchers(HttpMethod.GET, "/api/user/membership-type");
     }
 }

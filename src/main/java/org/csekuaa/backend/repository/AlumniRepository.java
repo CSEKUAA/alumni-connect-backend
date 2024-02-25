@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface AlumniRepository extends JpaRepository<Alumni, Integer> {
     Optional<Alumni> findByEmail(String email);
+    Optional<Alumni> findByRoll(String roll);
 }
