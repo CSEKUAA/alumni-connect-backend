@@ -19,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "User Access Control")
 @SecureAPI
-@CrossOrigin(origins = "*")
 public class UserAccessControlController {
     private final UserAccessControlService accessControlService;
     private final ApplicationMessageResolver messageResolver;
