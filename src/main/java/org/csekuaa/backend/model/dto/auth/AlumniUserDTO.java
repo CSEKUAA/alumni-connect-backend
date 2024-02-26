@@ -12,7 +12,7 @@ public class AlumniUserDTO {
     @NotBlank
     private String roll;
     @NotBlank
-    private String firstname;
+    private String firstName;
     private String lastName;
     private int disciplineId;
     @NotNull

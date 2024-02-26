@@ -1,9 +1,7 @@
 package org.csekuaa.backend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileDTO;
-import org.csekuaa.backend.model.dto.alumni.MembershipDTO;
-import org.csekuaa.backend.model.dto.alumni.MembershipTypeDTO;
+import org.csekuaa.backend.model.dto.alumni.*;
 import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
@@ -40,7 +38,7 @@ public class UserManagementService {
         user.addRole(role);
         Alumni alumni = new Alumni();
         alumni.setRoll(alumniUserDTO.getRoll());
-        alumni.setFullName(alumniUserDTO.getFirstname()+" "+ alumniUserDTO.getLastName());
+        alumni.setFullName(alumniUserDTO.getFirstName()+" "+ alumniUserDTO.getLastName());
         alumni.setBirthDate(alumniUserDTO.getDob().atStartOfDay());
         alumni.setPhone(alumniUserDTO.getPhoneNumber());
         alumni.setEmail(alumniUserDTO.getEmail());
@@ -93,5 +91,39 @@ public class UserManagementService {
     }
 
     public void addUserMembership(MembershipDTO membershipDTO) {
+    }
+
+    public AlumniUserDetailDTO fetchUserInfoByRoll(String roll) {
+        Alumni alumni = alumniRepository.findByRoll(roll)
+                .orElseThrow(() -> new ResourceNotFoundException("no user found with this id"));
+        AlumniUserDetailDTO userDetail = new AlumniUserDetailDTO();
+        userDetail.setRoll(roll);
+        userDetail.setFirstName(alumni.getFullName().split(" ")[0]);
+        userDetail.setLastName(alumni.getFullName().split(" ")[1]);
+        userDetail.setNickName(alumni.getNickName());
+        userDetail.setFullName(alumni.getFullName());
+        userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
+        userDetail.setDob(alumni.getBirthDate().toLocalDate());
+        userDetail.setBloodGroup(alumni.getBloodGroup().getValue());
+        userDetail.setPhoto(alumni.getPhoto());
+        userDetail.setContactDetail(createContactDetail(alumni));
+        return userDetail;
+    }
+
+    private AlumniUserContactDetailDTO createContactDetail(Alumni alumni) {
+        AlumniUserContactDetailDTO contactDetail = new AlumniUserContactDetailDTO();
+        contactDetail.setPhoneNumber(alumni.getPhone());
+        contactDetail.setEmail(alumni.getEmail());
+        contactDetail.setPresentAddress(alumni.getPresentAddress());
+        contactDetail.setPresentCity(alumni.getPresentCity());
+        contactDetail.setPresentCountry(alumni.getPresentCountry());
+        contactDetail.setPermanentAddress(alumni.getPermanentAddress());
+        contactDetail.setPermanentCity(alumni.getPermanentCity());
+        contactDetail.setPermanentCountry(alumni.getPermanentCountry());
+        contactDetail.setProfession(alumni.getProfession());
+        contactDetail.setDesignation(alumni.getDesignation());
+        contactDetail.setCompany(alumni.getCompany());
+        contactDetail.setCompanyAddress(alumni.getCompanyAddress());
+        return contactDetail;
     }
 }
