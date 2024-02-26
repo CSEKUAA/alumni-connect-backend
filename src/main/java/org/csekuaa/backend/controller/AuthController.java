@@ -11,15 +11,13 @@ import org.csekuaa.backend.service.AuthenticationService;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.csekuaa.backend.annotation.SecureAPI;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Tag(name = "Authentication Manager")
+@CrossOrigin(origins = "*")
 public class AuthController {
     private final AuthenticationService authenticationService;
     private final ApplicationMessageResolver messageResolver;
