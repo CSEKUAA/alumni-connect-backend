@@ -4,12 +4,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.csekuaa.backend.annotation.RollNumber;
 
 import java.time.LocalDate;
 
 @Data
 public class AlumniUserDTO {
     @NotBlank
+    @RollNumber
     private String roll;
     @NotBlank
     private String firstName;
