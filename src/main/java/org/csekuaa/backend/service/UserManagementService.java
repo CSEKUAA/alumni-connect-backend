@@ -39,7 +39,6 @@ public class UserManagementService {
         Alumni alumni = new Alumni();
         alumni.setRoll(alumniUserDTO.getRoll());
         alumni.setFullName(alumniUserDTO.getFirstName()+" "+ alumniUserDTO.getLastName());
-        alumni.setBirthDate(alumniUserDTO.getDob().atStartOfDay());
         alumni.setPhone(alumniUserDTO.getPhoneNumber());
         alumni.setEmail(alumniUserDTO.getEmail());
         alumni.setCreationTime(LocalDateTime.now());
@@ -66,6 +65,7 @@ public class UserManagementService {
         alumni.setBloodGroup(userInfo.getBloodGroup());
         alumni.setPhoto(userInfo.getPhoto());
         alumni.setPresentAddress(userInfo.getPresentAddress());
+        alumni.setBirthDate(userInfo.getDob().atStartOfDay());
         alumni.setPresentCity(userInfo.getPresentCity());
         alumni.setPresentCountry(userInfo.getPresentCountry());
         alumni.setPermanentAddress(userInfo.getPermanentAddress());

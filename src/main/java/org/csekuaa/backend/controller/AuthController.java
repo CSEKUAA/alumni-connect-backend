@@ -4,9 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.csekuaa.backend.model.dto.auth.LogInRequestDTO;
-import org.csekuaa.backend.model.dto.auth.ResetPasswordRequestDTO;
-import org.csekuaa.backend.model.dto.auth.LoginResponse;
+import org.csekuaa.backend.model.dto.auth.*;
 import org.csekuaa.backend.service.AuthenticationService;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.csekuaa.backend.annotation.SecureAPI;
@@ -30,14 +28,14 @@ public class AuthController {
 
     @PostMapping("/refresh-token")
     @SecureAPI
-    public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody String refreshToken, HttpServletRequest request) {
+    public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody RefreshTokenDTO refreshToken, HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null) {
             throw new SecurityException(messageResolver.getMessage("auth.unauthorized"));
         }
         String token = authHeader.substring(7);
         String ipAddress = request.getRemoteAddr();
-        LoginResponse loginResponse = authenticationService.createRefreshToken(refreshToken, token, ipAddress);
+        LoginResponse loginResponse = authenticationService.createRefreshToken(refreshToken.getRefreshToken(), token, ipAddress);
         return ResponseEntity.ok(loginResponse);
     }
 
@@ -48,8 +46,8 @@ public class AuthController {
     }
 
     @PostMapping("/forget-password")
-    public ResponseEntity<?> forgetPassword(@Valid @RequestBody String email) {
-        authenticationService.forgetPassword(email);
+    public ResponseEntity<?> forgetPassword(@Valid @RequestBody ForgetPasswordDTO email) {
+        authenticationService.forgetPassword(email.getEmail());
         return ResponseEntity.ok(messageResolver.getMessage("auth.reset.email.success"));
     }
 

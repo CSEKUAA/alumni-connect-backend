@@ -15,8 +15,6 @@ public class AlumniUserDTO {
     private String firstName;
     private String lastName;
     private int disciplineId;
-    @NotNull
-    private LocalDate dob;
     private String phoneNumber;
     @Email @NotBlank
     private String email;
