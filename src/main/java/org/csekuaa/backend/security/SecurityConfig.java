@@ -68,7 +68,9 @@ public class SecurityConfig {
                         "/api/login",
                         "/actuator/**"
                 )
-                .requestMatchers(HttpMethod.POST, "/api/alumni")
+                .requestMatchers("/api/alumni")
+
+                //.requestMatchers(HttpMethod.POST, "/api/user-info")
                 .requestMatchers(HttpMethod.GET, "/api/discipline")
                 .requestMatchers(HttpMethod.GET, "/api/user/membership-type");
     }
