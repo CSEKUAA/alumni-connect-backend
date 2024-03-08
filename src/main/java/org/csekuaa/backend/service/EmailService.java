@@ -5,8 +5,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.csekuaa.backend.model.entity.Alumni;
-import org.csekuaa.backend.service.message.ApplicationMessageResolver;
+import org.csekuaa.backend.model.dto.email.EmailTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,9 +13,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
-
-import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -29,29 +25,21 @@ public class EmailService {
 
     @SneakyThrows
     @Async
-    public void sentResetPasswordMail(Alumni alumni, String token) {
+    public void sentEmail(EmailTemplate template) {
         try {
-            Locale locale = new Locale(Locale.ENGLISH.getDisplayLanguage());
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-            message.setSubject(ApplicationMessageResolver.getMessage("reset.password.email.subject"));
+            message.setSubject(template.getEmailSubject());
             message.setFrom(fromMail);
-            message.setTo(alumni.getEmail());
-
-            final Context context = new Context();
-            context.setLocale(locale);
-            context.setVariable("name", alumni.getFullName());
-            context.setVariable("token", token);
-
-            String htmlContent = templateEngine.process("email-template", context);
+            message.setTo(template.getReceiver());
+            String htmlContent = templateEngine.process(template.getTemplateName(), template.getEmailContext());
             message.setText(htmlContent, true);
 
             javaMailSender.send(message.getMimeMessage());
-            log.info("email sent successfully to {}", alumni.getEmail());
+            log.info("email sent successfully to {}", template.getReceiver());
         } catch (MessagingException | MailException e) {
             log.error("email sent failure due to {}", e.getMessage());
             throw new RuntimeException(e);
         }
-
     }
 }
