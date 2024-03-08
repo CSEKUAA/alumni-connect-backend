@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -27,6 +28,7 @@ public class EmailService {
     private String fromMail;
 
     @SneakyThrows
+    @Async
     public void sentResetPasswordMail(Alumni alumni, String token) {
         try {
             Locale locale = new Locale(Locale.ENGLISH.getDisplayLanguage());
@@ -47,6 +49,7 @@ public class EmailService {
             javaMailSender.send(message.getMimeMessage());
             log.info("email sent successfully to {}", alumni.getEmail());
         } catch (MessagingException | MailException e) {
+            log.error("email sent failure due to {}", e.getMessage());
             throw new RuntimeException(e);
         }
 
