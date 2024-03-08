@@ -5,11 +5,16 @@ import org.csekuaa.backend.model.dto.alumni.*;
 import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
-import org.csekuaa.backend.model.entity.*;
+import org.csekuaa.backend.model.entity.Alumni;
+import org.csekuaa.backend.model.entity.Discipline;
+import org.csekuaa.backend.model.entity.Role;
+import org.csekuaa.backend.model.entity.User;
 import org.csekuaa.backend.repository.AlumniRepository;
 import org.csekuaa.backend.repository.DisciplineRepository;
 import org.csekuaa.backend.repository.MembershipTypeRepository;
 import org.csekuaa.backend.repository.RoleRepository;
+import org.csekuaa.backend.service.event.UserRegistrationEvent;
+import org.csekuaa.backend.service.event.UserRegistrationEventListener;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,12 +30,13 @@ public class UserManagementService {
     private final RoleRepository roleRepository;
     private final MembershipTypeRepository membershipTypeRepository;
     private final PasswordEncoder encoder;
+    private final UserRegistrationEventListener listener;
 
     public void createUser(AlumniUserDTO alumniUserDTO) {
         Discipline discipline = disciplineRepository.findById(alumniUserDTO.getDisciplineId())
                 .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("discipline.not.found")));
         Role role = roleRepository.findByRoleName("USER").orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("role.not.found")));
-
+        checkUserExistence(alumniUserDTO);
         User user = new User();
         user.setRoll(alumniUserDTO.getRoll());
         user.setPassword(encoder.encode(alumniUserDTO.getPassword()));
@@ -47,6 +53,16 @@ public class UserManagementService {
         alumni.setDiscipline(discipline);
         alumni.setUser(user);
         alumniRepository.save(alumni);
+        listener.onApplicationEvent(new UserRegistrationEvent(alumni));
+    }
+
+    private void checkUserExistence(AlumniUserDTO alumniUserDTO) {
+        alumniRepository.findByEmail(alumniUserDTO.getEmail()).ifPresent(e-> {
+            throw new ResourceNotFoundException(ApplicationMessageResolver.getMessage("user.exist"));
+        });
+        alumniRepository.findByRoll(alumniUserDTO.getRoll()).ifPresent(e-> {
+            throw new ResourceNotFoundException(ApplicationMessageResolver.getMessage("user.exist"));
+        });
     }
 
     public List<DisciplineDTO> getAllDiscipline() {
