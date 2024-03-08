@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.model.entity.Token;
 import org.csekuaa.backend.repository.TokenRepository;
 import org.csekuaa.backend.security.jwt.JWTTokenService;
+import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.csekuaa.backend.util.EncryptionUtil;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,9 +51,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private void validateToken(String jwt) {
         Token token = tokenRepository.findByTokenName(jwt)
-                .orElseThrow(() -> new SecurityException("token not found"));
+                .orElseThrow(() -> new SecurityException(ApplicationMessageResolver.getMessage("token.not.found")));
         if(token.getTokenEndTime().isBefore(LocalDateTime.now())) {
-            throw new SecurityException("token is expired. login again");
+            throw new SecurityException(ApplicationMessageResolver.getMessage("token.expired"));
         }
     }
 }

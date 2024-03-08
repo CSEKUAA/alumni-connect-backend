@@ -10,6 +10,7 @@ import org.csekuaa.backend.repository.AlumniRepository;
 import org.csekuaa.backend.repository.DisciplineRepository;
 import org.csekuaa.backend.repository.MembershipTypeRepository;
 import org.csekuaa.backend.repository.RoleRepository;
+import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +25,11 @@ public class UserManagementService {
     private final RoleRepository roleRepository;
     private final MembershipTypeRepository membershipTypeRepository;
     private final PasswordEncoder encoder;
+
     public void createUser(AlumniUserDTO alumniUserDTO) {
         Discipline discipline = disciplineRepository.findById(alumniUserDTO.getDisciplineId())
-                .orElseThrow(() -> new ResourceNotFoundException("Discipline not found!"));
-        Role role = roleRepository.findByRoleName("USER").orElseThrow(() -> new ResourceNotFoundException("Role not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("discipline.not.found")));
+        Role role = roleRepository.findByRoleName("USER").orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("role.not.found")));
 
         User user = new User();
         user.setRoll(alumniUserDTO.getRoll());
@@ -60,7 +62,7 @@ public class UserManagementService {
 
     public void createUserInfo(AlumniUserProfileDTO userInfo) {
         Alumni alumni = alumniRepository.findByRoll(userInfo.getRoll())
-                .orElseThrow(()-> new ResourceNotFoundException(" no user info found!"));
+                .orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
         alumni.setNickName(userInfo.getNickName());
         alumni.setBloodGroup(userInfo.getBloodGroup());
         alumni.setPhoto(userInfo.getPhoto());
@@ -95,7 +97,7 @@ public class UserManagementService {
 
     public AlumniUserDetailDTO fetchUserInfoByRoll(String roll) {
         Alumni alumni = alumniRepository.findByRoll(roll)
-                .orElseThrow(() -> new ResourceNotFoundException("no user found with this id"));
+                .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
         AlumniUserDetailDTO userDetail = new AlumniUserDetailDTO();
         userDetail.setRoll(roll);
         userDetail.setFirstName(alumni.getFullName().split(" ")[0]);

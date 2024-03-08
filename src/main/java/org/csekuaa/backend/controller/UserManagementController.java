@@ -1,23 +1,20 @@
 package org.csekuaa.backend.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.csekuaa.backend.annotation.SecureAPI;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileDTO;
 import org.csekuaa.backend.model.dto.alumni.MembershipDTO;
 import org.csekuaa.backend.model.dto.alumni.MembershipTypeDTO;
 import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
-import org.csekuaa.backend.security.jwt.JWTTokenService;
+import org.csekuaa.backend.service.UserDetailsParser;
 import org.csekuaa.backend.service.UserManagementService;
-import org.csekuaa.backend.annotation.SecureAPI;
-import org.csekuaa.backend.util.EncryptionUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.crypto.SecretKey;
 import java.util.List;
 
 @RestController
@@ -26,8 +23,7 @@ import java.util.List;
 @Tag(name = "USER Management")
 public class UserManagementController {
     private final UserManagementService userManagementService;
-    private final SecretKey secretKey;
-    private final JWTTokenService jwtTokenService;
+    private final UserDetailsParser userDetailsParser;
 
     @PostMapping("alumni")
     public ResponseEntity<?> createAlumni(@Valid @RequestBody AlumniUserDTO alumniUserDTO){
@@ -49,11 +45,8 @@ public class UserManagementController {
 
     @GetMapping("user-info")
     @SecureAPI
-    public ResponseEntity<?> fetchUserInfo(HttpServletRequest request){
-        String authorizationHeader = request.getHeader("Authorization");
-        String jwt = authorizationHeader.substring(7);
-        String token = EncryptionUtil.decryptJWT(jwt, secretKey);
-        String roll = jwtTokenService.extractRollNumber(token);
+    public ResponseEntity<?> fetchUserInfo(){
+        String roll = userDetailsParser.getRollNumber();
         AlumniUserDetailDTO userDetail = userManagementService.fetchUserInfoByRoll(roll);
         return ResponseEntity.ok(userDetail);
     }

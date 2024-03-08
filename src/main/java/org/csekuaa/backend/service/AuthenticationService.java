@@ -45,16 +45,15 @@ public class AuthenticationService {
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
     private final SecretKey aesKey;
-    private final ApplicationMessageResolver messageResolver;
 
     public LoginResponse login(LogInRequestDTO logInRequestDTO, String ipAddress) {
         Alumni alumni;
         if(logInRequestDTO.getLoginType().equals(LogInType.ROLL)) {
-            User user = userRepository.findByRoll(logInRequestDTO.getIdentifier()).orElseThrow(()-> new ResourceNotFoundException(messageResolver.getMessage("")));
-            alumni = user.getAlumnis().stream().findFirst().orElseThrow(()-> new ResourceNotFoundException("user is not registered yet"));
+            User user = userRepository.findByRoll(logInRequestDTO.getIdentifier()).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
+            alumni = user.getAlumnis().stream().findFirst().orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
         }
         else {
-            alumni = alumniRepository.findByEmail(logInRequestDTO.getIdentifier()).orElseThrow(()-> new RuntimeException("User not found"));
+            alumni = alumniRepository.findByEmail(logInRequestDTO.getIdentifier()).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
         }
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(logInRequestDTO.getIdentifier(), logInRequestDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -73,7 +72,7 @@ public class AuthenticationService {
         String dcryptedToken = EncryptionUtil.decryptJWT(existenceToken, aesKey);
         String email = jwtTokenService.extractEmail(dcryptedToken);
         Alumni alumni = alumniRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("invalid email!"));
+                .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("invalid.email")));
         return createTokenResponse(ipAddress, alumni);
     }
 
@@ -106,7 +105,7 @@ public class AuthenticationService {
 
     public void forgetPassword(String email) {
         Alumni alumni = alumniRepository.findByEmail(email)
-                .orElseThrow(()-> new ResourceNotFoundException(messageResolver.getMessage("auth.user.not.found")));
+                .orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("auth.user.not.found")));
         listener.onApplicationEvent(new ForgetPasswordEvent(alumni));
     }
 }
