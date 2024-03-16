@@ -1,12 +1,12 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
-name: Java CI with Gradle
+name: CSE KUAA Backend API
 
 on:
   push:
-    branches: [ "deploy" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "deploy" ]
+    branches: [ "develop" ]
 
 jobs:
   build:
