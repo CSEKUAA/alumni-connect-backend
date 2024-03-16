@@ -1,6 +1,7 @@
 package org.csekuaa.backend.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.csekuaa.backend.model.entity.Alumni;
 import org.csekuaa.backend.model.entity.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+@Getter
 @AllArgsConstructor
 public class AlumniUserDetails implements UserDetails {
     private final User user;

@@ -28,6 +28,10 @@ public class UserDetailsParser {
         return tokenService.extractEmail(decryptToken());
     }
 
+    public String getRollNumber() {
+        return tokenService.extractRollNumber(decryptToken());
+    }
+
     private String decryptToken() {
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {

@@ -4,17 +4,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.csekuaa.backend.model.dto.auth.LogInRequestDTO;
-import org.csekuaa.backend.model.dto.auth.ResetPasswordRequestDTO;
-import org.csekuaa.backend.model.dto.auth.LoginResponse;
+import org.csekuaa.backend.model.dto.auth.*;
 import org.csekuaa.backend.service.AuthenticationService;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.csekuaa.backend.annotation.SecureAPI;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -22,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Authentication Manager")
 public class AuthController {
     private final AuthenticationService authenticationService;
-    private final ApplicationMessageResolver messageResolver;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LogInRequestDTO logInRequestDTO, HttpServletRequest servletRequest) {
@@ -33,27 +27,27 @@ public class AuthController {
 
     @PostMapping("/refresh-token")
     @SecureAPI
-    public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody String refreshToken, HttpServletRequest request) {
+    public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody RefreshTokenDTO refreshToken, HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null) {
-            throw new SecurityException(messageResolver.getMessage("auth.unauthorized"));
+            throw new SecurityException(ApplicationMessageResolver.getMessage("auth.unauthorized"));
         }
         String token = authHeader.substring(7);
         String ipAddress = request.getRemoteAddr();
-        LoginResponse loginResponse = authenticationService.createRefreshToken(refreshToken, token, ipAddress);
+        LoginResponse loginResponse = authenticationService.createRefreshToken(refreshToken.getRefreshToken(), token, ipAddress);
         return ResponseEntity.ok(loginResponse);
     }
 
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequestDTO resetPasswordRequestDTO) {
         authenticationService.resetPassword(resetPasswordRequestDTO);
-        return ResponseEntity.ok(messageResolver.getMessage("auth.reset.password"));
+        return ResponseEntity.ok(ApplicationMessageResolver.getMessage("auth.reset.password"));
     }
 
     @PostMapping("/forget-password")
-    public ResponseEntity<?> forgetPassword(@Valid @RequestBody String email) {
-        authenticationService.forgetPassword(email);
-        return ResponseEntity.ok(messageResolver.getMessage("auth.reset.email.success"));
+    public ResponseEntity<?> forgetPassword(@Valid @RequestBody ForgetPasswordDTO email) {
+        authenticationService.forgetPassword(email.getEmail());
+        return ResponseEntity.ok(ApplicationMessageResolver.getMessage("auth.reset.email.success"));
     }
 
     @PostMapping(value = "/logout",produces = "application/json;charset=UTF-8")
@@ -61,10 +55,10 @@ public class AuthController {
     public ResponseEntity<?> logout(HttpServletRequest servletRequest) {
         String authHeader = servletRequest.getHeader("Authorization");
         if (authHeader == null) {
-            throw new SecurityException(messageResolver.getMessage("auth.unauthorized"));
+            throw new SecurityException(ApplicationMessageResolver.getMessage("auth.unauthorized"));
         }
         String token = authHeader.substring(7);
         authenticationService.logout(token);
-        return ResponseEntity.ok(messageResolver.getMessage("auth.logout"));
+        return ResponseEntity.ok(ApplicationMessageResolver.getMessage("auth.logout"));
     }
 }

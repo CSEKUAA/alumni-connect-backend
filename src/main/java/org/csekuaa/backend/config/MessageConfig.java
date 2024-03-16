@@ -14,10 +14,12 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import java.util.Locale;
 
+import static org.csekuaa.backend.util.ApplicationConstant.ENCODING;
+
 @Configuration
 public class MessageConfig implements WebMvcConfigurer {
 
-    private static final String ENCODING = "UTF-8";
+
     @Value("${spring.web.locale}")
     private String local;
 

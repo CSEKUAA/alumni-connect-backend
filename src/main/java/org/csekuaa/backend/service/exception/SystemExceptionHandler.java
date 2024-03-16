@@ -1,11 +1,14 @@
 package org.csekuaa.backend.service.exception;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.csekuaa.backend.model.dto.exception.ErrorMessage;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
+import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,8 +23,8 @@ import java.util.List;
 
 @RestControllerAdvice
 @Slf4j
+@RequiredArgsConstructor
 public class SystemExceptionHandler {
-
     @ExceptionHandler(SecurityException.class)
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     public ErrorMessage resourceNotFoundException(SecurityException ex, WebRequest request) {
@@ -33,13 +36,25 @@ public class SystemExceptionHandler {
     }
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ErrorMessage resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+    public ErrorMessage resourceNotFoundException(ResourceNotFoundException  ex, WebRequest request) {
         return new ErrorMessage(
                 HttpStatus.NOT_FOUND.value(),
                 LocalDate.now(),
                 ex.getMessage(),
                 request.getDescription(false));
     }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ErrorMessage authenticationException(BadCredentialsException ex, WebRequest request) {
+        log.warn(ex.getMessage());
+        return new ErrorMessage(
+                HttpStatus.NOT_FOUND.value(),
+                LocalDate.now(),
+                ApplicationMessageResolver.getMessage("login.wrong.password"),
+                request.getDescription(false));
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorMessage resourceNotFoundException(HttpMessageNotReadableException ex, WebRequest request) {
@@ -57,7 +72,7 @@ public class SystemExceptionHandler {
         return new ErrorMessage(
                 HttpStatus.FORBIDDEN.value(),
                 LocalDate.now(),
-                "the user has no permission to perform the operation",
+                ApplicationMessageResolver.getMessage("user.no.permission"),
                 request.getDescription(false));
     }
 

@@ -8,7 +8,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -37,7 +36,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizer->
-                        authorizer.anyRequest().permitAll())
+                        authorizer.anyRequest().authenticated())
                 .sessionManagement(e -> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -69,6 +68,10 @@ public class SecurityConfig {
                         "/api/login",
                         "/actuator/**"
                 )
-                .requestMatchers(HttpMethod.POST, "/api/users");
+                .requestMatchers("/api/alumni")
+
+                //.requestMatchers(HttpMethod.POST, "/api/user-info")
+                .requestMatchers(HttpMethod.GET, "/api/discipline")
+                .requestMatchers(HttpMethod.GET, "/api/user/membership-type");
     }
 }
