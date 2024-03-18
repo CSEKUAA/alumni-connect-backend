@@ -21,6 +21,7 @@ import java.util.List;
 @RequestMapping("/api/")
 @RequiredArgsConstructor
 @Tag(name = "USER Management")
+@CrossOrigin(origins = "*")
 public class UserManagementController {
     private final UserManagementService userManagementService;
     private final UserDetailsParser userDetailsParser;

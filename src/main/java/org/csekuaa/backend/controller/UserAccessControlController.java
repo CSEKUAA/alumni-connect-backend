@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping("/api/rbac/")
 @RequiredArgsConstructor
 @Tag(name = "User Access Control")
+@CrossOrigin(origins = "*")
 @SecureAPI
 public class UserAccessControlController {
     private final UserAccessControlService accessControlService;
