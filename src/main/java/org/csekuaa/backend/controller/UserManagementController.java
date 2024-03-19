@@ -29,7 +29,7 @@ public class UserManagementController {
     @PostMapping("alumni")
     public ResponseEntity<?> createAlumni(@Valid @RequestBody AlumniUserDTO alumniUserDTO){
         userManagementService.createUser(alumniUserDTO);
-        return ResponseEntity.ok("success fully user created!");
+        return ResponseEntity.ok("User created successfully.");
     }
 
     @GetMapping("discipline")
@@ -41,7 +41,7 @@ public class UserManagementController {
     @SecureAPI
     public ResponseEntity<?> createUserInfo(@Valid @RequestBody AlumniUserProfileDTO userInfo){
         userManagementService.createUserInfo(userInfo);
-        return ResponseEntity.ok("successfully user info updated");
+        return ResponseEntity.ok("User information updated successfully.");
     }
 
     @GetMapping("user-info")
@@ -61,7 +61,7 @@ public class UserManagementController {
     @SecureAPI
     public ResponseEntity<?> addUserMemberShip(@Valid @RequestBody MembershipDTO membershipDTO){
         userManagementService.addUserMembership(membershipDTO);
-        return ResponseEntity.ok("successfully user info updated");
+        return ResponseEntity.ok("User membership updated successfully.");
     }
 
 

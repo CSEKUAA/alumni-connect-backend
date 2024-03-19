@@ -58,10 +58,10 @@ public class UserManagementService {
 
     private void checkUserExistence(AlumniUserDTO alumniUserDTO) {
         alumniRepository.findByEmail(alumniUserDTO.getEmail()).ifPresent(e-> {
-            throw new ResourceNotFoundException(ApplicationMessageResolver.getMessage("user.exist"));
+            throw new ResourceNotFoundException(ApplicationMessageResolver.getMessage("user.email.exist"));
         });
         alumniRepository.findByRoll(alumniUserDTO.getRoll()).ifPresent(e-> {
-            throw new ResourceNotFoundException(ApplicationMessageResolver.getMessage("user.exist"));
+            throw new ResourceNotFoundException(ApplicationMessageResolver.getMessage("user.roll.exist"));
         });
     }
 
