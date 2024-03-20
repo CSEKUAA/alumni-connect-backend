@@ -21,11 +21,12 @@ import java.util.List;
 @RequestMapping("/api/")
 @RequiredArgsConstructor
 @Tag(name = "USER Management")
-@CrossOrigin(origins = "*")
+@CrossOrigin
 public class UserManagementController {
     private final UserManagementService userManagementService;
     private final UserDetailsParser userDetailsParser;
 
+    @CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.126:8080"})
     @PostMapping("alumni")
     public ResponseEntity<?> createAlumni(@Valid @RequestBody AlumniUserDTO alumniUserDTO){
         userManagementService.createUser(alumniUserDTO);
