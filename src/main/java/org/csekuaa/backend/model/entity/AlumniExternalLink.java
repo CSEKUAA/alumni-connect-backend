@@ -1,34 +1,31 @@
 package org.csekuaa.backend.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@NoArgsConstructor
-@Getter
-@Setter
+import java.util.Objects;
+
 @Entity
-@Table(name = "alumni_external_link", schema = "csekuaa")
+@Data
+@Table(name = "alumni_external_link", schema = "csekuaa", catalog = "")
 public class AlumniExternalLink {
-
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     @Column(name = "alumni_external_link_id", nullable = false)
     private int alumniExternalLinkId;
-
-    @Column(name = "url", length = 200)
+    @Basic
+    @Column(name = "url", nullable = true, length = 200)
     private String url;
-
-    @Column(name = "description", length = 500)
+    @Basic
+    @Column(name = "description", nullable = true, length = 500)
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "alumni_id", referencedColumnName = "alumni_id", nullable = false)
-    private Alumni alumni;
+    private Alumni alumniByAlumniId;
+    @ManyToOne
+    @JoinColumn(name = "external_link_type_id", referencedColumnName = "external_link_type_id", nullable = false)
+    private ExternalLinkType externalLinkTypeByExternalLinkTypeId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "external_link_id", referencedColumnName = "external_link_id", nullable = false)
-    private ExternalLink externalLink;
 
 }

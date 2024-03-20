@@ -2,7 +2,7 @@ ALTER TABLE `csekuaa`.`alumni_external_link` DROP FOREIGN KEY `fk_external_link`
 ALTER TABLE `csekuaa`.`alumni_external_link` DROP INDEX `fk_external_link_idx` ;
 ALTER TABLE `csekuaa`.`alumni_external_link` DROP COLUMN `external_link_id`;
 
-DROP TABLE `csekuaa`.`alumni_external_link`;
+DROP TABLE `csekuaa`.`external_link`;
 
 ALTER TABLE `csekuaa`.`external_link_type`
     ADD COLUMN `external_link_type_url` VARCHAR(45) NOT NULL AFTER `external_link_type_name`;

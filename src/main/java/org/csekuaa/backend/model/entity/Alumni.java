@@ -8,6 +8,7 @@ import org.csekuaa.backend.model.enums.BloodGroup;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -99,29 +100,31 @@ public class Alumni {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "alumni")
-    private Set<AlumniExternalLink> alumniExternalLinks;
+
+    @OneToMany(mappedBy = "alumniByAlumniId")
+    private Collection<AlumniExternalLink> alumniExternalLinksByAlumniId;
 
     public void addExternalLink(AlumniExternalLink externalLink) {
-        if (alumniExternalLinks == null) {
-            alumniExternalLinks = new HashSet<>();
+        if (alumniExternalLinksByAlumniId == null) {
+            alumniExternalLinksByAlumniId = new HashSet<>();
         }
-        alumniExternalLinks.add(externalLink);
+        alumniExternalLinksByAlumniId.add(externalLink);
     }
 
     public void setAlumniExternalLinks(Set<AlumniExternalLink> externalLinks) {
-        if (alumniExternalLinks == null) {
-            alumniExternalLinks = new HashSet<>();
+        if (alumniExternalLinksByAlumniId == null) {
+            alumniExternalLinksByAlumniId = new HashSet<>();
         }
-        alumniExternalLinks.addAll(externalLinks);
+        alumniExternalLinksByAlumniId.addAll(externalLinks);
     }
 
     public void removeExternalLink(AlumniExternalLink externalLink) {
-        if (alumniExternalLinks == null) {
-            alumniExternalLinks = new HashSet<>();
+        if (alumniExternalLinksByAlumniId == null) {
+            alumniExternalLinksByAlumniId = new HashSet<>();
 
         }
-        alumniExternalLinks.remove(externalLink);
+        alumniExternalLinksByAlumniId.remove(externalLink);
     }
+
 
 }
