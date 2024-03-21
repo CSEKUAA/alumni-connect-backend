@@ -35,14 +35,16 @@ public class RequestHandlerInterceptor implements HandlerInterceptor {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             AlumniUserDetails userDetails = (AlumniUserDetails) authentication.getPrincipal();
-            User user = userDetails.getUser();
-            Audit audit = new Audit();
-            audit.setAuditTime(LocalDateTime.now());
-            audit.setIp(ip);
-            audit.setApi(path);
-            audit.setRemarks(remark);
-            audit.setUser(user);
-            auditRepository.save(audit);
+            if (userDetails != null) {
+                User user = userDetails.getUser();
+                Audit audit = new Audit();
+                audit.setAuditTime(LocalDateTime.now());
+                audit.setIp(ip);
+                audit.setApi(path);
+                audit.setRemarks(remark);
+                audit.setUser(user);
+                auditRepository.save(audit);
+            }
         } else {
             log.warn("api access for {} is failure from  {} with exception {}", path, ip, ex == null ? "validation failure" : ex.getMessage());
         }
