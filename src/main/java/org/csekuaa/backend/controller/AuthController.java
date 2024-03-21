@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.model.dto.auth.*;
+import org.csekuaa.backend.model.dto.payloads.ApiResponse;
 import org.csekuaa.backend.service.AuthenticationService;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.csekuaa.backend.annotation.SecureAPI;
@@ -42,13 +43,13 @@ public class AuthController {
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequestDTO resetPasswordRequestDTO) {
         authenticationService.resetPassword(resetPasswordRequestDTO);
-        return ResponseEntity.ok(ApplicationMessageResolver.getMessage("auth.reset.password"));
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("auth.reset.password")));
     }
 
     @PostMapping("/forget-password")
     public ResponseEntity<?> forgetPassword(@Valid @RequestBody ForgetPasswordDTO email) {
         authenticationService.forgetPassword(email.getEmail());
-        return ResponseEntity.ok(ApplicationMessageResolver.getMessage("auth.reset.email.success"));
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("auth.reset.email.success")));
     }
 
     @PostMapping(value = "/logout",produces = "application/json;charset=UTF-8")
@@ -60,6 +61,6 @@ public class AuthController {
         }
         String token = authHeader.substring(7);
         authenticationService.logout(token);
-        return ResponseEntity.ok(ApplicationMessageResolver.getMessage("auth.logout"));
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("auth.logout")));
     }
 }

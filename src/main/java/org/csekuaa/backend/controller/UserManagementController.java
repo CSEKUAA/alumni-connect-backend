@@ -9,6 +9,7 @@ import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileDTO;
 import org.csekuaa.backend.model.dto.alumni.MembershipDTO;
 import org.csekuaa.backend.model.dto.alumni.MembershipTypeDTO;
 import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
+import org.csekuaa.backend.model.dto.payloads.ApiResponse;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
 import org.csekuaa.backend.service.UserDetailsParser;
 import org.csekuaa.backend.service.UserManagementService;
@@ -30,7 +31,7 @@ public class UserManagementController {
     @PostMapping("alumni")
     public ResponseEntity<?> createAlumni(@Valid @RequestBody AlumniUserDTO alumniUserDTO){
         userManagementService.createUser(alumniUserDTO);
-        return ResponseEntity.ok("User created successfully.");
+        return ResponseEntity.ok(ApiResponse.success("User created successfully."));
     }
 
     @GetMapping("discipline")
@@ -42,7 +43,7 @@ public class UserManagementController {
     @SecureAPI
     public ResponseEntity<?> createUserInfo(@Valid @RequestBody AlumniUserProfileDTO userInfo){
         userManagementService.createUserInfo(userInfo);
-        return ResponseEntity.ok("User information updated successfully.");
+        return ResponseEntity.ok(ApiResponse.success("User information updated successfully."));
     }
 
     @GetMapping("user-info")
@@ -62,7 +63,7 @@ public class UserManagementController {
     @SecureAPI
     public ResponseEntity<?> addUserMemberShip(@Valid @RequestBody MembershipDTO membershipDTO){
         userManagementService.addUserMembership(membershipDTO);
-        return ResponseEntity.ok("User membership updated successfully.");
+        return ResponseEntity.ok(ApiResponse.success("User membership updated successfully."));
     }
 
 

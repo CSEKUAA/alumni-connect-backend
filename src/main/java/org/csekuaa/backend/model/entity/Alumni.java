@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -67,19 +68,19 @@ public class Alumni {
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @Column(name = "profession", nullable = true, length = 100)
+    @Column(name = "profession", length = 100)
     private String profession;
 
-    @Column(name = "designation", nullable = true, length = 100)
+    @Column(name = "designation", length = 100)
     private String designation;
 
-    @Column(name = "company", nullable = true, length = 50)
+    @Column(name = "company", length = 50)
     private String company;
 
-    @Column(name = "company_address", nullable = true, length = 200)
+    @Column(name = "company_address", length = 200)
     private String companyAddress;
 
-    @Column(name = "creation_time", nullable = true)
+    @Column(name = "creation_time")
     private LocalDateTime creationTime;
 
     @Column(name = "modified_time")
@@ -100,6 +101,21 @@ public class Alumni {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
+    public Optional<BloodGroup> getBloodGroup() {
+        return Optional.ofNullable(bloodGroup);
+    }
+
+    public Optional<LocalDate> getApprovalDate() {
+        return Optional.ofNullable(approvalDate);
+    }
+
+    public Optional<LocalDateTime> getBirthDate() {
+        return Optional.ofNullable(birthDate);
+    }
+
+    public Optional<MembershipType> getMembershipType() {
+        return Optional.ofNullable(membershipType);
+    }
 
     @OneToMany(mappedBy = "alumniByAlumniId")
     private Collection<AlumniExternalLink> alumniExternalLinksByAlumniId;
@@ -125,6 +141,8 @@ public class Alumni {
         }
         alumniExternalLinksByAlumniId.remove(externalLink);
     }
+
+
 
 
 }

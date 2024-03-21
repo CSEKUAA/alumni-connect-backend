@@ -46,7 +46,7 @@ public class UserManagementService {
         user.addRole(role);
         Alumni alumni = new Alumni();
         alumni.setRoll(alumniUserDTO.getRoll());
-        alumni.setFullName(alumniUserDTO.getFirstName()+" "+ alumniUserDTO.getLastName());
+        alumni.setFullName(alumniUserDTO.getFirstName()+ " "+ alumniUserDTO.getLastName());
         alumni.setPhone(alumniUserDTO.getPhoneNumber());
         alumni.setEmail(alumniUserDTO.getEmail());
         alumni.setCreationTime(LocalDateTime.now());
@@ -121,10 +121,10 @@ public class UserManagementService {
         userDetail.setNickName(alumni.getNickName());
         userDetail.setFullName(alumni.getFullName());
         userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
-        userDetail.setDob(alumni.getBirthDate().toLocalDate());
-        userDetail.setBloodGroup(alumni.getBloodGroup().getValue());
         userDetail.setPhoto(alumni.getPhoto());
         userDetail.setContactDetail(createContactDetail(alumni));
+        alumni.getBirthDate().ifPresent(e-> userDetail.setDob(e.toLocalDate()));
+        alumni.getBloodGroup().ifPresent(e-> userDetail.setBloodGroup(e.getValue()));
         return userDetail;
     }
 

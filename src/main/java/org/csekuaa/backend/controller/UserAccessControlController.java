@@ -3,6 +3,7 @@ package org.csekuaa.backend.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.csekuaa.backend.model.dto.payloads.ApiResponse;
 import org.csekuaa.backend.model.dto.rbac.PermissionDTO;
 import org.csekuaa.backend.model.dto.rbac.RoleDTO;
 import org.csekuaa.backend.service.UserAccessControlService;
@@ -29,7 +30,7 @@ public class UserAccessControlController {
     @ADMIN
     public ResponseEntity<?> addRoleToUser(@PathVariable("userId") Integer userId,@PathVariable("roleName") String role) {
         accessControlService.addRoleToUser(userId,role);
-        return ResponseEntity.ok(ApplicationMessageResolver.getMessage("acl.role.menu.assigned"));
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("acl.role.menu.assigned")));
     }
 
 
@@ -39,7 +40,7 @@ public class UserAccessControlController {
     @ADMIN
     public ResponseEntity<?> removeRoleToUser(@PathVariable("userId") Integer userId,@PathVariable("roleName") String role) {
         accessControlService.removeRoleFromUser(userId,role);
-        return ResponseEntity.ok(ApplicationMessageResolver.getMessage("acl.role.menu.removed"));
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("acl.role.menu.removed")));
     }
 
     //get all available role [admin]
@@ -74,7 +75,7 @@ public class UserAccessControlController {
     @ADMIN
     public ResponseEntity<?> createMenu(@RequestBody PermissionDTO menu) {
         accessControlService.createMenu(menu);
-        return ResponseEntity.ok(ApplicationMessageResolver.getMessage("acl.menu.create"));
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("acl.menu.create")));
     }
 
     //get current user all menu items
@@ -91,7 +92,7 @@ public class UserAccessControlController {
     @ADMIN
     public ResponseEntity<?> addMenuToRole(@PathVariable("roleName") String role, @PathVariable("menuName") String menu) {
         accessControlService.addMenuToRole(role,menu);
-        return ResponseEntity.ok(ApplicationMessageResolver.getMessage("acl.menu.role.assigned"));
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("acl.menu.role.assigned")));
     }
 
     //remove menu access from a role
@@ -100,7 +101,7 @@ public class UserAccessControlController {
     @ADMIN
     public ResponseEntity<?> removeMenuFromRole(@PathVariable("roleName") String role, @PathVariable("menuName") String menu) {
         accessControlService.removeMenuFromRole(role,menu);
-        return ResponseEntity.ok(ApplicationMessageResolver.getMessage("acl.menu.role.removed"));
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("acl.menu.role.removed")));
     }
 
     @PutMapping("menu/{menuName}")
@@ -108,6 +109,6 @@ public class UserAccessControlController {
     @ADMIN
     public ResponseEntity<?> updateMenuVisibility(@PathVariable("menuName") String menu) {
         accessControlService.updateMenuVisibility(menu);
-        return ResponseEntity.ok(ApplicationMessageResolver.getMessage("acl.menu.update"));
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("acl.menu.update")));
     }
 }
