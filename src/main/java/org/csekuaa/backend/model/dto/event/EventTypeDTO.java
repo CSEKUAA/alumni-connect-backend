@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Value
 public class EventTypeDTO {
-    Boolean id;
+    Integer id;
     @NotNull
     @Size(max = 45)
     String eventTypeName;
