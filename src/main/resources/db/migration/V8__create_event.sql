@@ -1,6 +1,6 @@
 create table event_type
 (
-    event_type_id   tinyint(1) auto_increment
+    event_type_id   int auto_increment
         primary key,
     event_type_name varchar(45) not null,
     event_type_description varchar(200)
@@ -10,7 +10,7 @@ create table event
 (
     event_id          int auto_increment
         primary key,
-    event_type_id     tinyint(1) not null,
+    event_type_id     int not null,
     event_name        varchar(45) not null,
     event_description varchar(200),
     event_date        datetime    not null,

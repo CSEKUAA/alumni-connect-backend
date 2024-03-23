@@ -16,7 +16,7 @@ import lombok.Setter;
 public class EventType {
     @Id
     @Column(name = "event_type_id", nullable = false)
-    private Boolean id = false;
+    private Integer id;
 
     @Size(max = 45)
     @NotNull
