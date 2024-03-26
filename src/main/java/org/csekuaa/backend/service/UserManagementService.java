@@ -1,17 +1,16 @@
 package org.csekuaa.backend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.csekuaa.backend.model.dto.alumni.*;
+import org.csekuaa.backend.model.dto.alumni.AlumniUserContactDetailDTO;
+import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
+import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileDTO;
+import org.csekuaa.backend.model.dto.alumni.MembershipInfoDTO;
 import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
-import org.csekuaa.backend.model.entity.Alumni;
-import org.csekuaa.backend.model.entity.Discipline;
-import org.csekuaa.backend.model.entity.Role;
-import org.csekuaa.backend.model.entity.User;
+import org.csekuaa.backend.model.entity.*;
 import org.csekuaa.backend.repository.AlumniRepository;
 import org.csekuaa.backend.repository.DisciplineRepository;
-import org.csekuaa.backend.repository.MembershipTypeRepository;
 import org.csekuaa.backend.repository.RoleRepository;
 import org.csekuaa.backend.service.event.UserRegistrationEvent;
 import org.csekuaa.backend.service.event.UserRegistrationEventListener;
@@ -20,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -28,12 +28,13 @@ public class UserManagementService {
     private final AlumniRepository alumniRepository;
     private final DisciplineRepository disciplineRepository;
     private final RoleRepository roleRepository;
-    private final MembershipTypeRepository membershipTypeRepository;
     private final PasswordEncoder encoder;
     private final UserRegistrationEventListener listener;
+    private final UserDetailsParser userDetailsParser;
 
     public void createUser(AlumniUserDTO alumniUserDTO) {
-        Discipline discipline = disciplineRepository.findById(alumniUserDTO.getDisciplineId())
+        String disciplineCode = getDisciplineCodeFromRoll(alumniUserDTO.getRoll());
+        Discipline discipline = disciplineRepository.findByDisciplineCode(disciplineCode)
                 .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("discipline.not.found")));
         Role role = roleRepository.findByRoleName("USER").orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("role.not.found")));
         checkUserExistence(alumniUserDTO);
@@ -54,6 +55,10 @@ public class UserManagementService {
         alumni.setUser(user);
         alumniRepository.save(alumni);
         listener.onApplicationEvent(new UserRegistrationEvent(alumni));
+    }
+
+    public String getDisciplineCodeFromRoll(String roll) {
+      return roll.substring(2,4);
     }
 
     private void checkUserExistence(AlumniUserDTO alumniUserDTO) {
@@ -96,22 +101,8 @@ public class UserManagementService {
         alumniRepository.save(alumni);
     }
 
-    public List<MembershipTypeDTO> getMemberShipTypes() {
-        return membershipTypeRepository.findAll()
-                .stream()
-                .map(e-> {
-                    MembershipTypeDTO membershipTypeDTO = new MembershipTypeDTO();
-                    membershipTypeDTO.setMemberShipTypeId(e.getMembershipTypeId());
-                    membershipTypeDTO.setMembershipType(e.getMembershipType());
-                    membershipTypeDTO.setMembershipFee(e.getMembershipFee());
-                    return membershipTypeDTO;
-                }).toList();
-    }
-
-    public void addUserMembership(MembershipDTO membershipDTO) {
-    }
-
-    public AlumniUserDetailDTO fetchUserInfoByRoll(String roll) {
+    public AlumniUserDetailDTO fetchCurrentUserInfo() {
+        String roll = userDetailsParser.getRollNumber();
         Alumni alumni = alumniRepository.findByRoll(roll)
                 .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
         AlumniUserDetailDTO userDetail = new AlumniUserDetailDTO();
@@ -125,7 +116,21 @@ public class UserManagementService {
         userDetail.setContactDetail(createContactDetail(alumni));
         alumni.getBirthDate().ifPresent(e-> userDetail.setDob(e.toLocalDate()));
         alumni.getBloodGroup().ifPresent(e-> userDetail.setBloodGroup(e.getValue()));
+        userDetail.setMembershipInfos(getMembershipInfo(alumni.getUser()));
         return userDetail;
+    }
+
+    private List<MembershipInfoDTO> getMembershipInfo(User user) {
+        return user.getMemberships().stream()
+                .map(e -> {
+                    MembershipInfoDTO infoDTO = new MembershipInfoDTO();
+                    infoDTO.setMembershipStatus(e.getMembershipApprovedTime()
+                            .isAfter(LocalDateTime.now())? MembershipType.Expired: MembershipType.Active);
+                    infoDTO.setMemberShipType(e.getMembershipType().getMembershipType());
+                    infoDTO.setExpirationOn(e.getMembershipApprovedTime().toLocalDate());
+                    return infoDTO;
+                }).sorted(Comparator.comparing(MembershipInfoDTO::getExpirationOn).reversed())
+                        .toList();
     }
 
     private AlumniUserContactDetailDTO createContactDetail(Alumni alumni) {

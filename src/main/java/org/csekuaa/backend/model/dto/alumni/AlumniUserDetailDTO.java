@@ -3,6 +3,7 @@ package org.csekuaa.backend.model.dto.alumni;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class AlumniUserDetailDTO {
@@ -17,4 +18,5 @@ public class AlumniUserDetailDTO {
     private String photo;
     private AlumniUserContactDetailDTO contactDetail;
     private AlumniExternalLinkInfoDTO externalLinkInfo;
+    private List<MembershipInfoDTO> membershipInfos;
 }

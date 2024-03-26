@@ -85,4 +85,11 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<Token> tokens;
 
+    public void addMembership(Membership membership) {
+        if(memberships ==null) {
+            memberships = new HashSet<>();
+        }
+        memberships.add(membership);
+    }
+
 }

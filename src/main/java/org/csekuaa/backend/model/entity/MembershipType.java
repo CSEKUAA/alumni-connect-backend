@@ -15,6 +15,8 @@ import java.util.Set;
 @Entity
 @Table(name = "membership_type")
 public class MembershipType {
+    public static final String Active = "Active";
+    public static final String Expired = "Expired";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

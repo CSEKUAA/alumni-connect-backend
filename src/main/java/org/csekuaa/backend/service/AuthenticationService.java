@@ -45,8 +45,9 @@ public class AuthenticationService {
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
     private final SecretKey aesKey;
+    private final UserDetailsParser parser;
 
-    public LoginResponse login(LogInRequestDTO logInRequestDTO, String ipAddress) {
+    public LoginResponse login(LogInRequestDTO logInRequestDTO) {
         Alumni alumni;
         if(logInRequestDTO.getLoginType().equals(LogInType.ROLL)) {
             User user = userRepository.findByRoll(logInRequestDTO.getIdentifier()).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
@@ -57,23 +58,25 @@ public class AuthenticationService {
         }
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(logInRequestDTO.getIdentifier(), logInRequestDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return createTokenResponse(ipAddress, alumni);
+        return createTokenResponse(parser.getIPAddress(), alumni);
     }
 
-    public void logout(String token) {
+    public void logout() {
+        String token = parser.getToken();
         tokenRepository.findByTokenName(token)
                 .ifPresent(tokenRepository::delete);
     }
 
-    public LoginResponse createRefreshToken(String refreshToken,String existenceToken, String ipAddress) {
+    public LoginResponse createRefreshToken(String refreshToken) {
+        String existenceToken = parser.getToken();
         tokenRepository.findByTokenName(existenceToken)
                 .ifPresent(tokenRepository::delete);
         jwtTokenService.validateToken(refreshToken);
-        String dcryptedToken = EncryptionUtil.decryptJWT(existenceToken, aesKey);
-        String email = jwtTokenService.extractEmail(dcryptedToken);
+        String decryptedToken = EncryptionUtil.decryptJWT(existenceToken, aesKey);
+        String email = jwtTokenService.extractEmail(decryptedToken);
         Alumni alumni = alumniRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("invalid.email")));
-        return createTokenResponse(ipAddress, alumni);
+        return createTokenResponse(parser.getIPAddress(), alumni);
     }
 
     private LoginResponse createTokenResponse(String ipAddress, Alumni alumni) {

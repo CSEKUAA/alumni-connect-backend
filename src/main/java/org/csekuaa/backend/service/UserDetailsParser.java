@@ -44,4 +44,12 @@ public class UserDetailsParser {
 
     }
 
+    public String getToken(){
+        return decryptToken();
+    }
+
+    public String getIPAddress(){
+        return request.getRemoteAddr();
+    }
+
 }

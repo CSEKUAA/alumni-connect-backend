@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class MembershipDTO {
-    private Integer membershipType;
-    private Integer userId;
+    private String membershipType;
+    private String rollNumber;
     private boolean isApproved;
 }

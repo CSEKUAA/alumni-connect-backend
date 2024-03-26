@@ -7,4 +7,5 @@ public class ExternalLinkDTO {
     private String externalLinkName;
     private String externalLinkTypeId;
     private String externalLinkUrl;
+    private String description;
 }
