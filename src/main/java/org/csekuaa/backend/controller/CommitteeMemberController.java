@@ -22,26 +22,26 @@ public class CommitteeMemberController {
     private final CommitteeMemberService committeeMemberService;
 
     @GetMapping
-    @Operation(summary = "view committee member list", description = "anyone is capable to view committeeMember list")
+    @Operation(summary = "view committee member list", description = "anyone is capable to view committee member list")
     public ResponseEntity<List<CommitteeMemberDTO>> getCommitteeMemberList() {
         return ResponseEntity.ok(committeeMemberService.findAll());
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "view committee member", description = "anyone is capable to view committeeMember details")
+    @Operation(summary = "view committee member", description = "anyone is capable to view committee member details")
     public ResponseEntity<CommitteeMemberDTO> getCommitteeMember(Integer id) {
         return ResponseEntity.ok(committeeMemberService.findById(id));
     }
 
     @PostMapping
-    @Operation(summary = "add committee member", description = "only admin role permission user is capable to add committeeMember")
+    @Operation(summary = "add committee member", description = "only admin role permission user is capable to add committee member")
     @ADMIN
     public ResponseEntity<CommitteeMemberDTO> createCommitteeMember(CommitteeMemberDTO committeeMemberDTO) {
         return ResponseEntity.ok(committeeMemberService.createOrUpdate(committeeMemberDTO));
     }
 
     @PutMapping
-    @Operation(summary = "update committee member", description = "only admin role permission user is capable to update committeeMember")
+    @Operation(summary = "update committee member", description = "only admin role permission user is capable to update committee member")
     @ADMIN
     public ResponseEntity<CommitteeMemberDTO> updateCommitteeMember(CommitteeMemberDTO committeeMemberDTO) {
         return ResponseEntity.ok(committeeMemberService.createOrUpdate(committeeMemberDTO));
