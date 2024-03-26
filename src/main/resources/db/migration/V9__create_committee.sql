@@ -16,8 +16,11 @@ create table committee
     committee_start_date  datetime    not null,
     committee_end_date    datetime    not null,
     committee_description varchar(200),
+    parent_committee_id   int null,
     constraint fk_committee_committee_type
         foreign key (committee_type_id) references committee_type (committee_type_id),
+    constraint fk_committee_committee
+        foreign key (parent_committee_id) references committee (committee_id),
     constraint fk_committee_event
         foreign key (event_id) references event (event_id)
 );
