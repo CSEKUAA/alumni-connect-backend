@@ -3,6 +3,7 @@ package org.csekuaa.backend.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.csekuaa.backend.annotation.ADMIN;
 import org.csekuaa.backend.annotation.SecureAPI;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileDTO;
@@ -30,8 +31,18 @@ public class UserManagementController {
     }
 
     @GetMapping("discipline")
+    @ADMIN
+    @SecureAPI
     public ResponseEntity<List<DisciplineDTO>> getAllDiscipline() {
        return ResponseEntity.ok(userManagementService.getAllDiscipline());
+    }
+
+    @PostMapping("discipline")
+    @ADMIN
+    @SecureAPI
+    public ResponseEntity<?> addDiscipline(@RequestBody DisciplineDTO dto) {
+        userManagementService.addDiscipline(dto);
+        return ResponseEntity.ok(ApiResponse.success("new discipline is added to list"));
     }
 
     @PostMapping("user-info")

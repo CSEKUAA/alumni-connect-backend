@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/")
 @RequiredArgsConstructor
-@Tag(name = "Membership")
+@Tag(name = "External Links")
 @CrossOrigin(origins = "*")
 public class ExternalLinkController {
     private final ExternalLinkService externalLinkService;

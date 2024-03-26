@@ -149,4 +149,12 @@ public class UserManagementService {
         contactDetail.setCompanyAddress(alumni.getCompanyAddress());
         return contactDetail;
     }
+
+    public void addDiscipline(DisciplineDTO dto) {
+        Discipline discipline = new Discipline();
+        discipline.setDisciplineCode(dto.getDisciplineCode());
+        discipline.setDisciplineFullName(dto.getFullName());
+        discipline.setDisciplineShortName(dto.getShortName());
+        disciplineRepository.save(discipline);
+    }
 }
