@@ -24,6 +24,7 @@ import java.util.List;
 public class UserManagementController {
     private final UserManagementService userManagementService;
 
+    @CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.126:8080"})
     @PostMapping("alumni")
     public ResponseEntity<?> createAlumni(@Valid @RequestBody AlumniUserDTO alumniUserDTO){
         userManagementService.createUser(alumniUserDTO);
@@ -45,6 +46,7 @@ public class UserManagementController {
         return ResponseEntity.ok(ApiResponse.success("new discipline is added to list"));
     }
 
+    @CrossOrigin(origins = "*")
     @PostMapping("user-info")
     @SecureAPI
     public ResponseEntity<?> createUserInfo(@Valid @RequestBody AlumniUserProfileDTO userInfo){
@@ -52,6 +54,7 @@ public class UserManagementController {
         return ResponseEntity.ok(ApiResponse.success("User information updated successfully."));
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("user-info")
     @SecureAPI
     public ResponseEntity<?> fetchUserInfo(){

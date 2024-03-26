@@ -32,7 +32,7 @@ public class MembershipController {
         membershipService.addUserMembership(membershipDTO);
         return ResponseEntity.ok(ApiResponse.success("User membership updated successfully."));
     }
-    @PutMapping("alumni/membership")
+    @PutMapping("alumni/membership/status")
     @SecureAPI
     public ResponseEntity<?> updateMembershipStatus(MembershipStatusUpdateDTO update){
         membershipService.updateMembershipStatus(update);
