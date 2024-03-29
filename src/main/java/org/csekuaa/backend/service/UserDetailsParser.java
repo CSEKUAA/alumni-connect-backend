@@ -2,6 +2,11 @@ package org.csekuaa.backend.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
+import org.csekuaa.backend.model.entity.Alumni;
+import org.csekuaa.backend.model.entity.User;
+import org.csekuaa.backend.repository.AlumniRepository;
+import org.csekuaa.backend.repository.UserRepository;
 import org.csekuaa.backend.util.EncryptionUtil;
 import org.csekuaa.backend.security.jwt.JWTTokenService;
 import org.springframework.stereotype.Component;
@@ -14,6 +19,8 @@ public class UserDetailsParser {
     private final HttpServletRequest request;
     private final JWTTokenService tokenService;
     private final SecretKey secretKey;
+    private final UserRepository userRepository;
+    private final AlumniRepository alumniRepository;
 
 
     public String getCurrentUserName() {
@@ -50,6 +57,14 @@ public class UserDetailsParser {
 
     public String getIPAddress(){
         return request.getRemoteAddr();
+    }
+
+    public Alumni getCurrentAlumni(){
+        return alumniRepository.findByRoll(getRollNumber()).orElseThrow(()-> new ResourceNotFoundException("alumni not found!"));
+    }
+
+    public User getCurrentUser(){
+       return userRepository.findByRoll(getRollNumber()).orElseThrow(()-> new ResourceNotFoundException("no logged user found"));
     }
 
 }

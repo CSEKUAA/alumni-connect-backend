@@ -117,29 +117,29 @@ public class Alumni {
         return Optional.ofNullable(membershipType);
     }
 
-    @OneToMany(mappedBy = "alumniByAlumniId")
-    private Collection<AlumniExternalLink> alumniExternalLinksByAlumniId;
+    @OneToMany(mappedBy = "alumni")
+    private Set<AlumniExternalLink> alumniExternalLinks;
 
     public void addExternalLink(AlumniExternalLink externalLink) {
-        if (alumniExternalLinksByAlumniId == null) {
-            alumniExternalLinksByAlumniId = new HashSet<>();
+        if (alumniExternalLinks == null) {
+            alumniExternalLinks = new HashSet<>();
         }
-        alumniExternalLinksByAlumniId.add(externalLink);
+        alumniExternalLinks.add(externalLink);
     }
 
     public void setAlumniExternalLinks(Set<AlumniExternalLink> externalLinks) {
-        if (alumniExternalLinksByAlumniId == null) {
-            alumniExternalLinksByAlumniId = new HashSet<>();
+        if (alumniExternalLinks == null) {
+            alumniExternalLinks = new HashSet<>();
         }
-        alumniExternalLinksByAlumniId.addAll(externalLinks);
+        alumniExternalLinks.addAll(externalLinks);
     }
 
     public void removeExternalLink(AlumniExternalLink externalLink) {
-        if (alumniExternalLinksByAlumniId == null) {
-            alumniExternalLinksByAlumniId = new HashSet<>();
+        if (alumniExternalLinks == null) {
+            alumniExternalLinks = new HashSet<>();
 
         }
-        alumniExternalLinksByAlumniId.remove(externalLink);
+        alumniExternalLinks.remove(externalLink);
     }
 
 
