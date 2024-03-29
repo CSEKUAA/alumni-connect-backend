@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -34,11 +35,11 @@ public class Committee {
 
     @NotNull
     @Column(name = "committee_start_date", nullable = false)
-    private Instant committeeStartDate;
+    private LocalDate committeeStartDate;
 
     @NotNull
     @Column(name = "committee_end_date", nullable = false)
-    private Instant committeeEndDate;
+    private LocalDate committeeEndDate;
 
     @Size(max = 200)
     @Column(name = "committee_description", length = 200)

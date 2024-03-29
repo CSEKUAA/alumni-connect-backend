@@ -9,6 +9,7 @@ import org.csekuaa.backend.model.entity.Event;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDate;
 
 /**
  * DTO for {@link org.csekuaa.backend.model.entity.Committee}
@@ -23,9 +24,9 @@ public class CommitteeDTO implements Serializable {
     @Size(max = 45)
     String committeeName;
     @NotNull
-    Instant committeeStartDate;
+    LocalDate committeeStartDate;
     @NotNull
-    Instant committeeEndDate;
+    LocalDate committeeEndDate;
     @Size(max = 200)
     String committeeDescription;
     Committee parentCommittee;
