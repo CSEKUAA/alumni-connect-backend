@@ -68,12 +68,12 @@ public class AuthenticationService {
     }
 
     public LoginResponse createRefreshToken(String refreshToken) {
-        String existenceToken = parser.getToken();
-        tokenRepository.findByTokenName(existenceToken)
+        String token = parser.getToken();
+        tokenRepository.findByTokenName(token)
                 .ifPresent(tokenRepository::delete);
         jwtTokenService.validateToken(refreshToken);
-        String decryptedToken = EncryptionUtil.decryptJWT(existenceToken, aesKey);
-        String email = jwtTokenService.extractEmail(decryptedToken);
+        //String decryptedToken = EncryptionUtil.decryptJWT(token, aesKey);
+        String email = jwtTokenService.extractEmail(token);
         Alumni alumni = alumniRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("invalid.email")));
         return createTokenResponse(parser.getIPAddress(), alumni);
