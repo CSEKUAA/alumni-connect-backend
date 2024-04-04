@@ -8,7 +8,6 @@ import org.csekuaa.backend.model.enums.BloodGroup;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -37,7 +36,7 @@ public class Alumni {
     @Column(name = "birth_date")
     private LocalDateTime birthDate;
 
-    @Column(name = "blood_group", length = 10)
+    @Column(name = "blood_group", length = 10, columnDefinition = "varchar")
     @Enumerated(EnumType.STRING)
     private BloodGroup bloodGroup;
 
