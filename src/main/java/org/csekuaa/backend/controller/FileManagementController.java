@@ -31,13 +31,4 @@ public class FileManagementController {
         return ResponseEntity.ok(ApiResponse.success(downloadLink));
     }
 
-    //create root folder and sub folder / admin user
-
-    //create sub folder / admin
-
-    //get image download link
-
-    //get image url
-
-    //upload file
 }
