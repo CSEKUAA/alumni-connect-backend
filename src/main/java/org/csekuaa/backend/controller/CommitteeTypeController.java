@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/committeeType/")
+@RequestMapping("/api/committee-type/")
 @RequiredArgsConstructor
 @Tag(name = "CommitteeType")
 @CrossOrigin(origins = "*")
-@SecureAPI
+//@SecureAPI
 public class CommitteeTypeController {
     private final CommitteeTypeService committeeTypeService;
 

@@ -68,7 +68,8 @@ public class SecurityConfig {
                         "/api/login",
                         "/actuator/**"
                 )
-                .requestMatchers("/api/alumni");
-                //.requestMatchers(HttpMethod.GET, "/api/user/membership-type");
+                .requestMatchers("/api/alumni")
+                .requestMatchers(HttpMethod.GET, "/api/user/membership-type")
+                .requestMatchers("/api/committee-type/**");
     }
 }
