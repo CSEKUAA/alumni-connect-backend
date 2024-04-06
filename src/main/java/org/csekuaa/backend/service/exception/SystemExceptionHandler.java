@@ -3,6 +3,7 @@ package org.csekuaa.backend.service.exception;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.csekuaa.backend.model.dto.exception.ErrorMessage;
+import org.csekuaa.backend.model.dto.exception.FileServerException;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.http.HttpStatus;
@@ -84,6 +85,17 @@ public class SystemExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 LocalDate.now(),
                 "Something went wrong!",
+                request.getDescription(false));
+    }
+
+    @ExceptionHandler(FileServerException.class)
+    @ResponseStatus(value = HttpStatus.GONE)
+    public ErrorMessage fileServerException(FileServerException ex, WebRequest request) {
+        log.error(Arrays.toString(ex.getStackTrace()));
+        return new ErrorMessage(
+                HttpStatus.GONE.value(),
+                LocalDate.now(),
+                ex.getMessage(),
                 request.getDescription(false));
     }
 
