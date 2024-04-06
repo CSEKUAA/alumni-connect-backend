@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Objects;
@@ -172,18 +173,23 @@ public class SeaFileService implements FileService {
 
     @SneakyThrows
     private void uploadFileToServer(String uploadLink, String directoryPath, MultipartFile file) {
-        final FileSystemResource fileSystemResource = new FileSystemResource(convertMultiPartToFile(file));
+        File rawFile = convertMultiPartToFile(file);
+        final FileSystemResource fileSystemResource = new FileSystemResource(rawFile);
         MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
         formData.add("file", fileSystemResource);
         formData.add("parent_dir", directoryPath);
-        String response = restClient.post()
-                .uri(uploadLink)
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .body(formData)
-                .retrieve()
-                .body(String.class);
-        log.info(response);
+        try {
+            String response = restClient.post()
+                    .uri(uploadLink)
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .header(HttpHeaders.AUTHORIZATION, authToken)
+                    .body(formData)
+                    .retrieve()
+                    .body(String.class);
+            log.info(response);
+        } finally {
+            Files.delete(rawFile.toPath());
+        }
     }
 
     private File convertMultiPartToFile(MultipartFile file) throws IOException {
