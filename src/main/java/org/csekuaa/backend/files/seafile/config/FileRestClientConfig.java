@@ -1,4 +1,4 @@
-package org.csekuaa.backend.fileservice.seafile.config;
+package org.csekuaa.backend.files.seafile.config;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;

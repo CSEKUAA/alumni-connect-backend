@@ -1,16 +1,16 @@
-package org.csekuaa.backend.fileservice.impl;
+package org.csekuaa.backend.files.impl;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.csekuaa.backend.fileservice.FileService;
+import org.csekuaa.backend.files.FileManagementSystem;
 import org.csekuaa.backend.model.dto.exception.FileServerException;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
-import org.csekuaa.backend.fileservice.seafile.model.FileServerAuthTokenDTO;
-import org.csekuaa.backend.fileservice.seafile.model.FileStructure;
-import org.csekuaa.backend.fileservice.seafile.model.ShareLinkInfo;
-import org.csekuaa.backend.fileservice.seafile.model.ShareLinkRequest;
+import org.csekuaa.backend.files.seafile.model.FileServerAuthTokenDTO;
+import org.csekuaa.backend.files.seafile.model.FileStructure;
+import org.csekuaa.backend.files.seafile.model.ShareLinkInfo;
+import org.csekuaa.backend.files.seafile.model.ShareLinkRequest;
 
 
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +39,7 @@ import java.util.Objects;
 @Service()
 @RequiredArgsConstructor
 @Slf4j
-public class SeaFileService implements FileService {
+public class SeaFileManagementSystem implements FileManagementSystem {
     private transient String authToken;
 
     @Value("${file.server.url}")

@@ -1,8 +1,8 @@
-package org.csekuaa.backend.fileservice;
+package org.csekuaa.backend.files;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public interface FileService {
+public interface FileManagementSystem {
 
     void loginToServer() ;
 

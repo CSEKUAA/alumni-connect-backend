@@ -1,4 +1,4 @@
-package org.csekuaa.backend.fileservice.seafile.model;
+package org.csekuaa.backend.files.seafile.model;
 
 import lombok.Data;
 
