@@ -34,7 +34,10 @@ public class RequestHandlerInterceptor implements HandlerInterceptor {
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
-            AlumniUserDetails userDetails = (AlumniUserDetails) authentication.getPrincipal();
+            AlumniUserDetails userDetails = null;
+            if(authentication.getPrincipal() instanceof AlumniUserDetails ) {
+                userDetails = (AlumniUserDetails) authentication.getPrincipal();
+            }
             if (userDetails != null) {
                 User user = userDetails.getUser();
                 Audit audit = new Audit();

@@ -17,10 +17,10 @@ import org.csekuaa.backend.repository.TokenRepository;
 import org.csekuaa.backend.repository.UserRepository;
 import org.csekuaa.backend.security.jwt.JWTTokenService;
 import org.csekuaa.backend.service.event.ForgetPasswordEvent;
-import org.csekuaa.backend.service.event.ForgetPasswordEventListener;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.csekuaa.backend.util.EncryptionUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,7 +40,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JWTTokenService jwtTokenService;
     private final TokenRepository tokenRepository;
-    private final ForgetPasswordEventListener listener;
+    private final ApplicationEventPublisher publisher;
     private final PasswordResetRepository passwordResetRepository;
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
@@ -109,6 +109,6 @@ public class AuthenticationService {
     public void forgetPassword(String email) {
         Alumni alumni = alumniRepository.findByEmail(email)
                 .orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("auth.user.not.found")));
-        listener.onApplicationEvent(new ForgetPasswordEvent(alumni));
+        publisher.publishEvent(new ForgetPasswordEvent(alumni));
     }
 }

@@ -12,9 +12,10 @@ import org.csekuaa.backend.model.entity.*;
 import org.csekuaa.backend.repository.AlumniRepository;
 import org.csekuaa.backend.repository.DisciplineRepository;
 import org.csekuaa.backend.repository.RoleRepository;
+import org.csekuaa.backend.service.event.UserFileManagementEvent;
 import org.csekuaa.backend.service.event.UserRegistrationEvent;
-import org.csekuaa.backend.service.event.UserRegistrationEventListener;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class UserManagementService {
     private final DisciplineRepository disciplineRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
-    private final UserRegistrationEventListener listener;
+    private final ApplicationEventPublisher publisher;
     private final UserDetailsParser userDetailsParser;
 
     public void createUser(AlumniUserDTO alumniUserDTO) {
@@ -54,7 +55,8 @@ public class UserManagementService {
         alumni.setDiscipline(discipline);
         alumni.setUser(user);
         alumniRepository.save(alumni);
-        listener.onApplicationEvent(new UserRegistrationEvent(alumni));
+        publisher.publishEvent(new UserRegistrationEvent(alumni));
+        publisher.publishEvent(new UserFileManagementEvent(user.getRoll()));
     }
 
     public String getDisciplineCodeFromRoll(String roll) {
