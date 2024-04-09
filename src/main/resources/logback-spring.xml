@@ -27,7 +27,11 @@
     </appender>
 
     <!-- Root logger settings -->
-    <root level="debug">
+<!--    <root level="debug">-->
+<!--        <appender-ref ref="CONSOLE"/>-->
+<!--        <appender-ref ref="FILE"/>-->
+<!--    </root>-->
+    <root level="error">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </root>

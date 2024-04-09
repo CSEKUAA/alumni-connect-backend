@@ -23,15 +23,15 @@ public class UserAccessControlService {
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
     private final UserDetailsParser detailsParser;
-    public void addRoleToUser(Integer userId,String roleName) {
-        Role role = roleRepository.findByRoleName(roleName).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("role.not.found")));
+    public void addRoleToUser(Integer userId,Integer roleId) {
+        Role role = roleRepository.findByRoleId(roleId).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("role.not.found")));
         User user = userRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("user.not.found")));
         user.addRole(role);
         userRepository.save(user);
     }
 
-    public void removeRoleFromUser(Integer userId, String roleName) {
-        Role role = roleRepository.findByRoleName(roleName).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("role.not.found")));
+    public void removeRoleFromUser(Integer userId, Integer roleId) {
+        Role role = roleRepository.findByRoleId(roleId).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("role.not.found")));
         User user = userRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("user.not.found")));
         user.removeRole(role);
         userRepository.save(user);
@@ -75,25 +75,25 @@ public class UserAccessControlService {
                 .map(this::mapToRoleDTO).toList();
     }
 
-    public void addMenuToRole(String roleName, String menuName) {
-        Role role = roleRepository.findByRoleName(roleName)
+    public void addMenuToRole(Integer roleId, Integer menuId) {
+        Role role = roleRepository.findByRoleId(roleId)
                 .orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("role.not.found")));
-        Menu menu = menuRepository.findByMenuName(menuName).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("menu.not.found")));
+        Menu menu = menuRepository.findByMenuId(menuId).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("menu.not.found")));
         role.addMenu(menu);
         roleRepository.save(role);
     }
 
-    public void removeMenuFromRole(String roleName, String menuName) {
-        Role role = roleRepository.findByRoleName(roleName)
+    public void removeMenuFromRole(Integer roleId, Integer menuId) {
+        Role role = roleRepository.findByRoleId(roleId)
                 .orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("role.not.found")));
-        Menu menu = menuRepository.findByMenuName(menuName).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("menu.not.found")));
+        Menu menu = menuRepository.findByMenuId(menuId).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("menu.not.found")));
         role.removeMenu(menu);
         roleRepository.save(role);
     }
 
     public void createMenu(PermissionDTO menuDto) {
         Menu menu = new Menu();
-        menu.setMenuId(menuDto.getMenuId());
+    //    menu.setMenuId(menuDto.getMenuId());
         menu.setMenuName(menuDto.getName());
         menu.setParentMenuId(menuDto.getParentId());
         menu.setMenuOrder(menuDto.getOrder());
@@ -102,8 +102,8 @@ public class UserAccessControlService {
         menuRepository.save(menu);
     }
 
-    public void updateMenuVisibility(String menuName) {
-        Menu menu = menuRepository.findByMenuName(menuName)
+    public void updateMenuVisibility(Integer menuId) {
+        Menu menu = menuRepository.findByMenuId(menuId)
                 .orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("menu.not.found")));
         menu.setActive(!menu.isActive());
         menuRepository.save(menu);
