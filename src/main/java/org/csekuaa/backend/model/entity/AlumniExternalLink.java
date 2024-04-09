@@ -2,7 +2,9 @@ package org.csekuaa.backend.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Entity
 @Data
 @Table(name = "alumni_external_link")

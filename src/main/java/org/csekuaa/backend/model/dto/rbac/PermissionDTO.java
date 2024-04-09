@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PermissionDTO {
-    private int menuId;
+  // private int menuId;
     private String name;
     private int parentId;
     private int order;

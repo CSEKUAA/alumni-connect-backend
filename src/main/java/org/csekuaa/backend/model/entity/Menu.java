@@ -15,7 +15,7 @@ import java.util.Set;
 public class Menu {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "menu_id", nullable = false,columnDefinition = "smallint")
     private Integer menuId;
        
