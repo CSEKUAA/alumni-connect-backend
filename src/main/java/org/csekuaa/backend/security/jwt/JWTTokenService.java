@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.model.entity.Alumni;
+import org.csekuaa.backend.model.entity.Role;
 import org.csekuaa.backend.model.entity.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -31,7 +32,7 @@ public class JWTTokenService {
     public String generateToken(Alumni alumni) {
         Date expire = new Date(new Date().getTime() + (long) tokenExpireTime * 60 * 1000);
         User user = alumni.getUser();
-        List<String> authorities = new ArrayList<>();
+        List<String> authorities = user.getRoles().stream().map(Role::getRoleName).toList();
         return Jwts.builder()
                 .claim("id", user.getUserId())
                 .claim("roll", alumni.getRoll())

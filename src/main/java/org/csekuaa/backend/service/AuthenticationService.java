@@ -49,7 +49,12 @@ public class AuthenticationService {
 
     public LoginResponse login(LogInRequestDTO logInRequestDTO) {
         Alumni alumni;
-        if(logInRequestDTO.getLoginType().equals(LogInType.ROLL)) {
+        if(logInRequestDTO.getLoginType().equals(LogInType.ADMIN)){
+            User user = userRepository.findByRoll(logInRequestDTO.getIdentifier()).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
+            alumni = new Alumni();
+            alumni.setUser(user);
+        }
+        else if(logInRequestDTO.getLoginType().equals(LogInType.ROLL)) {
             User user = userRepository.findByRoll(logInRequestDTO.getIdentifier()).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
             alumni = user.getAlumnis().stream().findFirst().orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
         }
