@@ -2,7 +2,6 @@ package org.csekuaa.backend.repository;
 
 import org.csekuaa.backend.model.dto.content.ContentDTO;
 import org.csekuaa.backend.model.entity.Content;
-import org.csekuaa.backend.model.entity.ContentType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

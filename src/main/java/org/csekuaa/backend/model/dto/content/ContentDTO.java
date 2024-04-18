@@ -1,7 +1,6 @@
 package org.csekuaa.backend.model.dto.content;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
