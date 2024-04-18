@@ -21,4 +21,8 @@ public class ContentType {
     @OneToMany(mappedBy = "contentTypeByContentTypeId")
     private Collection<Content> contentsByContentTypeId;
 
+    public ContentType(Byte contentTypeId) {
+        this.contentTypeId = contentTypeId;
+    }
+
 }
