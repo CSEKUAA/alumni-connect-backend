@@ -42,8 +42,9 @@ public class ForgetPasswordEventListener implements ApplicationListener<ForgetPa
         Locale locale = Locale.of(Locale.ENGLISH.getDisplayLanguage());
         final Context context = new Context();
         context.setLocale(locale);
-        context.setVariable("CLIENT_URL", clientUri);
+        context.setVariable("client_url", clientUri);
         context.setVariable("token", token);
+        context.setVariable("expire_time", "24");
 
         EmailTemplate template = new EmailTemplate();
         template.setTemplateName("reset-password-email");
