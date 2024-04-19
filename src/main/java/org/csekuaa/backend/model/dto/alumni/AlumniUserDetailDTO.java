@@ -9,7 +9,7 @@ import java.util.List;
 public class AlumniUserDetailDTO {
     private String roll;
     private String firstName;
-    private String lastName;
+    private String lastName = "";
     private String nickName;
     private String fullName;
     private String discipline;

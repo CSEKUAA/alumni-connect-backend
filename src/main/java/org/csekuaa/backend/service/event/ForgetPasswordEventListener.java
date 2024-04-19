@@ -8,6 +8,7 @@ import org.csekuaa.backend.model.entity.PasswordReset;
 import org.csekuaa.backend.repository.PasswordResetRepository;
 import org.csekuaa.backend.service.EmailService;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
@@ -22,6 +23,8 @@ import java.util.Locale;
 public class ForgetPasswordEventListener implements ApplicationListener<ForgetPasswordEvent> {
     private final EmailService emailService;
     private final PasswordResetRepository passwordResetRepository;
+    @Value("${client.address}")
+    private String clientUri;
     private final SecureRandom secureRandom = new SecureRandom();
     @Override
     public void onApplicationEvent(ForgetPasswordEvent event) {
@@ -36,10 +39,10 @@ public class ForgetPasswordEventListener implements ApplicationListener<ForgetPa
         passwordReset.setUser(alumni.getUser());
         passwordResetRepository.save(passwordReset);
 
-        Locale locale = new Locale(Locale.ENGLISH.getDisplayLanguage());
+        Locale locale = Locale.of(Locale.ENGLISH.getDisplayLanguage());
         final Context context = new Context();
         context.setLocale(locale);
-        context.setVariable("name", alumni.getFullName());
+        context.setVariable("CLIENT_URL", clientUri);
         context.setVariable("token", token);
 
         EmailTemplate template = new EmailTemplate();
