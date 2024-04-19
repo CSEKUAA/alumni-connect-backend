@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Collection;
-import java.util.Objects;
 @NoArgsConstructor
 @Data
 @Entity
@@ -20,5 +19,9 @@ public class ContentType {
     private String contentType;
     @OneToMany(mappedBy = "contentTypeByContentTypeId")
     private Collection<Content> contentsByContentTypeId;
+
+    public ContentType(Byte contentTypeId) {
+        this.contentTypeId = contentTypeId;
+    }
 
 }

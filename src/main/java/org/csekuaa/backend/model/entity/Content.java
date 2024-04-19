@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
-import java.util.Objects;
+import java.time.LocalDateTime;
+
 
 @NoArgsConstructor
 @Data
@@ -23,11 +23,11 @@ public class Content {
     @Column(name = "description", length = 10000)
     private String description;
     
-    @Column(name = "created_date", nullable = false)
-    private Timestamp createdDate;
+    @Column(name = "created_date_time", nullable = false)
+    private LocalDateTime createdDateTime;
     
-    @Column(name = "modified_date")
-    private Timestamp modifiedDate;
+    @Column(name = "modified_date_time")
+    private LocalDateTime modifiedDateTime;
     
     @Column(name = "created_by", nullable = false)
     private Integer createdBy;
@@ -40,7 +40,7 @@ public class Content {
     
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "content_type_id", referencedColumnName = "content_type_id", nullable = false)
     private ContentType contentTypeByContentTypeId;
     
