@@ -48,7 +48,7 @@ public class UserManagementService {
         user.addRole(role);
         Alumni alumni = new Alumni();
         alumni.setRoll(alumniUserDTO.getRoll());
-        alumni.setFullName(alumniUserDTO.getFirstName()+ " "+ alumniUserDTO.getLastName());
+        alumni.setFullName(alumniUserDTO.getFirstName() + " " + alumniUserDTO.getLastName());
         alumni.setPhone(alumniUserDTO.getPhoneNumber());
         alumni.setEmail(alumniUserDTO.getEmail());
         alumni.setCreationTime(LocalDateTime.now());
@@ -60,21 +60,21 @@ public class UserManagementService {
     }
 
     public String getDisciplineCodeFromRoll(String roll) {
-      return roll.substring(2,4);
+        return roll.substring(2, 4);
     }
 
     private void checkUserExistence(AlumniUserDTO alumniUserDTO) {
-        alumniRepository.findByEmail(alumniUserDTO.getEmail()).ifPresent(e-> {
+        alumniRepository.findByEmail(alumniUserDTO.getEmail()).ifPresent(e -> {
             throw new ResourceNotFoundException(ApplicationMessageResolver.getMessage("user.email.exist"));
         });
-        alumniRepository.findByRoll(alumniUserDTO.getRoll()).ifPresent(e-> {
+        alumniRepository.findByRoll(alumniUserDTO.getRoll()).ifPresent(e -> {
             throw new ResourceNotFoundException(ApplicationMessageResolver.getMessage("user.roll.exist"));
         });
     }
 
     public List<DisciplineDTO> getAllDiscipline() {
         return disciplineRepository.findAll().stream()
-                .map(e-> {
+                .map(e -> {
                     DisciplineDTO dto = new DisciplineDTO();
                     dto.setDisciplineCode(e.getDisciplineCode());
                     dto.setShortName(e.getDisciplineShortName());
@@ -85,7 +85,7 @@ public class UserManagementService {
 
     public void createUserInfo(AlumniUserProfileDTO userInfo) {
         Alumni alumni = alumniRepository.findByRoll(userInfo.getRoll())
-                .orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
+                .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
         alumni.setNickName(userInfo.getNickName());
         alumni.setBloodGroup(userInfo.getBloodGroup());
         alumni.setPhoto(userInfo.getPhoto());
@@ -109,15 +109,18 @@ public class UserManagementService {
                 .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
         AlumniUserDetailDTO userDetail = new AlumniUserDetailDTO();
         userDetail.setRoll(roll);
-        userDetail.setFirstName(alumni.getFullName().split(" ")[0]);
-        userDetail.setLastName(alumni.getFullName().split(" ")[1]);
+        String[] fullName = alumni.getFullName().split(" ");
+        userDetail.setFirstName(fullName[0]);
+        if (fullName.length == 2) {
+            userDetail.setLastName(fullName[1]);
+        }
         userDetail.setNickName(alumni.getNickName());
         userDetail.setFullName(alumni.getFullName());
         userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
         userDetail.setPhoto(alumni.getPhoto());
         userDetail.setContactDetail(createContactDetail(alumni));
-        alumni.getBirthDate().ifPresent(e-> userDetail.setDob(e.toLocalDate()));
-        alumni.getBloodGroup().ifPresent(e-> userDetail.setBloodGroup(e.getValue()));
+        alumni.getBirthDate().ifPresent(e -> userDetail.setDob(e.toLocalDate()));
+        alumni.getBloodGroup().ifPresent(e -> userDetail.setBloodGroup(e.getValue()));
         userDetail.setMembershipInfos(getMembershipInfo(alumni.getUser()));
         return userDetail;
     }
@@ -127,12 +130,12 @@ public class UserManagementService {
                 .map(e -> {
                     MembershipInfoDTO infoDTO = new MembershipInfoDTO();
                     infoDTO.setMembershipStatus(e.getMembershipApprovedTime()
-                            .isAfter(LocalDateTime.now())? MembershipType.Expired: MembershipType.Active);
+                            .isAfter(LocalDateTime.now()) ? MembershipType.Expired : MembershipType.Active);
                     infoDTO.setMemberShipType(e.getMembershipType().getMembershipType());
                     infoDTO.setExpirationOn(e.getMembershipApprovedTime().toLocalDate());
                     return infoDTO;
                 }).sorted(Comparator.comparing(MembershipInfoDTO::getExpirationOn).reversed())
-                        .toList();
+                .toList();
     }
 
     private AlumniUserContactDetailDTO createContactDetail(Alumni alumni) {
