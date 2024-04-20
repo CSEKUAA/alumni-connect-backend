@@ -32,7 +32,7 @@ public class Menu {
     private String menuLink;
        
     @Column(name = "is_active", nullable = false)
-    private boolean isActive;
+    private Boolean isActive;
 
     @Column(name = "identifier", nullable = false)
     private String identifier;

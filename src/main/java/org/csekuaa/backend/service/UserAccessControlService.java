@@ -2,8 +2,10 @@ package org.csekuaa.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
+import org.csekuaa.backend.model.dto.rbac.MenuDTO;
 import org.csekuaa.backend.model.dto.rbac.PermissionDTO;
 import org.csekuaa.backend.model.dto.rbac.RoleDTO;
+import org.csekuaa.backend.model.dto.rbac.RoleWithPermissionDTO;
 import org.csekuaa.backend.model.entity.Menu;
 import org.csekuaa.backend.model.entity.Role;
 import org.csekuaa.backend.model.entity.User;
@@ -13,7 +15,6 @@ import org.csekuaa.backend.repository.UserRepository;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -37,17 +38,17 @@ public class UserAccessControlService {
         userRepository.save(user);
     }
 
-    public List<RoleDTO> getAllUserRoles() {
+    public List<RoleWithPermissionDTO> getAllUserRoles() {
         return roleRepository.findAll()
                 .stream()
                 .map(this::mapToRoleDTO).toList();
     }
 
-    private RoleDTO mapToRoleDTO(Role role) {
-        RoleDTO roleDTO = new RoleDTO();
-        roleDTO.setRole(role.getRoleName());
-        roleDTO.setPermissions(getRolePermission(role));
-        return roleDTO;
+    private RoleWithPermissionDTO mapToRoleDTO(Role role) {
+        RoleWithPermissionDTO roleWithPermissionDTO = new RoleWithPermissionDTO();
+        roleWithPermissionDTO.setRole(role.getRoleName());
+        roleWithPermissionDTO.setPermissions(getRolePermission(role));
+        return roleWithPermissionDTO;
     }
 
     private List<PermissionDTO> getRolePermission(Role role) {
@@ -65,12 +66,12 @@ public class UserAccessControlService {
         return permission;
     }
 
-    public List<RoleDTO> getCurrentUserRoles() {
+    public List<RoleWithPermissionDTO> getCurrentUserRoles() {
         int currentUserId = detailsParser.getCurrentUseId();
         return getUserRoles(currentUserId);
     }
 
-    public List<RoleDTO> getUserRoles(Integer userId) {
+    public List<RoleWithPermissionDTO> getUserRoles(Integer userId) {
         User user = userRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("user.not.found")));
         return user.getRoles().stream()
                 .map(this::mapToRoleDTO).toList();
@@ -99,7 +100,7 @@ public class UserAccessControlService {
         menu.setParentMenuId(menuDto.getParentId());
         menu.setMenuOrder(menuDto.getOrder());
         menu.setMenuLink(menuDto.getLink());
-        menu.setActive(true);
+        menu.setIsActive(true);
         menu.setIdentifier(menuDto.getIdentifier());
         menuRepository.save(menu);
     }
@@ -107,16 +108,29 @@ public class UserAccessControlService {
     public void updateMenuVisibility(Integer menuId) {
         Menu menu = menuRepository.findByMenuId(menuId)
                 .orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("menu.not.found")));
-        menu.setActive(!menu.isActive());
+        menu.setIsActive(!menu.getIsActive());
         menuRepository.save(menu);
     }
 
-    public List<PermissionDTO> getCurrentUserMenus() {
-        int currentUserId = detailsParser.getCurrentUseId();
-        User user = userRepository.findById(currentUserId).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("user.not.found")));
-        return user.getRoles().stream()
-                .map(Role::getMenus)
-                .flatMap(Collection::stream)
-                .map(this::convertToPermissionDTO).toList();
+    public List<MenuDTO> getCurrentUserMenus() {
+        return menuRepository.findAllByIsActiveTrue().stream()
+                .map(e-> {
+                    MenuDTO dto = new MenuDTO();
+                    dto.setMenuId(e.getMenuId());
+                    dto.setMenuName(e.getMenuName());
+                    dto.setMenuLink(e.getMenuLink());
+                    dto.setIdentifier(e.getIdentifier());
+                    return dto;
+                }).toList();
+    }
+
+    public List<RoleDTO> getAllRoles() {
+        return roleRepository.findAll().stream()
+                .map(e-> {
+                    RoleDTO dto = new RoleDTO();
+                    dto.setRoleId(e.getRoleId());
+                    dto.setRoleName(e.getRoleName());
+                    return dto;
+                }).toList();
     }
 }

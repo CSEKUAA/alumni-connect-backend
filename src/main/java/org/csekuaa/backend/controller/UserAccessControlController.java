@@ -4,8 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.model.dto.payloads.ApiResponse;
+import org.csekuaa.backend.model.dto.rbac.MenuDTO;
 import org.csekuaa.backend.model.dto.rbac.PermissionDTO;
 import org.csekuaa.backend.model.dto.rbac.RoleDTO;
+import org.csekuaa.backend.model.dto.rbac.RoleWithPermissionDTO;
 import org.csekuaa.backend.service.UserAccessControlService;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.csekuaa.backend.annotation.ADMIN;
@@ -34,11 +36,10 @@ public class UserAccessControlController {
     }
 
 
-    //remove role from a user [system/admin]
     @DeleteMapping("user-role/{userId}/{roleId}")
     @Operation(summary = "remove role from user", description = "only admin role permission user is capable to remove a role from a user")
     @ADMIN
-    public ResponseEntity<?> removeRoleToUser(@PathVariable("userId") Integer userId,@PathVariable("roleName") Integer roleId) {
+    public ResponseEntity<?> removeRoleToUser(@PathVariable("userId") Integer userId,@PathVariable("roleId") Integer roleId) {
         accessControlService.removeRoleFromUser(userId,roleId);
         return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("acl.role.menu.removed")));
     }
@@ -48,7 +49,7 @@ public class UserAccessControlController {
     @Operation(summary = "all user role", description = "only admin can view all user roles with permissions")
     @ADMIN
     public ResponseEntity<?> getAllRoles() {
-        List<RoleDTO> roles =accessControlService.getAllUserRoles();
+        List<RoleWithPermissionDTO> roles =accessControlService.getAllUserRoles();
         return ResponseEntity.ok(roles);
     }
 
@@ -57,7 +58,7 @@ public class UserAccessControlController {
     @Operation(summary = "a specific user role", description = "only admin can fetch a specific user's role")
     @ADMIN
     public ResponseEntity<?> getAllRoles(@PathVariable("userId") Integer userId) {
-        List<RoleDTO> roles =accessControlService.getUserRoles(userId);
+        List<RoleWithPermissionDTO> roles =accessControlService.getUserRoles(userId);
         return ResponseEntity.ok(roles);
     }
 
@@ -65,11 +66,10 @@ public class UserAccessControlController {
     @GetMapping("user-role/current")
     @Operation(summary = "current user role", description = "any log in user can view their roles and menu permissions")
     public ResponseEntity<?> getCurrentUserRoles() {
-        List<RoleDTO> roles =accessControlService.getCurrentUserRoles();
+        List<RoleWithPermissionDTO> roles =accessControlService.getCurrentUserRoles();
         return ResponseEntity.ok(roles);
     }
 
-    //create menu if not exists
     @PostMapping("menu")
     @Operation(summary = "create a new menu", description = "only admin can create a new menu")
     @ADMIN
@@ -78,15 +78,14 @@ public class UserAccessControlController {
         return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("acl.menu.create")));
     }
 
-    //get current user all menu items
     @GetMapping("menu")
-    @Operation(summary = "current user menus", description = "any login users available menus")
+    @Operation(summary = "all available menus", description = "any login users available menus")
+    @ADMIN
     public ResponseEntity<?> getMenus() {
-        List<PermissionDTO> menus = accessControlService.getCurrentUserMenus();
+        List<MenuDTO> menus = accessControlService.getCurrentUserMenus();
         return ResponseEntity.ok(menus);
     }
 
-    //assign menu to a role
     @PostMapping("menu/{roleId}/{menuId}")
     @Operation(summary = "assign a menu to a specific role", description = "only admin can assign a menu to a role")
     @ADMIN
@@ -110,5 +109,13 @@ public class UserAccessControlController {
     public ResponseEntity<?> updateMenuVisibility(@PathVariable("menuId") Integer menu) {
         accessControlService.updateMenuVisibility(menu);
         return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("acl.menu.update")));
+    }
+
+    @GetMapping("role")
+    @Operation(summary = "get All roles", description = "")
+    @ADMIN
+    public ResponseEntity<?> updateMenuVisibility() {
+        List<RoleDTO> roles= accessControlService.getAllRoles();
+        return ResponseEntity.ok(roles);
     }
 }
