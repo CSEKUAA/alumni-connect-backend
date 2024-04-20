@@ -34,6 +34,9 @@ public class Menu {
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
+    @Column(name = "identifier", nullable = false)
+    private String identifier;
+
     @ManyToMany(mappedBy = "menus")
     private Set<Role> roles;
 

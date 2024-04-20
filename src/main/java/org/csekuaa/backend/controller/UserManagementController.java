@@ -46,17 +46,17 @@ public class UserManagementController {
         return ResponseEntity.ok(ApiResponse.success("new discipline is added to list"));
     }
 
-    @CrossOrigin(origins = "*")
     @PostMapping("user-info")
     @SecureAPI
+    @CrossOrigin(origins = {"http://localhost:3000"})
     public ResponseEntity<?> createUserInfo(@Valid @RequestBody AlumniUserProfileDTO userInfo){
         userManagementService.createUserInfo(userInfo);
         return ResponseEntity.ok(ApiResponse.success("User information updated successfully."));
     }
 
-    @CrossOrigin(origins = "*")
     @GetMapping("user-info")
     @SecureAPI
+    @CrossOrigin(origins = {"http://localhost:3000"})
     public ResponseEntity<?> fetchUserInfo(){
         AlumniUserDetailDTO userDetail = userManagementService.fetchCurrentUserInfo();
         return ResponseEntity.ok(userDetail);

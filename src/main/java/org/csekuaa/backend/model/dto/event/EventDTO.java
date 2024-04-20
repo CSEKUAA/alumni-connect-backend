@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Value;
 
-import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalTime;
 
@@ -16,16 +15,16 @@ public class EventDTO {
     Integer id;
     @NotNull
     @Size(max = 45)
-    String eventName;
+    String name;
     @Size(max = 200)
-    String eventDescription;
+    String description;
     @NotNull
-    Instant eventDate;
+    Instant date;
     @NotNull
-    LocalTime eventTime;
+    LocalTime time;
     @NotNull
     @Size(max = 45)
-    String eventLocation;
+    String location;
     @Size(max = 200)
-    String eventLink;
+    String link;
 }

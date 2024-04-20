@@ -11,4 +11,5 @@ public class PermissionDTO {
     private int parentId;
     private int order;
     private String link;
+    private String identifier;
 }

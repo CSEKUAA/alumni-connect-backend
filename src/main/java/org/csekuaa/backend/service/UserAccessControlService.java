@@ -61,6 +61,7 @@ public class UserAccessControlService {
         permission.setParentId(e.getParentMenuId());
         permission.setOrder(e.getMenuOrder());
         permission.setLink(e.getMenuLink());
+        permission.setIdentifier(e.getIdentifier());
         return permission;
     }
 
@@ -99,6 +100,7 @@ public class UserAccessControlService {
         menu.setMenuOrder(menuDto.getOrder());
         menu.setMenuLink(menuDto.getLink());
         menu.setActive(true);
+        menu.setIdentifier(menu.getIdentifier());
         menuRepository.save(menu);
     }
 
