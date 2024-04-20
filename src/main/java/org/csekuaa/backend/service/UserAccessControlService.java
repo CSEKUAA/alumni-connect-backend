@@ -100,7 +100,7 @@ public class UserAccessControlService {
         menu.setMenuOrder(menuDto.getOrder());
         menu.setMenuLink(menuDto.getLink());
         menu.setActive(true);
-        menu.setIdentifier(menu.getIdentifier());
+        menu.setIdentifier(menuDto.getIdentifier());
         menuRepository.save(menu);
     }
 
