@@ -25,7 +25,7 @@ public class UserManagementController {
     private final UserManagementService userManagementService;
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.126:8080"})
-    @PostMapping("alumni")
+    @PostMapping("register")
     public ResponseEntity<?> createAlumni(@Valid @RequestBody AlumniUserDTO alumniUserDTO){
         userManagementService.createUser(alumniUserDTO);
         return ResponseEntity.ok(ApiResponse.success("User created successfully."));
@@ -62,4 +62,11 @@ public class UserManagementController {
         return ResponseEntity.ok(userDetail);
     }
 
+    @GetMapping("all-user")
+    @SecureAPI
+    @CrossOrigin(origins = {"http://localhost:3000"})
+    public ResponseEntity<?> fetchAllUserInfo(){
+        List<AlumniUserDetailDTO> userDetail = userManagementService.fetchAllUserInfo();
+        return ResponseEntity.ok(userDetail);
+    }
 }

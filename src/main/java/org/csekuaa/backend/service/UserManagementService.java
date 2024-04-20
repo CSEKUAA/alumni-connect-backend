@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -161,5 +162,31 @@ public class UserManagementService {
         discipline.setDisciplineFullName(dto.getFullName());
         discipline.setDisciplineShortName(dto.getShortName());
         disciplineRepository.save(discipline);
+    }
+
+    public List<AlumniUserDetailDTO> fetchAllUserInfo() {
+        List<Alumni> alumniList = alumniRepository.findAll();
+        List<AlumniUserDetailDTO> userList = new ArrayList<>();
+
+        if(!alumniList.isEmpty()) {
+            for(Alumni alumni: alumniList){
+                AlumniUserDetailDTO userDetail = new AlumniUserDetailDTO();
+                userDetail.setRoll(alumni.getRoll());
+                String[] fullName = alumni.getFullName().split(" ");
+                userDetail.setFirstName(fullName[0]);
+                if (fullName.length == 2) {
+                    userDetail.setLastName(fullName[1]);
+                }
+                userDetail.setNickName(alumni.getNickName());
+                userDetail.setFullName(alumni.getFullName());
+                userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
+                userDetail.setPhoto(alumni.getPhoto());
+                userDetail.setContactDetail(createContactDetail(alumni));
+                alumni.getBirthDate().ifPresent(e -> userDetail.setDob(e.toLocalDate()));
+                alumni.getBloodGroup().ifPresent(e -> userDetail.setBloodGroup(e.getValue()));
+                userList.add(userDetail);
+            }
+        }
+        return userList;
     }
 }

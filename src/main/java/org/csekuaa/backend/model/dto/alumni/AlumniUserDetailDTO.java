@@ -1,5 +1,6 @@
 package org.csekuaa.backend.model.dto.alumni;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -18,5 +19,7 @@ public class AlumniUserDetailDTO {
     private String photo;
     private AlumniUserContactDetailDTO contactDetail;
     private AlumniExternalLinkInfoDTO externalLinkInfo;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<MembershipInfoDTO> membershipInfos;
 }
