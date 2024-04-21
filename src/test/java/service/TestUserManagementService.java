@@ -1,8 +1,11 @@
 package service;
 
+import org.csekuaa.backend.files.FileManagementSystem;
 import org.csekuaa.backend.repository.AlumniRepository;
 import org.csekuaa.backend.repository.DisciplineRepository;
+import org.csekuaa.backend.repository.FileSystemRepository;
 import org.csekuaa.backend.repository.RoleRepository;
+import org.csekuaa.backend.service.FileService;
 import org.csekuaa.backend.service.UserDetailsParser;
 import org.csekuaa.backend.service.UserManagementService;
 import org.csekuaa.backend.service.event.UserRegistrationEventListener;
@@ -34,6 +37,10 @@ public class TestUserManagementService {
     private  UserRegistrationEventListener listener;
     @MockBean
     private  UserDetailsParser userDetailsParser;
+    @MockBean
+    private FileManagementSystem fileService;
+    @MockBean
+    private FileSystemRepository fileSystemRepository;
     @Autowired
     private UserManagementService userManagementService;
 
