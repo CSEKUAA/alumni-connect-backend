@@ -24,6 +24,8 @@ public interface FileManagementSystem {
 
     String downloadFile(String root, String directoryName, String fileName);
 
+    String downloadFile(String path);
+
     String createImageLink(String root, String directoryName, String fileName);
 
     void removeFile(String root, String fileName);
