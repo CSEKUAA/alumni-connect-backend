@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/file-service/")
 @RequiredArgsConstructor
-@Tag(name = "file service")
+@Tag(name = "File Service")
 @CrossOrigin(origins = "*")
 @SecureAPI
 public class FileManagementController {

@@ -1,6 +1,7 @@
 package org.csekuaa.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.csekuaa.backend.files.FileManagementSystem;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserContactDetailDTO;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileDTO;
@@ -9,8 +10,10 @@ import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
 import org.csekuaa.backend.model.entity.*;
+import org.csekuaa.backend.model.enums.FileType;
 import org.csekuaa.backend.repository.AlumniRepository;
 import org.csekuaa.backend.repository.DisciplineRepository;
+import org.csekuaa.backend.repository.FileSystemRepository;
 import org.csekuaa.backend.repository.RoleRepository;
 import org.csekuaa.backend.service.event.UserFileManagementEvent;
 import org.csekuaa.backend.service.event.UserRegistrationEvent;
@@ -18,6 +21,7 @@ import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,6 +37,8 @@ public class UserManagementService {
     private final PasswordEncoder encoder;
     private final ApplicationEventPublisher publisher;
     private final UserDetailsParser userDetailsParser;
+    private final FileManagementSystem fileSystem;
+    private final FileSystemRepository fileSystemRepository;
 
     public void createUser(AlumniUserDTO alumniUserDTO) {
         String disciplineCode = getDisciplineCodeFromRoll(alumniUserDTO.getRoll());
@@ -118,7 +124,7 @@ public class UserManagementService {
         userDetail.setNickName(alumni.getNickName());
         userDetail.setFullName(alumni.getFullName());
         userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
-        userDetail.setPhoto(alumni.getPhoto());
+        userDetail.setPhoto(alumni.getPhoto()==null?"--":getDownloadLink(alumni.getPhoto()));
         userDetail.setContactDetail(createContactDetail(alumni));
         alumni.getBirthDate().ifPresent(e -> userDetail.setDob(e.toLocalDate()));
         alumni.getBloodGroup().ifPresent(e -> userDetail.setBloodGroup(e.getValue()));
@@ -180,7 +186,7 @@ public class UserManagementService {
                 userDetail.setNickName(alumni.getNickName());
                 userDetail.setFullName(alumni.getFullName());
                 userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
-                userDetail.setPhoto(alumni.getPhoto());
+                userDetail.setPhoto(alumni.getPhoto()==null?"--":getDownloadLink(alumni.getPhoto()));
                 userDetail.setContactDetail(createContactDetail(alumni));
                 alumni.getBirthDate().ifPresent(e -> userDetail.setDob(e.toLocalDate()));
                 alumni.getBloodGroup().ifPresent(e -> userDetail.setBloodGroup(e.getValue()));
@@ -188,5 +194,25 @@ public class UserManagementService {
             }
         }
         return userList;
+    }
+
+    public void uploadProfilePicture(MultipartFile file) {
+        String directoryName="profile";
+        String root = userDetailsParser.getRollNumber();
+        fileSystem.uploadFile(root,directoryName,file);
+        FileSystem fileSystem1 = new FileSystem();
+        fileSystem1.setFileName(file.getOriginalFilename());
+        fileSystem1.setVersion(1);
+        fileSystem1.setCreatedAt(LocalDateTime.now());
+        fileSystem1.setFileType(FileType.PROFILE);
+        Alumni currentAlumni = userDetailsParser.getCurrentAlumni();
+        String imageLink =  "/" + root + "/" + directoryName + "/" + file.getOriginalFilename();
+        currentAlumni.setPhoto(imageLink);
+        fileSystem1.setAlumni(currentAlumni);
+        fileSystemRepository.save(fileSystem1);
+    }
+
+    public String getDownloadLink(String photoLink) {
+        return fileSystem.downloadFile(photoLink);
     }
 }

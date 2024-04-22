@@ -222,6 +222,14 @@ public class SeaFileManagementSystem implements FileManagementSystem {
         return downloadLink;
     }
 
+    @Override
+    public String downloadFile(String path) {
+        String downloadLink = getDownloadLink(path);
+        downloadLink = downloadLink.replaceAll("\"", "");
+        if (downloadLink.contains("error_msg")) return "--";
+        return downloadLink;
+    }
+
     private String getDownloadLink(String directoryPath) {
         String url = "/api2/repos/" + repository + "/file/" + "?p=" + directoryPath;
         return restClient.get()

@@ -11,8 +11,10 @@ import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
 import org.csekuaa.backend.model.dto.payloads.ApiResponse;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
 import org.csekuaa.backend.service.UserManagementService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -69,4 +71,12 @@ public class UserManagementController {
         List<AlumniUserDetailDTO> userDetail = userManagementService.fetchAllUserInfo();
         return ResponseEntity.ok(userDetail);
     }
+
+    @PostMapping(value = "profile-picture",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @SecureAPI
+    public ResponseEntity<?> uploadProfilePicture(@RequestParam("file") MultipartFile file){
+        userManagementService.uploadProfilePicture(file);
+        return ResponseEntity.ok(ApiResponse.success("successfully profile picture uploaded"));
+    }
+
 }
