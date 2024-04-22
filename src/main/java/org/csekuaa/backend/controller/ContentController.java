@@ -29,6 +29,14 @@ public class ContentController {
         return ResponseEntity.ok(ApiResponse.success("Content created successfully."));
     }
 
+    @PutMapping()
+    @SecureAPI
+    @ADMIN
+    public ResponseEntity<?> updateContent(@Valid @RequestBody ContentDTO contentDTO){
+        contentService.updateContent(contentDTO);
+        return ResponseEntity.ok(ApiResponse.success("Content updated successfully."));
+    }
+
     @GetMapping("{content-type-id}")
     @SecureAPI
     @USER

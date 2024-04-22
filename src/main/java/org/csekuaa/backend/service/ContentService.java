@@ -3,6 +3,8 @@ package org.csekuaa.backend.service;
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.model.dto.content.ContentDTO;
 import org.csekuaa.backend.model.dto.content.ContentTypeDTO;
+import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
+import org.csekuaa.backend.model.entity.AlumniExternalLink;
 import org.csekuaa.backend.model.entity.Content;
 import org.csekuaa.backend.model.entity.ContentType;
 import org.csekuaa.backend.repository.ContentRepository;
@@ -43,5 +45,18 @@ public class ContentService {
 
     public List<ContentDTO> fetchContentByType(byte contentTypeId) {
         return contentRepository.getContentsByContentType(contentTypeId);
+    }
+
+    public void updateContent(ContentDTO contentDTO) {
+        Content content = contentRepository.findById(contentDTO.getContentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Content not available"));
+        content.setModifiedBy(userDetailsParser.getCurrentUseId());
+        content.setContentTypeByContentTypeId(new ContentType(contentDTO.getContentTypeId()));
+        content.setModifiedDateTime(LocalDateTime.now());
+        content.setTitle(contentDTO.getTitle());
+        content.setDescription(contentDTO.getDescription());
+        content.setIsActive(true);
+        contentRepository.save(content);
+
     }
 }

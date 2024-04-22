@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ContentRepository extends JpaRepository<Content,Integer> {
@@ -16,4 +17,7 @@ public interface ContentRepository extends JpaRepository<Content,Integer> {
             where c.isActive=true and c.contentTypeByContentTypeId.contentTypeId =:contentTypeId
             """)
     List<ContentDTO> getContentsByContentType(byte contentTypeId);
+
+    @Override
+    Optional<Content> findById(Integer contentId);
 }

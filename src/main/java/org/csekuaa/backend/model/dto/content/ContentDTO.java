@@ -7,6 +7,7 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ContentDTO {
 
+    Integer contentId;
     String title;
     String description;
     Byte contentTypeId;
