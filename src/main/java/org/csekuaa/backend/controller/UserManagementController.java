@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.annotation.ADMIN;
 import org.csekuaa.backend.annotation.SecureAPI;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
-import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileDTO;
+import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileRequestDTO;
 import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
 import org.csekuaa.backend.model.dto.payloads.ApiResponse;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
@@ -51,7 +51,7 @@ public class UserManagementController {
     @PostMapping("user-info")
     @SecureAPI
     @CrossOrigin(origins = {"http://localhost:3000"})
-    public ResponseEntity<?> createUserInfo(@Valid @RequestBody AlumniUserProfileDTO userInfo){
+    public ResponseEntity<?> createUserInfo(@Valid @RequestBody AlumniUserProfileRequestDTO userInfo){
         userManagementService.createUserInfo(userInfo);
         return ResponseEntity.ok(ApiResponse.success("User information updated successfully."));
     }

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.files.FileManagementSystem;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserContactDetailDTO;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
-import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileDTO;
+import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileRequestDTO;
 import org.csekuaa.backend.model.dto.alumni.MembershipInfoDTO;
 import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
@@ -19,7 +19,6 @@ import org.csekuaa.backend.service.event.UserFileManagementEvent;
 import org.csekuaa.backend.service.event.UserRegistrationEvent;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.format.datetime.DateFormatter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -94,20 +93,19 @@ public class UserManagementService {
                 }).toList();
     }
 
-    public void createUserInfo(AlumniUserProfileDTO userInfo) {
-
+    public void createUserInfo(AlumniUserProfileRequestDTO userInfo) {
         Alumni alumni = alumniRepository.findByRoll(userInfo.getRoll())
                 .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
         alumni.setNickName(userInfo.getNickName());
         alumni.setBloodGroup(userInfo.getBloodGroup());
 //        alumni.setPhoto(userInfo.getPhoto());
         alumni.setPresentAddress(userInfo.getPresentAddress());
-        alumni.setBirthDate(LocalDate.parse(userInfo.getDob(), formatter).atStartOfDay());
-        alumni.setPresentCity(userInfo.getPresentCity());
-        alumni.setPresentCountry(userInfo.getPresentCountry());
+        alumni.setBirthDate(LocalDate.parse(userInfo.getDob()).atStartOfDay());
+        alumni.setPresentCity(new District(userInfo.getPresentCity()));
+        alumni.setPresentCountry(new Country(userInfo.getPresentCountry()));
         alumni.setPermanentAddress(userInfo.getPermanentAddress());
-        alumni.setPermanentCity(userInfo.getPermanentCity());
-        alumni.setPermanentCountry(userInfo.getPermanentCountry());
+        alumni.setPermanentCity(new District(userInfo.getPermanentCity()));
+        alumni.setPermanentCountry(new Country(userInfo.getPermanentCountry()));
         alumni.setProfession(userInfo.getProfession());
         alumni.setDesignation(userInfo.getDesignation());
         alumni.setCompany(userInfo.getCompany());
@@ -155,11 +153,13 @@ public class UserManagementService {
         contactDetail.setPhoneNumber(alumni.getPhone());
         contactDetail.setEmail(alumni.getEmail());
         contactDetail.setPresentAddress(alumni.getPresentAddress());
-        contactDetail.setPresentCity(alumni.getPresentCity());
-        contactDetail.setPresentCountry(alumni.getPresentCountry());
+
+        alumni.getPresentCity().ifPresent(e -> contactDetail.setPresentCity(e.getDistrictName()));
+        alumni.getPermanentCity().ifPresent(e -> contactDetail.setPermanentCity(e.getDistrictName()));
+        alumni.getPresentCountry().ifPresent(e -> contactDetail.setPresentCountry(e.getCountryName()));
+        alumni.getPermanentCountry().ifPresent(e -> contactDetail.setPermanentCountry(e.getCountryName()));
+
         contactDetail.setPermanentAddress(alumni.getPermanentAddress());
-        contactDetail.setPermanentCity(alumni.getPermanentCity());
-        contactDetail.setPermanentCountry(alumni.getPermanentCountry());
         contactDetail.setProfession(alumni.getProfession());
         contactDetail.setDesignation(alumni.getDesignation());
         contactDetail.setCompany(alumni.getCompany());

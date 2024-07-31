@@ -3,18 +3,20 @@ package org.csekuaa.backend.model.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Table(name = "countries")
-public class Countries {
+public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "country_id", nullable = false)
-    private Integer id;
+    private Integer countryId;
 
     @Size(max = 200)
     @NotNull
@@ -26,4 +28,7 @@ public class Countries {
     @Column(name = "dial_code", nullable = false, length = 128)
     private String dialCode;
 
+    public Country(Integer country_id) {
+        this.countryId = country_id;
+    }
 }
