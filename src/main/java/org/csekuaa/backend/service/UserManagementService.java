@@ -19,11 +19,14 @@ import org.csekuaa.backend.service.event.UserFileManagementEvent;
 import org.csekuaa.backend.service.event.UserRegistrationEvent;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -39,6 +42,7 @@ public class UserManagementService {
     private final UserDetailsParser userDetailsParser;
     private final FileManagementSystem fileSystem;
     private final FileSystemRepository fileSystemRepository;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
     public void createUser(AlumniUserDTO alumniUserDTO) {
         String disciplineCode = getDisciplineCodeFromRoll(alumniUserDTO.getRoll());
@@ -91,13 +95,14 @@ public class UserManagementService {
     }
 
     public void createUserInfo(AlumniUserProfileDTO userInfo) {
+
         Alumni alumni = alumniRepository.findByRoll(userInfo.getRoll())
                 .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
         alumni.setNickName(userInfo.getNickName());
         alumni.setBloodGroup(userInfo.getBloodGroup());
-        alumni.setPhoto(userInfo.getPhoto());
+//        alumni.setPhoto(userInfo.getPhoto());
         alumni.setPresentAddress(userInfo.getPresentAddress());
-        alumni.setBirthDate(userInfo.getDob().atStartOfDay());
+        alumni.setBirthDate(LocalDate.parse(userInfo.getDob(), formatter).atStartOfDay());
         alumni.setPresentCity(userInfo.getPresentCity());
         alumni.setPresentCountry(userInfo.getPresentCountry());
         alumni.setPermanentAddress(userInfo.getPermanentAddress());
@@ -126,7 +131,7 @@ public class UserManagementService {
         userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
         userDetail.setPhoto(alumni.getPhoto()==null?"--":getDownloadLink(alumni.getPhoto()));
         userDetail.setContactDetail(createContactDetail(alumni));
-        alumni.getBirthDate().ifPresent(e -> userDetail.setDob(e.toLocalDate()));
+        alumni.getBirthDate().ifPresent(e -> userDetail.setDob(e.toLocalDate().format(formatter)));
         alumni.getBloodGroup().ifPresent(e -> userDetail.setBloodGroup(e.getValue()));
         userDetail.setMembershipInfos(getMembershipInfo(alumni.getUser()));
         return userDetail;
@@ -188,7 +193,7 @@ public class UserManagementService {
                 userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
                 userDetail.setPhoto(alumni.getPhoto()==null?"--":getDownloadLink(alumni.getPhoto()));
                 userDetail.setContactDetail(createContactDetail(alumni));
-                alumni.getBirthDate().ifPresent(e -> userDetail.setDob(e.toLocalDate()));
+                alumni.getBirthDate().ifPresent(e -> userDetail.setDob(e.toLocalDate().format(formatter)));
                 alumni.getBloodGroup().ifPresent(e -> userDetail.setBloodGroup(e.getValue()));
                 userList.add(userDetail);
             }

@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -85,15 +86,21 @@ public class AuthenticationService {
     }
 
     private LoginResponse createTokenResponse(String ipAddress, Alumni alumni) {
+
+        // ISO Date String Formatter.
+        DateTimeFormatter isoFormatterWithoutMillis = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+        LocalDateTime tokenExpireDatetime = LocalDateTime.now().plusMinutes(tokenExpireTime);
+
         String token = jwtTokenService.generateToken(alumni);
         LoginResponse loginResponseDTO = new LoginResponse();
         loginResponseDTO.setToken(EncryptionUtil.encryptJWT(token,aesKey));
         loginResponseDTO.setRefreshToken(jwtTokenService.generateRefreshToken());
-        loginResponseDTO.setExpireTime(tokenExpireTime + " minutes");
+        loginResponseDTO.setExpireTime(tokenExpireDatetime.format(isoFormatterWithoutMillis));
         Token createToken = new Token();
         createToken.setTokenName(token);
         createToken.setTokenStartTime(LocalDateTime.now());
-        createToken.setTokenEndTime(LocalDateTime.now().plusMinutes(tokenExpireTime));
+        createToken.setTokenEndTime(createToken.getTokenStartTime().plusMinutes(tokenExpireTime));
         createToken.setIp(ipAddress);
         createToken.setUser(alumni.getUser());
         tokenRepository.save(createToken);

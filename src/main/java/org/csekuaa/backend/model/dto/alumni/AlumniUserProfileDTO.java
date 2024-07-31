@@ -13,7 +13,7 @@ public class AlumniUserProfileDTO {
     @NotNull
     private BloodGroup bloodGroup;
     @NotNull
-    private LocalDate dob;
+    private String dob;
     private String photo;
     private String presentAddress;
     private String presentCity;
