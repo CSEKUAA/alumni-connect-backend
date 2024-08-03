@@ -201,7 +201,7 @@ public class UserManagementService {
         return userList;
     }
 
-    public void uploadProfilePicture(MultipartFile file) {
+    public String uploadProfilePicture(MultipartFile file) {
         String directoryName="profile";
         String root = userDetailsParser.getRollNumber();
         fileSystem.uploadFile(root,directoryName,file);
@@ -215,6 +215,8 @@ public class UserManagementService {
         currentAlumni.setPhoto(imageLink);
         fileSystem1.setAlumni(currentAlumni);
         fileSystemRepository.save(fileSystem1);
+
+        return getDownloadLink(imageLink);
     }
 
     public String getDownloadLink(String photoLink) {

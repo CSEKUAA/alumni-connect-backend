@@ -75,8 +75,8 @@ public class UserManagementController {
     @PostMapping(value = "profile-picture",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecureAPI
     public ResponseEntity<?> uploadProfilePicture(@RequestParam("file") MultipartFile file){
-        userManagementService.uploadProfilePicture(file);
-        return ResponseEntity.ok(ApiResponse.success("successfully profile picture uploaded"));
+        String fileLink = userManagementService.uploadProfilePicture(file);
+        return ResponseEntity.ok(fileLink);
     }
 
 }
