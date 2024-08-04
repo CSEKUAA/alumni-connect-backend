@@ -17,11 +17,11 @@ public class AlumniUserProfileRequestDTO {
     @NotNull
     private String dob;
     private String presentAddress;
-    private Integer presentCity;
-    private Integer presentCountry;
+    private String presentCity;
+    private String presentCountry;
     private String permanentAddress;
-    private Integer permanentCity;
-    private Integer permanentCountry;
+    private String permanentCity;
+    private String permanentCountry;
     private String profession;
     private String designation;
     private String company;

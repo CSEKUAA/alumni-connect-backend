@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.annotation.SecureAPI;
 import org.csekuaa.backend.model.dto.response.DistrictResponseDTO;
-import org.csekuaa.backend.model.entity.Country;
 import org.csekuaa.backend.service.CountryService;
 import org.csekuaa.backend.service.DistrictService;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +24,12 @@ public class LookupController {
 
     @GetMapping("countries")
     public ResponseEntity<?> getCountries() {
-        List<Country> countries = countryService.getAllCountries();
-        return ResponseEntity.ok(countries);
+        return ResponseEntity.ok(countryService.getAllCountries());
     }
 
-    @GetMapping("districts/{countryId}")
-    public ResponseEntity<?> getCountries(@PathVariable @NotNull int countryId) {
-        List<DistrictResponseDTO> districts = districtService.getDistrictsForCountry(countryId);
+    @GetMapping("districts/{countryName}")
+    public ResponseEntity<?> getCountries(@PathVariable @NotNull String countryName) {
+        List<DistrictResponseDTO> districts = districtService.getDistrictsForCountry(countryName);
         return ResponseEntity.ok(districts);
     }
 }

@@ -2,19 +2,13 @@ package org.csekuaa.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.files.FileManagementSystem;
-import org.csekuaa.backend.model.dto.alumni.AlumniUserContactDetailDTO;
-import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
-import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileRequestDTO;
-import org.csekuaa.backend.model.dto.alumni.MembershipInfoDTO;
+import org.csekuaa.backend.model.dto.alumni.*;
 import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
 import org.csekuaa.backend.model.entity.*;
 import org.csekuaa.backend.model.enums.FileType;
-import org.csekuaa.backend.repository.AlumniRepository;
-import org.csekuaa.backend.repository.DisciplineRepository;
-import org.csekuaa.backend.repository.FileSystemRepository;
-import org.csekuaa.backend.repository.RoleRepository;
+import org.csekuaa.backend.repository.*;
 import org.csekuaa.backend.service.event.UserFileManagementEvent;
 import org.csekuaa.backend.service.event.UserRegistrationEvent;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
@@ -41,7 +35,9 @@ public class UserManagementService {
     private final UserDetailsParser userDetailsParser;
     private final FileManagementSystem fileSystem;
     private final FileSystemRepository fileSystemRepository;
+    private final CountryRepository countryRepository;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private final DistrictRepository districtRepository;
 
     public void createUser(AlumniUserDTO alumniUserDTO) {
         String disciplineCode = getDisciplineCodeFromRoll(alumniUserDTO.getRoll());
@@ -101,11 +97,11 @@ public class UserManagementService {
 //        alumni.setPhoto(userInfo.getPhoto());
         alumni.setPresentAddress(userInfo.getPresentAddress());
         alumni.setBirthDate(LocalDate.parse(userInfo.getDob()).atStartOfDay());
-        alumni.setPresentCity(new District(userInfo.getPresentCity()));
-        alumni.setPresentCountry(new Country(userInfo.getPresentCountry()));
+        alumni.setPresentCity(getDistrict(userInfo.getPresentCity()));
+        alumni.setPresentCountry(getCountry(userInfo.getPresentCountry()));
         alumni.setPermanentAddress(userInfo.getPermanentAddress());
-        alumni.setPermanentCity(new District(userInfo.getPermanentCity()));
-        alumni.setPermanentCountry(new Country(userInfo.getPermanentCountry()));
+        alumni.setPermanentCity(getDistrict(userInfo.getPermanentCity()));
+        alumni.setPermanentCountry(getCountry(userInfo.getPermanentCountry()));
         alumni.setProfession(userInfo.getProfession());
         alumni.setDesignation(userInfo.getDesignation());
         alumni.setCompany(userInfo.getCompany());
@@ -132,6 +128,7 @@ public class UserManagementService {
         alumni.getBirthDate().ifPresent(e -> userDetail.setDob(e.toLocalDate().format(formatter)));
         alumni.getBloodGroup().ifPresent(e -> userDetail.setBloodGroup(e.getValue()));
         userDetail.setMembershipInfos(getMembershipInfo(alumni.getUser()));
+        userDetail.setExternalLinkInfo(getAlumniExternalLinkInfo(alumni));
         return userDetail;
     }
 
@@ -146,6 +143,16 @@ public class UserManagementService {
                     return infoDTO;
                 }).sorted(Comparator.comparing(MembershipInfoDTO::getExpirationOn).reversed())
                 .toList();
+    }
+
+    private List<AlumniExternalLinkInfoDTO> getAlumniExternalLinkInfo(Alumni alumni){
+        return alumni.getAlumniExternalLinks().stream()
+                .map(e -> new AlumniExternalLinkInfoDTO(
+                        e.getAlumniExternalLinkId(),
+                        e.getExternalLinkType().getExternalLinkTypeName(),
+                        e.getUrl(),
+                        e.getDescription()
+                )).toList();
     }
 
     private AlumniUserContactDetailDTO createContactDetail(Alumni alumni) {
@@ -221,5 +228,13 @@ public class UserManagementService {
 
     public String getDownloadLink(String photoLink) {
         return fileSystem.downloadFile(photoLink);
+    }
+
+    private Country getCountry(String countryName){
+        return countryRepository.findByCountryName(countryName);
+    }
+
+    private District getDistrict(String districtName){
+        return districtRepository.findDistrictByDistrictName(districtName);
     }
 }

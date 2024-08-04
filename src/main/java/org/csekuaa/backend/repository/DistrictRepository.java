@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface DistrictRepository extends JpaRepository<District, Integer> {
     List<District> findAllByCountryOrderByDistrictNameAsc(Country country);
+    District findDistrictByDistrictName(String districtName);
 }

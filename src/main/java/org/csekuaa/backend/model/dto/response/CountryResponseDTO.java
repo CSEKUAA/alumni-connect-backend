@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DropdownStringDTO {
-    private String key;
-    private String value;
+public class CountryResponseDTO {
+    private String countryName;
+    private String countryCode;
 }

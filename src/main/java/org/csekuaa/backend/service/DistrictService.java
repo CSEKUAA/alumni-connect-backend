@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.csekuaa.backend.model.dto.response.DistrictResponseDTO;
 import org.csekuaa.backend.model.entity.Country;
 import org.csekuaa.backend.model.entity.District;
+import org.csekuaa.backend.repository.CountryRepository;
 import org.csekuaa.backend.repository.DistrictRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class DistrictService {
+    private final CountryRepository countryRepository;
     private final DistrictRepository districtRepository;
 
     public List<DistrictResponseDTO> getAllDistricts() {
@@ -26,17 +28,16 @@ public class DistrictService {
                 .collect(Collectors.toList());
     }
 
-    public List<DistrictResponseDTO> getDistrictsForCountry(int countryId) {
-        return districtRepository.findAllByCountryOrderByDistrictNameAsc(new Country(countryId)).stream()
+    public List<DistrictResponseDTO> getDistrictsForCountry(String countryName) {
+        return districtRepository.findAllByCountryOrderByDistrictNameAsc(countryRepository.findByCountryName(countryName)).stream()
                 .map(this::toDistrictResponseDTO)
                 .collect(Collectors.toList());
     }
 
     private DistrictResponseDTO toDistrictResponseDTO(District district) {
         DistrictResponseDTO dto = new DistrictResponseDTO();
-        dto.setDistrictId(district.getDistrictId());
-        dto.setCountryId(district.getCountry().getCountryId());
         dto.setDistrictName(district.getDistrictName());
+        dto.setCountryName(district.getCountry().getCountryName());
         return dto;
     }
 }

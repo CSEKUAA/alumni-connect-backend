@@ -9,7 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class DistrictResponseDTO {
-    private int districtId;
-    private int countryId;
     private String districtName;
+    private String countryName;
 }

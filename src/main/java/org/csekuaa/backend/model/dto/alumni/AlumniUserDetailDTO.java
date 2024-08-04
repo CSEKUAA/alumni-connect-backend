@@ -18,7 +18,9 @@ public class AlumniUserDetailDTO {
     private String bloodGroup;
     private String photo;
     private AlumniUserContactDetailDTO contactDetail;
-    private AlumniExternalLinkInfoDTO externalLinkInfo;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<AlumniExternalLinkInfoDTO> externalLinkInfo;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<MembershipInfoDTO> membershipInfos;
