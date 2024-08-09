@@ -21,6 +21,7 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class MembershipController {
     private final MembershipService membershipService;
+
     @GetMapping("alumni/membership-type")
     public ResponseEntity<?> getAlumniMemberShip(){
         List<MembershipTypeDTO> membershipTypes = membershipService.getMemberShipTypes();
