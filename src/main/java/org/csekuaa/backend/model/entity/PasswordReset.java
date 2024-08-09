@@ -31,7 +31,7 @@ public class PasswordReset {
     @Column(name = "is_reset")
     private Boolean isReset;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 

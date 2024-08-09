@@ -136,10 +136,13 @@ public class UserManagementService {
         return user.getMemberships().stream()
                 .map(e -> {
                     MembershipInfoDTO infoDTO = new MembershipInfoDTO();
-                    infoDTO.setMembershipStatus(e.getMembershipApprovedTime()
-                            .isAfter(LocalDateTime.now()) ? MembershipType.Expired : MembershipType.Active);
+                    e.getMembershipApprovedTime().ifPresent(ma->{
+                        infoDTO.setMembershipStatus(ma.isAfter(LocalDateTime.now()) ? MembershipType.Expired : MembershipType.Active);
+                    });
                     infoDTO.setMemberShipType(e.getMembershipType().getMembershipType());
-                    infoDTO.setExpirationOn(e.getMembershipApprovedTime().toLocalDate());
+                    e.getMembershipApprovedTime().ifPresent(ma->{
+                        infoDTO.setExpirationOn(ma.toLocalDate().format(formatter));
+                    });
                     return infoDTO;
                 }).sorted(Comparator.comparing(MembershipInfoDTO::getExpirationOn).reversed())
                 .toList();

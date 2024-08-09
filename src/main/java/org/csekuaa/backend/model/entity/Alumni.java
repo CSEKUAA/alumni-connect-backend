@@ -113,7 +113,7 @@ public class Alumni {
     @Column(name = "approval_date")
     private LocalDate approvalDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "membership_type")
     private MembershipType membershipType;
 

@@ -32,7 +32,7 @@ public class Token {
     @Column(name = "ip", nullable = false, length = 45)
     private String ip;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
