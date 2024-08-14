@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/event-type/")
+@RequestMapping("/api/event-type")
 @RequiredArgsConstructor
 @Tag(name = "EventType Type")
 @CrossOrigin(origins = "*")

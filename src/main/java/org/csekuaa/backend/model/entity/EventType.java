@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "event_type", schema = "csekuaa")
+@Table(name = "event_type")
 public class EventType {
     @Id
     @Column(name = "event_type_id", nullable = false)
