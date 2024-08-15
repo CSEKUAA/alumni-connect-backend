@@ -8,7 +8,12 @@ import org.csekuaa.backend.annotation.ADMIN;
 import org.csekuaa.backend.annotation.SecureAPI;
 import org.csekuaa.backend.model.dto.event.EventDTO;
 import org.csekuaa.backend.model.dto.request.EventRequestDTO;
+import org.csekuaa.backend.model.dto.request.PageRequestDTO;
+import org.csekuaa.backend.model.dto.response.EventResponseDTO;
+import org.csekuaa.backend.model.dto.response.PagedResponseDTO;
 import org.csekuaa.backend.service.EventService;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,10 +28,11 @@ import java.util.List;
 public class EventController {
     private final EventService eventService;
 
-    @GetMapping
+    @PostMapping("/all")
     @Operation(summary = "view event list", description = "anyone is capable to view event list")
-    public ResponseEntity<List<EventDTO>> getEventList() {
-        return ResponseEntity.ok(eventService.findAll());
+    public ResponseEntity<Page<EventResponseDTO>> getEventList(@RequestBody PageRequestDTO pageRequestDTO) {
+        Page<EventResponseDTO> response = eventService.findAll(pageRequestDTO);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
