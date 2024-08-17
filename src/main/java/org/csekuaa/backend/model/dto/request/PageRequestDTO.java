@@ -11,5 +11,6 @@ import lombok.*;
 public class PageRequestDTO {
     private int page;
     private int size;
+    private String disciplineName="";
 }
 

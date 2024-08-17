@@ -6,6 +6,7 @@ import org.csekuaa.backend.model.dto.alumni.*;
 import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
+import org.csekuaa.backend.model.dto.request.PageRequestDTO;
 import org.csekuaa.backend.model.entity.*;
 import org.csekuaa.backend.model.enums.FileType;
 import org.csekuaa.backend.repository.*;
@@ -13,6 +14,9 @@ import org.csekuaa.backend.service.event.UserFileManagementEvent;
 import org.csekuaa.backend.service.event.UserRegistrationEvent;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,9 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -113,23 +117,52 @@ public class UserManagementService {
         String roll = userDetailsParser.getRollNumber();
         Alumni alumni = alumniRepository.findByRoll(roll)
                 .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
-        AlumniUserDetailDTO userDetail = new AlumniUserDetailDTO();
-        userDetail.setRoll(roll);
-        String[] fullName = alumni.getFullName().split(" ");
-        userDetail.setFirstName(fullName[0]);
-        if (fullName.length == 2) {
-            userDetail.setLastName(fullName[1]);
-        }
-        userDetail.setNickName(alumni.getNickName());
-        userDetail.setFullName(alumni.getFullName());
-        userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
-        userDetail.setPhoto(alumni.getPhoto()==null?"--":getDownloadLink(alumni.getPhoto()));
-        userDetail.setContactDetail(createContactDetail(alumni));
-        alumni.getBirthDate().ifPresent(e -> userDetail.setDob(e.toLocalDate().format(formatter)));
-        alumni.getBloodGroup().ifPresent(e -> userDetail.setBloodGroup(e.getValue()));
+        AlumniUserDetailDTO userDetail = toAlumniDTO(alumni);
         userDetail.setMembershipInfos(getMembershipInfo(alumni.getUser()));
         userDetail.setExternalLinkInfo(getAlumniExternalLinkInfo(alumni));
         return userDetail;
+    }
+
+    public void addDiscipline(DisciplineDTO dto) {
+        Discipline discipline = new Discipline();
+        discipline.setDisciplineCode(dto.getDisciplineCode());
+        discipline.setDisciplineFullName(dto.getFullName());
+        discipline.setDisciplineShortName(dto.getShortName());
+        disciplineRepository.save(discipline);
+    }
+
+    public List<AlumniUserDetailDTO> fetchAllUserInfo() {
+        List<Alumni> alumniList = alumniRepository.findAll();
+        return alumniList.stream().map(this::toAlumniDTO).collect(Collectors.toList());
+    }
+
+    public Page<AlumniUserDetailDTO> fetchAllUserInfoPaged(PageRequestDTO pageRequestDTO) {
+        Discipline discipline=disciplineRepository.findDisciplineByDisciplineShortName(pageRequestDTO.getDisciplineName());
+        Page<Alumni> alumniList = alumniRepository.findAllByDiscipline(discipline, PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize(), Sort.by(Sort.Direction.ASC, "roll")));
+
+        return alumniList.map(this::toAlumniDTO);
+    }
+
+    public String uploadProfilePicture(MultipartFile file) {
+        String directoryName="profile";
+        String root = userDetailsParser.getRollNumber();
+        fileSystem.uploadFile(root,directoryName,file);
+        FileSystem fileSystem1 = new FileSystem();
+        fileSystem1.setFileName(file.getOriginalFilename());
+        fileSystem1.setVersion(1);
+        fileSystem1.setCreatedAt(LocalDateTime.now());
+        fileSystem1.setFileType(FileType.PROFILE);
+        Alumni currentAlumni = userDetailsParser.getCurrentAlumni();
+        String imageLink =  "/" + root + "/" + directoryName + "/" + file.getOriginalFilename();
+        currentAlumni.setPhoto(imageLink);
+        fileSystem1.setAlumni(currentAlumni);
+        fileSystemRepository.save(fileSystem1);
+
+        return getDownloadLink(imageLink);
+    }
+
+    public String getDownloadLink(String photoLink) {
+        return fileSystem.downloadFile(photoLink);
     }
 
     private List<MembershipInfoDTO> getMembershipInfo(User user) {
@@ -177,67 +210,30 @@ public class UserManagementService {
         return contactDetail;
     }
 
-    public void addDiscipline(DisciplineDTO dto) {
-        Discipline discipline = new Discipline();
-        discipline.setDisciplineCode(dto.getDisciplineCode());
-        discipline.setDisciplineFullName(dto.getFullName());
-        discipline.setDisciplineShortName(dto.getShortName());
-        disciplineRepository.save(discipline);
-    }
-
-    public List<AlumniUserDetailDTO> fetchAllUserInfo() {
-        List<Alumni> alumniList = alumniRepository.findAll();
-        List<AlumniUserDetailDTO> userList = new ArrayList<>();
-
-        if(!alumniList.isEmpty()) {
-            for(Alumni alumni: alumniList){
-                AlumniUserDetailDTO userDetail = new AlumniUserDetailDTO();
-                userDetail.setRoll(alumni.getRoll());
-                String[] fullName = alumni.getFullName().split(" ");
-                userDetail.setFirstName(fullName[0]);
-                if (fullName.length == 2) {
-                    userDetail.setLastName(fullName[1]);
-                }
-                userDetail.setNickName(alumni.getNickName());
-                userDetail.setFullName(alumni.getFullName());
-                userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
-                userDetail.setPhoto(alumni.getPhoto()==null?"--":getDownloadLink(alumni.getPhoto()));
-                userDetail.setContactDetail(createContactDetail(alumni));
-                alumni.getBirthDate().ifPresent(e -> userDetail.setDob(e.toLocalDate().format(formatter)));
-                alumni.getBloodGroup().ifPresent(e -> userDetail.setBloodGroup(e.getValue()));
-                userList.add(userDetail);
-            }
-        }
-        return userList;
-    }
-
-    public String uploadProfilePicture(MultipartFile file) {
-        String directoryName="profile";
-        String root = userDetailsParser.getRollNumber();
-        fileSystem.uploadFile(root,directoryName,file);
-        FileSystem fileSystem1 = new FileSystem();
-        fileSystem1.setFileName(file.getOriginalFilename());
-        fileSystem1.setVersion(1);
-        fileSystem1.setCreatedAt(LocalDateTime.now());
-        fileSystem1.setFileType(FileType.PROFILE);
-        Alumni currentAlumni = userDetailsParser.getCurrentAlumni();
-        String imageLink =  "/" + root + "/" + directoryName + "/" + file.getOriginalFilename();
-        currentAlumni.setPhoto(imageLink);
-        fileSystem1.setAlumni(currentAlumni);
-        fileSystemRepository.save(fileSystem1);
-
-        return getDownloadLink(imageLink);
-    }
-
-    public String getDownloadLink(String photoLink) {
-        return fileSystem.downloadFile(photoLink);
-    }
-
     private Country getCountry(String countryName){
         return countryRepository.findByCountryName(countryName);
     }
 
     private District getDistrict(String districtName){
         return districtRepository.findDistrictByDistrictName(districtName);
+    }
+
+    private AlumniUserDetailDTO toAlumniDTO(Alumni alumni){
+        AlumniUserDetailDTO userDetail = new AlumniUserDetailDTO();
+        userDetail.setRoll(alumni.getRoll());
+        String[] fullName = alumni.getFullName().split(" ");
+        userDetail.setFirstName(fullName[0]);
+        if (fullName.length == 2) {
+            userDetail.setLastName(fullName[1]);
+        }
+        userDetail.setNickName(alumni.getNickName());
+        userDetail.setFullName(alumni.getFullName());
+        userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
+        userDetail.setPhoto(alumni.getPhoto()==null?"--":getDownloadLink(alumni.getPhoto()));
+        userDetail.setContactDetail(createContactDetail(alumni));
+        alumni.getBirthDate().ifPresent(e -> userDetail.setDob(e.toLocalDate().format(formatter)));
+        alumni.getBloodGroup().ifPresent(e -> userDetail.setBloodGroup(e.getValue()));
+
+        return userDetail;
     }
 }

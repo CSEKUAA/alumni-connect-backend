@@ -3,7 +3,7 @@ package org.csekuaa.backend.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.csekuaa.backend.model.dto.event.EventDTO;
+import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.model.dto.request.EventRequestDTO;
 import org.csekuaa.backend.model.dto.request.PageRequestDTO;
 import org.csekuaa.backend.model.dto.response.EventResponseDTO;
@@ -18,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +33,9 @@ public class EventService {
         return eventPage.map(this::toDTO);
     }
 
-    public EventDTO findById(Integer id) {
-        return eventMapper.toDto(eventRepository.findById(id).orElse(null));
+    public EventResponseDTO findById(Integer id) {
+        Event event = eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No event found with id: " + id));
+        return toDTO(event);
     }
 
     @Transactional

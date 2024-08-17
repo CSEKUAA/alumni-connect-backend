@@ -1,0 +1,1 @@
+ALTER TABLE event MODIFY event_description VARCHAR(500) NOT NULL;

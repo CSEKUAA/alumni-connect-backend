@@ -10,7 +10,9 @@ import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileRequestDTO;
 import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
 import org.csekuaa.backend.model.dto.payloads.ApiResponse;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
+import org.csekuaa.backend.model.dto.request.PageRequestDTO;
 import org.csekuaa.backend.service.UserManagementService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +52,6 @@ public class UserManagementController {
 
     @PostMapping("user-info")
     @SecureAPI
-    @CrossOrigin(origins = {"http://localhost:3000"})
     public ResponseEntity<?> createUserInfo(@Valid @RequestBody AlumniUserProfileRequestDTO userInfo){
         userManagementService.createUserInfo(userInfo);
         return ResponseEntity.ok(ApiResponse.success("User information updated successfully."));
@@ -58,7 +59,6 @@ public class UserManagementController {
 
     @GetMapping("user-info")
     @SecureAPI
-    @CrossOrigin(origins = {"http://localhost:3000"})
     public ResponseEntity<?> fetchUserInfo(){
         AlumniUserDetailDTO userDetail = userManagementService.fetchCurrentUserInfo();
         return ResponseEntity.ok(userDetail);
@@ -66,9 +66,17 @@ public class UserManagementController {
 
     @GetMapping("all-user")
     @SecureAPI
-    @CrossOrigin(origins = {"http://localhost:3000"})
-    public ResponseEntity<?> fetchAllUserInfo(){
+    @ADMIN
+    public ResponseEntity<List<AlumniUserDetailDTO>> fetchAllUserInfo(){
         List<AlumniUserDetailDTO> userDetail = userManagementService.fetchAllUserInfo();
+        return ResponseEntity.ok(userDetail);
+    }
+
+    @PostMapping("all-user")
+    @SecureAPI
+    @ADMIN
+    public ResponseEntity<Page<AlumniUserDetailDTO>> fetchAllUserInfoPaged(@RequestBody PageRequestDTO pageRequestDTO){
+        Page<AlumniUserDetailDTO> userDetail = userManagementService.fetchAllUserInfoPaged(pageRequestDTO);
         return ResponseEntity.ok(userDetail);
     }
 

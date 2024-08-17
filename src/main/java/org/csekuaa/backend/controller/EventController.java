@@ -37,7 +37,7 @@ public class EventController {
 
     @GetMapping("/{id}")
     @Operation(summary = "view event", description = "anyone is capable to view event details")
-    public ResponseEntity<EventDTO> getEvent(@PathVariable @NotNull int id) {
+    public ResponseEntity<EventResponseDTO> getEvent(@PathVariable @NotNull int id) {
         return ResponseEntity.ok(eventService.findById(id));
     }
 
