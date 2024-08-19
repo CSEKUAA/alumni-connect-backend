@@ -12,12 +12,17 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "event", schema = "csekuaa")
+@Table(name = "event")
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id", nullable = false)
     private Integer id;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "event_type_id", nullable = false)
+    private EventType eventType;
 
     @Size(max = 45)
     @NotNull
@@ -44,5 +49,11 @@ public class Event {
     @Size(max = 200)
     @Column(name = "event_link", length = 200)
     private String eventLink;
+
+    @Column(name = "created_date")
+    private Instant createdDate;
+
+    @Column(name = "updated_on")
+    private Instant updatedOn;
 
 }

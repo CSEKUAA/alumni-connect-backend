@@ -3,8 +3,10 @@ package org.csekuaa.backend.model.dto.event;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Value;
+import org.csekuaa.backend.model.entity.EventType;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
@@ -15,16 +17,18 @@ public class EventDTO {
     Integer id;
     @NotNull
     @Size(max = 45)
-    String name;
+    String eventName;
+    @NotNull
+    EventType eventType;
     @Size(max = 200)
-    String description;
+    String eventDescription;
     @NotNull
-    Instant date;
+    Instant eventDate;
     @NotNull
-    LocalTime time;
+    LocalTime eventTime;
     @NotNull
     @Size(max = 45)
-    String location;
+    String eventLocation;
     @Size(max = 200)
-    String link;
+    String eventLink;
 }

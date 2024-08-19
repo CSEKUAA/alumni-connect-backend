@@ -4,7 +4,8 @@ import lombok.Data;
 
 @Data
 public class ExternalLinkDTO {
-    private String externalLinkName;
+    private int externalLinkId;
+    private String externalTypeName;
     private String externalLinkUrl;
     private String description;
 

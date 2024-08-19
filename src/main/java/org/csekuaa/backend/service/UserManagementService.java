@@ -2,31 +2,31 @@ package org.csekuaa.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.files.FileManagementSystem;
-import org.csekuaa.backend.model.dto.alumni.AlumniUserContactDetailDTO;
-import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
-import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileDTO;
-import org.csekuaa.backend.model.dto.alumni.MembershipInfoDTO;
+import org.csekuaa.backend.model.dto.alumni.*;
 import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
+import org.csekuaa.backend.model.dto.request.PageRequestDTO;
 import org.csekuaa.backend.model.entity.*;
 import org.csekuaa.backend.model.enums.FileType;
-import org.csekuaa.backend.repository.AlumniRepository;
-import org.csekuaa.backend.repository.DisciplineRepository;
-import org.csekuaa.backend.repository.FileSystemRepository;
-import org.csekuaa.backend.repository.RoleRepository;
+import org.csekuaa.backend.repository.*;
 import org.csekuaa.backend.service.event.UserFileManagementEvent;
 import org.csekuaa.backend.service.event.UserRegistrationEvent;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +39,9 @@ public class UserManagementService {
     private final UserDetailsParser userDetailsParser;
     private final FileManagementSystem fileSystem;
     private final FileSystemRepository fileSystemRepository;
+    private final CountryRepository countryRepository;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private final DistrictRepository districtRepository;
 
     public void createUser(AlumniUserDTO alumniUserDTO) {
         String disciplineCode = getDisciplineCodeFromRoll(alumniUserDTO.getRoll());
@@ -90,19 +93,19 @@ public class UserManagementService {
                 }).toList();
     }
 
-    public void createUserInfo(AlumniUserProfileDTO userInfo) {
+    public void createUserInfo(AlumniUserProfileRequestDTO userInfo) {
         Alumni alumni = alumniRepository.findByRoll(userInfo.getRoll())
                 .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
         alumni.setNickName(userInfo.getNickName());
         alumni.setBloodGroup(userInfo.getBloodGroup());
-        alumni.setPhoto(userInfo.getPhoto());
+//        alumni.setPhoto(userInfo.getPhoto());
         alumni.setPresentAddress(userInfo.getPresentAddress());
-        alumni.setBirthDate(userInfo.getDob().atStartOfDay());
-        alumni.setPresentCity(userInfo.getPresentCity());
-        alumni.setPresentCountry(userInfo.getPresentCountry());
+        alumni.setBirthDate(LocalDate.parse(userInfo.getDob()).atStartOfDay());
+        alumni.setPresentCity(getDistrict(userInfo.getPresentCity()));
+        alumni.setPresentCountry(getCountry(userInfo.getPresentCountry()));
         alumni.setPermanentAddress(userInfo.getPermanentAddress());
-        alumni.setPermanentCity(userInfo.getPermanentCity());
-        alumni.setPermanentCountry(userInfo.getPermanentCountry());
+        alumni.setPermanentCity(getDistrict(userInfo.getPermanentCity()));
+        alumni.setPermanentCountry(getCountry(userInfo.getPermanentCountry()));
         alumni.setProfession(userInfo.getProfession());
         alumni.setDesignation(userInfo.getDesignation());
         alumni.setCompany(userInfo.getCompany());
@@ -114,52 +117,10 @@ public class UserManagementService {
         String roll = userDetailsParser.getRollNumber();
         Alumni alumni = alumniRepository.findByRoll(roll)
                 .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
-        AlumniUserDetailDTO userDetail = new AlumniUserDetailDTO();
-        userDetail.setRoll(roll);
-        String[] fullName = alumni.getFullName().split(" ");
-        userDetail.setFirstName(fullName[0]);
-        if (fullName.length == 2) {
-            userDetail.setLastName(fullName[1]);
-        }
-        userDetail.setNickName(alumni.getNickName());
-        userDetail.setFullName(alumni.getFullName());
-        userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
-        userDetail.setPhoto(alumni.getPhoto()==null?"--":getDownloadLink(alumni.getPhoto()));
-        userDetail.setContactDetail(createContactDetail(alumni));
-        alumni.getBirthDate().ifPresent(e -> userDetail.setDob(e.toLocalDate()));
-        alumni.getBloodGroup().ifPresent(e -> userDetail.setBloodGroup(e.getValue()));
+        AlumniUserDetailDTO userDetail = toAlumniDTO(alumni);
         userDetail.setMembershipInfos(getMembershipInfo(alumni.getUser()));
+        userDetail.setExternalLinkInfo(getAlumniExternalLinkInfo(alumni));
         return userDetail;
-    }
-
-    private List<MembershipInfoDTO> getMembershipInfo(User user) {
-        return user.getMemberships().stream()
-                .map(e -> {
-                    MembershipInfoDTO infoDTO = new MembershipInfoDTO();
-                    infoDTO.setMembershipStatus(e.getMembershipApprovedTime()
-                            .isAfter(LocalDateTime.now()) ? MembershipType.Expired : MembershipType.Active);
-                    infoDTO.setMemberShipType(e.getMembershipType().getMembershipType());
-                    infoDTO.setExpirationOn(e.getMembershipApprovedTime().toLocalDate());
-                    return infoDTO;
-                }).sorted(Comparator.comparing(MembershipInfoDTO::getExpirationOn).reversed())
-                .toList();
-    }
-
-    private AlumniUserContactDetailDTO createContactDetail(Alumni alumni) {
-        AlumniUserContactDetailDTO contactDetail = new AlumniUserContactDetailDTO();
-        contactDetail.setPhoneNumber(alumni.getPhone());
-        contactDetail.setEmail(alumni.getEmail());
-        contactDetail.setPresentAddress(alumni.getPresentAddress());
-        contactDetail.setPresentCity(alumni.getPresentCity());
-        contactDetail.setPresentCountry(alumni.getPresentCountry());
-        contactDetail.setPermanentAddress(alumni.getPermanentAddress());
-        contactDetail.setPermanentCity(alumni.getPermanentCity());
-        contactDetail.setPermanentCountry(alumni.getPermanentCountry());
-        contactDetail.setProfession(alumni.getProfession());
-        contactDetail.setDesignation(alumni.getDesignation());
-        contactDetail.setCompany(alumni.getCompany());
-        contactDetail.setCompanyAddress(alumni.getCompanyAddress());
-        return contactDetail;
     }
 
     public void addDiscipline(DisciplineDTO dto) {
@@ -172,31 +133,17 @@ public class UserManagementService {
 
     public List<AlumniUserDetailDTO> fetchAllUserInfo() {
         List<Alumni> alumniList = alumniRepository.findAll();
-        List<AlumniUserDetailDTO> userList = new ArrayList<>();
-
-        if(!alumniList.isEmpty()) {
-            for(Alumni alumni: alumniList){
-                AlumniUserDetailDTO userDetail = new AlumniUserDetailDTO();
-                userDetail.setRoll(alumni.getRoll());
-                String[] fullName = alumni.getFullName().split(" ");
-                userDetail.setFirstName(fullName[0]);
-                if (fullName.length == 2) {
-                    userDetail.setLastName(fullName[1]);
-                }
-                userDetail.setNickName(alumni.getNickName());
-                userDetail.setFullName(alumni.getFullName());
-                userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
-                userDetail.setPhoto(alumni.getPhoto()==null?"--":getDownloadLink(alumni.getPhoto()));
-                userDetail.setContactDetail(createContactDetail(alumni));
-                alumni.getBirthDate().ifPresent(e -> userDetail.setDob(e.toLocalDate()));
-                alumni.getBloodGroup().ifPresent(e -> userDetail.setBloodGroup(e.getValue()));
-                userList.add(userDetail);
-            }
-        }
-        return userList;
+        return alumniList.stream().map(this::toAlumniDTO).collect(Collectors.toList());
     }
 
-    public void uploadProfilePicture(MultipartFile file) {
+    public Page<AlumniUserDetailDTO> fetchAllUserInfoPaged(PageRequestDTO pageRequestDTO) {
+        Discipline discipline=disciplineRepository.findDisciplineByDisciplineShortName(pageRequestDTO.getDisciplineName());
+        Page<Alumni> alumniList = alumniRepository.findAllByDiscipline(discipline, PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize(), Sort.by(Sort.Direction.ASC, "roll")));
+
+        return alumniList.map(this::toAlumniDTO);
+    }
+
+    public String uploadProfilePicture(MultipartFile file) {
         String directoryName="profile";
         String root = userDetailsParser.getRollNumber();
         fileSystem.uploadFile(root,directoryName,file);
@@ -210,9 +157,83 @@ public class UserManagementService {
         currentAlumni.setPhoto(imageLink);
         fileSystem1.setAlumni(currentAlumni);
         fileSystemRepository.save(fileSystem1);
+
+        return getDownloadLink(imageLink);
     }
 
     public String getDownloadLink(String photoLink) {
         return fileSystem.downloadFile(photoLink);
+    }
+
+    private List<MembershipInfoDTO> getMembershipInfo(User user) {
+        return user.getMemberships().stream()
+                .map(e -> {
+                    MembershipInfoDTO infoDTO = new MembershipInfoDTO();
+                    e.getMembershipApprovedTime().ifPresent(ma->{
+                        infoDTO.setMembershipStatus(ma.isAfter(LocalDateTime.now()) ? MembershipType.Expired : MembershipType.Active);
+                    });
+                    infoDTO.setMemberShipType(e.getMembershipType().getMembershipType());
+                    e.getMembershipApprovedTime().ifPresent(ma->{
+                        infoDTO.setExpirationOn(ma.toLocalDate().format(formatter));
+                    });
+                    return infoDTO;
+                }).sorted(Comparator.comparing(MembershipInfoDTO::getExpirationOn).reversed())
+                .toList();
+    }
+
+    private List<AlumniExternalLinkInfoDTO> getAlumniExternalLinkInfo(Alumni alumni){
+        return alumni.getAlumniExternalLinks().stream()
+                .map(e -> new AlumniExternalLinkInfoDTO(
+                        e.getAlumniExternalLinkId(),
+                        e.getExternalLinkType().getExternalLinkTypeName(),
+                        e.getUrl(),
+                        e.getDescription()
+                )).toList();
+    }
+
+    private AlumniUserContactDetailDTO createContactDetail(Alumni alumni) {
+        AlumniUserContactDetailDTO contactDetail = new AlumniUserContactDetailDTO();
+        contactDetail.setPhoneNumber(alumni.getPhone());
+        contactDetail.setEmail(alumni.getEmail());
+        contactDetail.setPresentAddress(alumni.getPresentAddress());
+
+        alumni.getPresentCity().ifPresent(e -> contactDetail.setPresentCity(e.getDistrictName()));
+        alumni.getPermanentCity().ifPresent(e -> contactDetail.setPermanentCity(e.getDistrictName()));
+        alumni.getPresentCountry().ifPresent(e -> contactDetail.setPresentCountry(e.getCountryName()));
+        alumni.getPermanentCountry().ifPresent(e -> contactDetail.setPermanentCountry(e.getCountryName()));
+
+        contactDetail.setPermanentAddress(alumni.getPermanentAddress());
+        contactDetail.setProfession(alumni.getProfession());
+        contactDetail.setDesignation(alumni.getDesignation());
+        contactDetail.setCompany(alumni.getCompany());
+        contactDetail.setCompanyAddress(alumni.getCompanyAddress());
+        return contactDetail;
+    }
+
+    private Country getCountry(String countryName){
+        return countryRepository.findByCountryName(countryName);
+    }
+
+    private District getDistrict(String districtName){
+        return districtRepository.findDistrictByDistrictName(districtName);
+    }
+
+    private AlumniUserDetailDTO toAlumniDTO(Alumni alumni){
+        AlumniUserDetailDTO userDetail = new AlumniUserDetailDTO();
+        userDetail.setRoll(alumni.getRoll());
+        String[] fullName = alumni.getFullName().split(" ");
+        userDetail.setFirstName(fullName[0]);
+        if (fullName.length == 2) {
+            userDetail.setLastName(fullName[1]);
+        }
+        userDetail.setNickName(alumni.getNickName());
+        userDetail.setFullName(alumni.getFullName());
+        userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
+        userDetail.setPhoto(alumni.getPhoto()==null?"--":getDownloadLink(alumni.getPhoto()));
+        userDetail.setContactDetail(createContactDetail(alumni));
+        alumni.getBirthDate().ifPresent(e -> userDetail.setDob(e.toLocalDate().format(formatter)));
+        alumni.getBloodGroup().ifPresent(e -> userDetail.setBloodGroup(e.getValue()));
+
+        return userDetail;
     }
 }

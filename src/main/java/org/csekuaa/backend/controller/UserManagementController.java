@@ -6,11 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.annotation.ADMIN;
 import org.csekuaa.backend.annotation.SecureAPI;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
-import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileDTO;
+import org.csekuaa.backend.model.dto.alumni.AlumniUserProfileRequestDTO;
 import org.csekuaa.backend.model.dto.auth.AlumniUserDTO;
 import org.csekuaa.backend.model.dto.payloads.ApiResponse;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
+import org.csekuaa.backend.model.dto.request.PageRequestDTO;
 import org.csekuaa.backend.service.UserManagementService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,15 +52,13 @@ public class UserManagementController {
 
     @PostMapping("user-info")
     @SecureAPI
-    @CrossOrigin(origins = {"http://localhost:3000"})
-    public ResponseEntity<?> createUserInfo(@Valid @RequestBody AlumniUserProfileDTO userInfo){
+    public ResponseEntity<?> createUserInfo(@Valid @RequestBody AlumniUserProfileRequestDTO userInfo){
         userManagementService.createUserInfo(userInfo);
         return ResponseEntity.ok(ApiResponse.success("User information updated successfully."));
     }
 
     @GetMapping("user-info")
     @SecureAPI
-    @CrossOrigin(origins = {"http://localhost:3000"})
     public ResponseEntity<?> fetchUserInfo(){
         AlumniUserDetailDTO userDetail = userManagementService.fetchCurrentUserInfo();
         return ResponseEntity.ok(userDetail);
@@ -66,17 +66,25 @@ public class UserManagementController {
 
     @GetMapping("all-user")
     @SecureAPI
-    @CrossOrigin(origins = {"http://localhost:3000"})
-    public ResponseEntity<?> fetchAllUserInfo(){
+    @ADMIN
+    public ResponseEntity<List<AlumniUserDetailDTO>> fetchAllUserInfo(){
         List<AlumniUserDetailDTO> userDetail = userManagementService.fetchAllUserInfo();
+        return ResponseEntity.ok(userDetail);
+    }
+
+    @PostMapping("all-user")
+    @SecureAPI
+    @ADMIN
+    public ResponseEntity<Page<AlumniUserDetailDTO>> fetchAllUserInfoPaged(@RequestBody PageRequestDTO pageRequestDTO){
+        Page<AlumniUserDetailDTO> userDetail = userManagementService.fetchAllUserInfoPaged(pageRequestDTO);
         return ResponseEntity.ok(userDetail);
     }
 
     @PostMapping(value = "profile-picture",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecureAPI
     public ResponseEntity<?> uploadProfilePicture(@RequestParam("file") MultipartFile file){
-        userManagementService.uploadProfilePicture(file);
-        return ResponseEntity.ok(ApiResponse.success("successfully profile picture uploaded"));
+        String fileLink = userManagementService.uploadProfilePicture(file);
+        return ResponseEntity.ok(fileLink);
     }
 
 }

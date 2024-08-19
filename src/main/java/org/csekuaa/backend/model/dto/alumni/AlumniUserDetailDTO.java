@@ -14,11 +14,13 @@ public class AlumniUserDetailDTO {
     private String nickName;
     private String fullName;
     private String discipline;
-    private LocalDate dob;
+    private String dob;
     private String bloodGroup;
     private String photo;
     private AlumniUserContactDetailDTO contactDetail;
-    private AlumniExternalLinkInfoDTO externalLinkInfo;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<AlumniExternalLinkInfoDTO> externalLinkInfo;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<MembershipInfoDTO> membershipInfos;

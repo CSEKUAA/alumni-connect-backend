@@ -24,6 +24,11 @@ import java.util.List;
 public class ExternalLinkController {
     private final ExternalLinkService externalLinkService;
 
+    @GetMapping("alumni/external-link/type")
+    public ResponseEntity<?> getExternalLinkTypes(){
+        return ResponseEntity.ok(externalLinkService.getAllExternalLinkTypes());
+    }
+
     @PostMapping("alumni/external-link/type")
     @ADMIN
     public ResponseEntity<?> createExternalLinkType(@RequestBody ExternalLinkTypeDTO externalLinkTypeDTO){
@@ -37,15 +42,27 @@ public class ExternalLinkController {
        return ResponseEntity.ok(ApiResponse.success("external link added successfully"));
     }
 
+    @PostMapping("alumni/external-link/batch-update")
+    public ResponseEntity<?> updateExternalLinks(@RequestBody List<ExternalLinkUpdateDTO> externalLinkDTO){
+        externalLinkService.updateExternalLinks(externalLinkDTO);
+        return ResponseEntity.ok(ApiResponse.success("external link updated successfully"));
+    }
+
     @DeleteMapping("alumni/external-link/{ids}")
     public ResponseEntity<?> removeExternalLinks(@PathVariable("ids") List<Integer> ids){
-        externalLinkService.removeExternalLink(ids);
+        externalLinkService.removeExternalLinks(ids);
+        return ResponseEntity.ok(ApiResponse.success("external link removed successfully"));
+    }
+
+    @PostMapping("alumni/external-link/{id}")
+    public ResponseEntity<?> removeExternalLinks(@PathVariable("id") Integer id){
+        externalLinkService.removeExternalLink(id);
         return ResponseEntity.ok(ApiResponse.success("external link removed successfully"));
     }
 
     @PutMapping("alumni/external-link")
     public ResponseEntity<?>  updateExternalLinks(@RequestBody ExternalLinkUpdateDTO externalLinkUpdateDTO){
-        externalLinkService.updateExternalLinks(externalLinkUpdateDTO);
+        externalLinkService.updateExternalLink(externalLinkUpdateDTO);
         return ResponseEntity.ok(ApiResponse.success("external link update successfully"));
     }
 

@@ -6,6 +6,7 @@ import org.csekuaa.backend.model.dto.auth.LogInRequestDTO;
 import org.csekuaa.backend.model.dto.auth.LoginResponse;
 import org.csekuaa.backend.model.dto.auth.ResetPasswordRequestDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
+import org.csekuaa.backend.model.dto.request.UpdatePasswordRequestDTO;
 import org.csekuaa.backend.model.entity.Alumni;
 import org.csekuaa.backend.model.entity.PasswordReset;
 import org.csekuaa.backend.model.entity.Token;
@@ -30,10 +31,12 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
+    private final UserDetailsParser userDetailsParser;
     @Value("${jwt.token-expire-time}")
     private int tokenExpireTime;
     private final AlumniRepository alumniRepository;
@@ -85,15 +88,21 @@ public class AuthenticationService {
     }
 
     private LoginResponse createTokenResponse(String ipAddress, Alumni alumni) {
+
+        // ISO Date String Formatter.
+        DateTimeFormatter isoFormatterWithoutMillis = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+        LocalDateTime tokenExpireDatetime = LocalDateTime.now().plusMinutes(tokenExpireTime);
+
         String token = jwtTokenService.generateToken(alumni);
         LoginResponse loginResponseDTO = new LoginResponse();
         loginResponseDTO.setToken(EncryptionUtil.encryptJWT(token,aesKey));
         loginResponseDTO.setRefreshToken(jwtTokenService.generateRefreshToken());
-        loginResponseDTO.setExpireTime(tokenExpireTime + " minutes");
+        loginResponseDTO.setExpireTime(tokenExpireDatetime.format(isoFormatterWithoutMillis));
         Token createToken = new Token();
         createToken.setTokenName(token);
         createToken.setTokenStartTime(LocalDateTime.now());
-        createToken.setTokenEndTime(LocalDateTime.now().plusMinutes(tokenExpireTime));
+        createToken.setTokenEndTime(createToken.getTokenStartTime().plusMinutes(tokenExpireTime));
         createToken.setIp(ipAddress);
         createToken.setUser(alumni.getUser());
         tokenRepository.save(createToken);
@@ -115,5 +124,18 @@ public class AuthenticationService {
         Alumni alumni = alumniRepository.findByEmail(email)
                 .orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("auth.user.not.found")));
         publisher.publishEvent(new ForgetPasswordEvent(alumni));
+    }
+
+    public String updatePassword(UpdatePasswordRequestDTO updatePasswordRequestDTO) {
+        String roll = userDetailsParser.getRollNumber();
+        User user = userRepository.findByRoll(roll).orElseThrow(()-> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("invalid.roll")));
+
+        if(!encoder.matches(updatePasswordRequestDTO.getOldPassword(), user.getPassword())){
+            throw new MatchException("Match Exception", new Throwable("Current password does not match with password"));
+        }
+
+        user.setPassword(encoder.encode(updatePasswordRequestDTO.getNewPassword()));
+        userRepository.save(user);
+        return "Successfully updated password";
     }
 }

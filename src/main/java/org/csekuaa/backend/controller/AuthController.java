@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.annotation.SecureAPI;
 import org.csekuaa.backend.model.dto.auth.*;
 import org.csekuaa.backend.model.dto.payloads.ApiResponse;
+import org.csekuaa.backend.model.dto.request.UpdatePasswordRequestDTO;
 import org.csekuaa.backend.service.AuthenticationService;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.http.ResponseEntity;
@@ -49,5 +50,12 @@ public class AuthController {
     public ResponseEntity<?> logout() {
         authenticationService.logout();
         return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("auth.logout")));
+    }
+
+    @PostMapping("/update-password")
+    @SecureAPI
+    public ResponseEntity<?> updatePassword(@Valid @RequestBody UpdatePasswordRequestDTO updatePasswordRequestDTO){
+        String status = authenticationService.updatePassword(updatePasswordRequestDTO);
+        return ResponseEntity.ok(ApiResponse.success(status));
     }
 }

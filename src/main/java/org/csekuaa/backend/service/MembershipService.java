@@ -5,9 +5,11 @@ import org.csekuaa.backend.model.dto.alumni.MembershipDTO;
 import org.csekuaa.backend.model.dto.alumni.MembershipStatusUpdateDTO;
 import org.csekuaa.backend.model.dto.alumni.MembershipTypeDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
+import org.csekuaa.backend.model.dto.request.MembershipRequestDTO;
 import org.csekuaa.backend.model.entity.Membership;
 import org.csekuaa.backend.model.entity.MembershipType;
 import org.csekuaa.backend.model.entity.User;
+import org.csekuaa.backend.repository.MembershipRepository;
 import org.csekuaa.backend.repository.MembershipTypeRepository;
 import org.csekuaa.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MembershipService {
+    private final MembershipRepository membershipRepository;
     private final MembershipTypeRepository membershipTypeRepository;
     private final UserRepository userRepository;
     private final UserDetailsParser userDetailsParser;
@@ -50,6 +53,23 @@ public class MembershipService {
                         ()-> {throw new ResourceNotFoundException("alumni is not registered yet!");});
         user.addMembership(membership);
         userRepository.save(user);
+    }
+
+    public void applyMembership(MembershipRequestDTO membershipRequestDTO) {
+        User user = userRepository.findByRoll(userDetailsParser.getRollNumber()).orElseThrow();
+        MembershipType membershipType = membershipTypeRepository.findById(membershipRequestDTO.getMembershipTypeId()).orElseThrow();
+        Membership membership = new Membership();
+        membership.setMembershipType(membershipType);
+        membership.setUser(user);
+        membership.setApproved(false);
+        membership.setMembershipEndTime(getMembershipDuration(membershipType.getMembershipType()));
+        membership.setUser(user);
+
+//        user.getAlumnis().stream().findFirst()
+//                .ifPresentOrElse(e-> e.setMembershipType(membershipType),
+//                        ()-> {throw new ResourceNotFoundException("alumni is not registered yet!");});
+//        user.addMembership(membership);
+        membershipRepository.save(membership);
     }
 
     public void updateMembershipStatus(MembershipStatusUpdateDTO membershipStatusUpdateDTO) {

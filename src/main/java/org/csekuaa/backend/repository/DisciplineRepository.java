@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface DisciplineRepository extends JpaRepository<Discipline, Integer> {
     Optional<Discipline> findByDisciplineCode(String code);
+    Discipline findDisciplineByDisciplineShortName(String disciplineShortName);
 }
