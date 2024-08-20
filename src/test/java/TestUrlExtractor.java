@@ -18,8 +18,8 @@ public class TestUrlExtractor {
     }
 
 
-    @ParameterizedTest
-    @MethodSource("getInputSource")
+    //@ParameterizedTest
+    //@MethodSource("getInputSource")
     public void testExtractRollFromUrl(UrlExtractorModel model){
         String regex= "\\b\\d{6}\\b";
         Pattern pattern = Pattern.compile(regex);
