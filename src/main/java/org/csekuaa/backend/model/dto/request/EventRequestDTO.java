@@ -1,5 +1,6 @@
 package org.csekuaa.backend.model.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -10,7 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class EventRequestDTO {
-    Integer id;
+
+    Integer eventId;
     @NotNull
     @Size(max = 45)
     String eventName;

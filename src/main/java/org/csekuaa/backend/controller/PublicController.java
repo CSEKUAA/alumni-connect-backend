@@ -1,0 +1,46 @@
+package org.csekuaa.backend.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
+import org.csekuaa.backend.annotation.SecureAPI;
+import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
+import org.csekuaa.backend.model.dto.request.PageRequestDTO;
+import org.csekuaa.backend.model.dto.response.EventResponseDTO;
+import org.csekuaa.backend.service.PublicService;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/public/")
+@RequiredArgsConstructor
+@Tag(name = "Public API")
+@CrossOrigin(origins = "*")
+public class PublicController {
+
+    final PublicService publicService;
+
+    @PostMapping("all-user")
+    public ResponseEntity<Page<AlumniUserDetailDTO>> fetchAllUserInfo(@RequestBody PageRequestDTO pageRequestDTO){
+        Page<AlumniUserDetailDTO> userDetail  = publicService.fetchAllUsers(pageRequestDTO);
+        return ResponseEntity.ok(userDetail);
+    }
+
+    @GetMapping("/all-event")
+    @Operation(summary = "view event list", description = "anyone is capable to view event list")
+    public ResponseEntity<List<EventResponseDTO>> getEventList() {
+        List<EventResponseDTO> response = publicService.findAll();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/event/{id}")
+    @Operation(summary = "view event", description = "anyone is capable to view event details")
+    @SecureAPI
+    public ResponseEntity<EventResponseDTO> getEvent(@PathVariable @NotNull int id) {
+        return ResponseEntity.ok(publicService.findById(id));
+    }}

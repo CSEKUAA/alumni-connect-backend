@@ -41,13 +41,13 @@ public class EventService {
     @Transactional
     public EventRequestDTO create(EventRequestDTO eventRequestDTO) {
         Event savedEntity = eventRepository.save(toEvent(eventRequestDTO));
-        eventRequestDTO.setId(savedEntity.getId());
+        eventRequestDTO.setEventId(savedEntity.getEventId());
         return eventRequestDTO;
     }
 
     @Transactional
     public EventRequestDTO update(EventRequestDTO eventRequestDTO) {
-        Event event = eventRepository.findById(eventRequestDTO.getId()).orElse(null);
+        Event event = eventRepository.findById(eventRequestDTO.getEventId()).orElse(null);
         if (event != null) {
             Instant creationDate = event.getCreatedDate();
             event = toEvent(eventRequestDTO);
@@ -70,7 +70,7 @@ public class EventService {
 
         Event event = new Event();
 
-        event.setId(eventRequestDTO.getId());
+        event.setEventId(eventRequestDTO.getEventId());
         event.setEventName(eventRequestDTO.getEventName());
         event.setEventType(toEventType(eventRequestDTO.getEventType()));
         event.setEventDescription(eventRequestDTO.getDescription());
@@ -88,7 +88,7 @@ public class EventService {
 
         EventResponseDTO eventResponseDTO = new EventResponseDTO();
 
-        eventResponseDTO.setId(event.getId());
+        eventResponseDTO.setEventId(event.getEventId());
         eventResponseDTO.setEventName(event.getEventName());
         eventResponseDTO.setEventType(event.getEventType().getEventTypeName());
         eventResponseDTO.setDescription(event.getEventDescription());

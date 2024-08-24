@@ -18,16 +18,12 @@ public class Committee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "committee_id", nullable = false)
-    private Integer id;
+    private Integer committeeId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "committee_type_id", nullable = false)
     private CommitteeType committeeType;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_id")
-    private Event event;
 
     @Size(max = 45)
     @NotNull
@@ -46,8 +42,9 @@ public class Committee {
     @Column(name = "committee_description", length = 200)
     private String committeeDescription;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_committee_id")
-    private Committee parentCommittee;
+    //@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    //@JoinColumn(name = "parent_committee_id")
+    @Column(name = "parent_committee_id")
+    private Integer parentCommitteeId;
 
 }

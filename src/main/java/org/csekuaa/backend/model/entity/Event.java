@@ -3,7 +3,9 @@ package org.csekuaa.backend.model.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
@@ -17,7 +19,7 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id", nullable = false)
-    private Integer id;
+    private Integer eventId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

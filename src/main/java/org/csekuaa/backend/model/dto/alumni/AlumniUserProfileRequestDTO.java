@@ -10,7 +10,6 @@ import org.csekuaa.backend.model.enums.BloodGroup;
 @NoArgsConstructor
 @Builder
 public class AlumniUserProfileRequestDTO {
-    private String roll;
     private String nickName;
     @NotNull
     private BloodGroup bloodGroup;

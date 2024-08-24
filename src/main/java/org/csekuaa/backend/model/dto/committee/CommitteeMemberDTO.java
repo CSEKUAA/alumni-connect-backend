@@ -1,20 +1,21 @@
 package org.csekuaa.backend.model.dto.committee;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 import lombok.Value;
-import org.csekuaa.backend.model.entity.Committee;
-import org.csekuaa.backend.model.entity.User;
 
 import java.io.Serializable;
 
 /**
  * DTO for {@link org.csekuaa.backend.model.entity.CommitteeMember}
  */
-@Value
+@Data
 public class CommitteeMemberDTO implements Serializable {
-    Integer id;
+    Integer committeeMemberId;
     @NotNull
-    User user;
+    Integer committeeId;
     @NotNull
-    Committee committee;
+    Integer userId;
+    @NotNull
+    Integer designationId;
 }

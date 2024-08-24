@@ -11,8 +11,8 @@ public class AlumniUserDTO {
     @RollNumber
     private String roll;
     @NotBlank
-    private String firstName;
-    private String lastName;
+    private String fullName;
+    private String nickName;
     private String phoneNumber;
     @Email @NotBlank
     private String email;

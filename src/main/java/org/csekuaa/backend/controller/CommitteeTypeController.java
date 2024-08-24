@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.annotation.ADMIN;
 import org.csekuaa.backend.annotation.SecureAPI;
 import org.csekuaa.backend.model.dto.committee.CommitteeTypeDTO;
+import org.csekuaa.backend.model.dto.payloads.ApiResponse;
 import org.csekuaa.backend.service.CommitteeTypeService;
+import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "CommitteeType")
 @CrossOrigin(origins = "*")
-//@SecureAPI
+@SecureAPI
 public class CommitteeTypeController {
     private final CommitteeTypeService committeeTypeService;
 
@@ -36,14 +38,18 @@ public class CommitteeTypeController {
     @PostMapping
     @Operation(summary = "add committeeType", description = "only admin role permission user is capable to add committeeType")
     @ADMIN
-    public ResponseEntity<CommitteeTypeDTO> createCommitteeType(CommitteeTypeDTO committeeTypeDTO) {
-        return ResponseEntity.ok(committeeTypeService.createOrUpdate(committeeTypeDTO));
+    public ResponseEntity<ApiResponse> createCommitteeType(CommitteeTypeDTO committeeTypeDTO) {
+        committeeTypeService.createOrUpdate(committeeTypeDTO);
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("committee.type.save.success")));
+
     }
 
     @PutMapping
     @Operation(summary = "update committeeType", description = "only admin role permission user is capable to update committeeType")
     @ADMIN
-    public ResponseEntity<CommitteeTypeDTO> updateCommitteeType(CommitteeTypeDTO committeeTypeDTO) {
-        return ResponseEntity.ok(committeeTypeService.createOrUpdate(committeeTypeDTO));
+    public ResponseEntity<ApiResponse> updateCommitteeType(CommitteeTypeDTO committeeTypeDTO) {
+        committeeTypeService.createOrUpdate(committeeTypeDTO);
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("committee.type.update.success")));
+
     }
 }
