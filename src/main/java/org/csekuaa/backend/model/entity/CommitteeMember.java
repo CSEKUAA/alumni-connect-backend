@@ -13,7 +13,7 @@ public class CommitteeMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "committee_member_id", nullable = false)
-    private Integer id;
+    private Integer committeeMemberId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -24,5 +24,10 @@ public class CommitteeMember {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "committee_id", nullable = false)
     private Committee committee;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "designation_id", nullable = false)
+    private Designation designation;
 
 }

@@ -7,11 +7,13 @@ import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.annotation.ADMIN;
 import org.csekuaa.backend.annotation.SecureAPI;
 import org.csekuaa.backend.model.dto.event.EventDTO;
+import org.csekuaa.backend.model.dto.payloads.ApiResponse;
 import org.csekuaa.backend.model.dto.request.EventRequestDTO;
 import org.csekuaa.backend.model.dto.request.PageRequestDTO;
 import org.csekuaa.backend.model.dto.response.EventResponseDTO;
 import org.csekuaa.backend.model.dto.response.PagedResponseDTO;
 import org.csekuaa.backend.service.EventService;
+import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,7 @@ public class EventController {
     private final EventService eventService;
 
     @PostMapping("/all")
+    @SecureAPI
     @Operation(summary = "view event list", description = "anyone is capable to view event list")
     public ResponseEntity<Page<EventResponseDTO>> getEventList(@RequestBody PageRequestDTO pageRequestDTO) {
         Page<EventResponseDTO> response = eventService.findAll(pageRequestDTO);
@@ -37,6 +40,7 @@ public class EventController {
 
     @GetMapping("/{id}")
     @Operation(summary = "view event", description = "anyone is capable to view event details")
+    @SecureAPI
     public ResponseEntity<EventResponseDTO> getEvent(@PathVariable @NotNull int id) {
         return ResponseEntity.ok(eventService.findById(id));
     }
@@ -44,14 +48,18 @@ public class EventController {
     @PostMapping("/create")
     @Operation(summary = "add event", description = "only admin role permission user is capable to add event")
     @ADMIN
-    public ResponseEntity<EventRequestDTO> createEvent(@RequestBody EventRequestDTO eventRequest) {
-        return ResponseEntity.ok(eventService.create(eventRequest));
+    public ResponseEntity<ApiResponse> createEvent(@RequestBody EventRequestDTO eventRequest) {
+        eventService.create(eventRequest);
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("event.save.success")));
+
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     @Operation(summary = "update event", description = "only admin role permission user is capable  to update event")
     @ADMIN
-    public ResponseEntity<EventRequestDTO> updateEvent(@RequestBody EventRequestDTO eventRequest) {
-        return ResponseEntity.ok(eventService.update(eventRequest));
+    public ResponseEntity<ApiResponse> updateEvent(@RequestBody EventRequestDTO eventRequest) {
+        eventService.update(eventRequest);
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("event.update.success")));
+
     }
 }

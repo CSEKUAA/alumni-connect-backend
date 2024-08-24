@@ -3,10 +3,16 @@ package org.csekuaa.backend.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.csekuaa.backend.model.dto.committee.CommitteeDTO;
 import org.csekuaa.backend.model.dto.committee.CommitteeMemberDTO;
-import org.csekuaa.backend.model.entity.CommitteeMember;
+import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
+import org.csekuaa.backend.model.entity.*;
 import org.csekuaa.backend.model.mapper.CommitteeMemberMapper;
 import org.csekuaa.backend.repository.CommitteeMemberRepository;
+import org.csekuaa.backend.repository.CommitteeRepository;
+import org.csekuaa.backend.repository.DesignationRepository;
+import org.csekuaa.backend.repository.UserRepository;
+import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,20 +22,49 @@ import java.util.List;
 @Slf4j
 public class CommitteeMemberService {
     private final CommitteeMemberRepository committeeMemberRepository;
-    private final CommitteeMemberMapper committeeMemberMapper;
+    private  final CommitteeRepository committeeRepository;
+    private final UserRepository userRepository;
+    private final DesignationRepository designationRepository;
+  //  private final CommitteeMemberMapper committeeMemberMapper;
 
     public List<CommitteeMemberDTO> findAll() {
-        return committeeMemberMapper.toDto(committeeMemberRepository.findAll());
+       // return committeeMemberMapper.toDto(committeeMemberRepository.findAll());
+        return null;
     }
 
     public CommitteeMemberDTO findById(Integer id) {
-        return committeeMemberMapper.toDto(committeeMemberRepository.findById(id).orElse(null));
+        return committeeMemberRepository.findById(id)
+                .stream()
+                .map(contentType -> {
+                    CommitteeMemberDTO committeeDTO = new CommitteeMemberDTO();
+                    committeeDTO.setCommitteeMemberId(contentType.getCommitteeMemberId());
+                    committeeDTO.setCommitteeId(contentType.getCommittee().getCommitteeId());
+                    committeeDTO.setUserId(contentType.getUser().getUserId());
+                    committeeDTO.setDesignationId(contentType.getDesignation().getDesignationId());
+                   return  committeeDTO;
+                }).toList().get(0);
+       // return committeeMemberMapper.toDto(committeeMemberRepository.findById(id).orElse(null));
     }
 
     @Transactional
-    public CommitteeMemberDTO createOrUpdate(CommitteeMemberDTO committeeMemberDTO) {
-        CommitteeMember committeeMember = committeeMemberMapper.toEntity(committeeMemberDTO);
-        return committeeMemberMapper.toDto(committeeMemberRepository.save(committeeMember));
+    public void createOrUpdate(CommitteeMemberDTO committeeMemberDTO) {
+      //  CommitteeMember committeeMember = committeeMemberMapper.toEntity(committeeMemberDTO);
+      //  return committeeMemberMapper.toDto(committeeMemberRepository.save(committeeMember));
+        User user = userRepository.findById(committeeMemberDTO.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("user.not.found")));
+
+        Committee committee = committeeRepository.findById(committeeMemberDTO.getCommitteeId())
+                .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("committee.not.found")));
+
+        Designation designation = designationRepository.findById(committeeMemberDTO.getDesignationId())
+                .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("designation.not.found")));
+
+        CommitteeMember committeeMember = new CommitteeMember();
+        committeeMember.setCommittee(committee);
+        committeeMember.setUser(user);
+        committeeMember.setDesignation(designation);
+
+        committeeMemberRepository.save(committeeMember);
     }
 
     public void deleteById(Integer id) {

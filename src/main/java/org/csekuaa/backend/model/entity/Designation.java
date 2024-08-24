@@ -14,7 +14,7 @@ public class Designation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "designation_id", nullable = false)
-    private Integer id;
+    private Integer designationId;
 
     @Size(max = 45)
     @NotNull

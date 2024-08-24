@@ -76,7 +76,8 @@ public class SecurityConfig {
                         "/webjars/**",
                         "/swagger-ui/**",
                         "/api/login",
-                        "/actuator/**"
+                        "/actuator/**",
+                        "/api/public/**"
                 )
                 .requestMatchers("/api/register")
                 .requestMatchers(HttpMethod.GET, "/api/user/membership-type")

@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Value
 public class CommitteeTypeDTO implements Serializable {
-    Integer id;
+    Integer committeeTypeId;
     @NotNull
     @Size(max = 45)
     String committeeTypeName;

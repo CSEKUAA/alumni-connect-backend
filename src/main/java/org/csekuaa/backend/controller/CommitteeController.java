@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.annotation.ADMIN;
 import org.csekuaa.backend.annotation.SecureAPI;
 import org.csekuaa.backend.model.dto.committee.CommitteeDTO;
+import org.csekuaa.backend.model.dto.payloads.ApiResponse;
 import org.csekuaa.backend.service.CommitteeService;
+import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,14 +38,17 @@ public class CommitteeController {
     @PostMapping
     @Operation(summary = "add committee", description = "only admin role permission user is capable to add committee")
     @ADMIN
-    public ResponseEntity<CommitteeDTO> createCommittee(CommitteeDTO committeeDTO) {
-        return ResponseEntity.ok(committeeService.createOrUpdate(committeeDTO));
+    public ResponseEntity<ApiResponse> createCommittee(CommitteeDTO committeeDTO) {
+        committeeService.createOrUpdate(committeeDTO);
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("committee.save.success")));
+
     }
 
     @PutMapping
     @Operation(summary = "update committee", description = "only admin role permission user is capable to update committee")
-    @ADMIN
-    public ResponseEntity<CommitteeDTO> updateCommittee(CommitteeDTO committeeDTO) {
-        return ResponseEntity.ok(committeeService.createOrUpdate(committeeDTO));
+    public ResponseEntity<ApiResponse> updateCommittee(CommitteeDTO committeeDTO) {
+        committeeService.createOrUpdate(committeeDTO);
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("committee.update.success")));
+
     }
 }

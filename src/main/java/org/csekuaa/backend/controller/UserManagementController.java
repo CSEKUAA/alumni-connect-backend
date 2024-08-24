@@ -36,7 +36,6 @@ public class UserManagementController {
     }
 
     @GetMapping("discipline")
-    @ADMIN
     @SecureAPI
     public ResponseEntity<List<DisciplineDTO>> getAllDiscipline() {
        return ResponseEntity.ok(userManagementService.getAllDiscipline());
@@ -50,10 +49,10 @@ public class UserManagementController {
         return ResponseEntity.ok(ApiResponse.success("new discipline is added to list"));
     }
 
-    @PostMapping("user-info")
+    @PutMapping("user-info")
     @SecureAPI
-    public ResponseEntity<?> createUserInfo(@Valid @RequestBody AlumniUserProfileRequestDTO userInfo){
-        userManagementService.createUserInfo(userInfo);
+    public ResponseEntity<?> updateUserInfo(@Valid @RequestBody AlumniUserProfileRequestDTO userInfo){
+        userManagementService.updateUserInfo(userInfo);
         return ResponseEntity.ok(ApiResponse.success("User information updated successfully."));
     }
 
@@ -66,7 +65,6 @@ public class UserManagementController {
 
     @GetMapping("all-user")
     @SecureAPI
-    @ADMIN
     public ResponseEntity<List<AlumniUserDetailDTO>> fetchAllUserInfo(){
         List<AlumniUserDetailDTO> userDetail = userManagementService.fetchAllUserInfo();
         return ResponseEntity.ok(userDetail);
@@ -74,7 +72,6 @@ public class UserManagementController {
 
     @PostMapping("all-user")
     @SecureAPI
-    @ADMIN
     public ResponseEntity<Page<AlumniUserDetailDTO>> fetchAllUserInfoPaged(@RequestBody PageRequestDTO pageRequestDTO){
         Page<AlumniUserDetailDTO> userDetail = userManagementService.fetchAllUserInfoPaged(pageRequestDTO);
         return ResponseEntity.ok(userDetail);

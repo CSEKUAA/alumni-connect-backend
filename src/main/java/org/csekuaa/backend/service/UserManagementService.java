@@ -43,6 +43,7 @@ public class UserManagementService {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private final DistrictRepository districtRepository;
 
+
     public void createUser(AlumniUserDTO alumniUserDTO) {
         String disciplineCode = getDisciplineCodeFromRoll(alumniUserDTO.getRoll());
         Discipline discipline = disciplineRepository.findByDisciplineCode(disciplineCode)
@@ -58,7 +59,7 @@ public class UserManagementService {
         user.addRole(role);
         Alumni alumni = new Alumni();
         alumni.setRoll(alumniUserDTO.getRoll());
-        alumni.setFullName(alumniUserDTO.getFirstName() + " " + alumniUserDTO.getLastName());
+        alumni.setFullName(alumniUserDTO.getFullName() + " " + alumniUserDTO.getNickName());
         alumni.setPhone(alumniUserDTO.getPhoneNumber());
         alumni.setEmail(alumniUserDTO.getEmail());
         alumni.setCreationTime(LocalDateTime.now());
@@ -93,8 +94,8 @@ public class UserManagementService {
                 }).toList();
     }
 
-    public void createUserInfo(AlumniUserProfileRequestDTO userInfo) {
-        Alumni alumni = alumniRepository.findByRoll(userInfo.getRoll())
+    public void updateUserInfo(AlumniUserProfileRequestDTO userInfo) {
+        Alumni alumni = alumniRepository.findByRoll(userDetailsParser.getRollNumber())
                 .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
         alumni.setNickName(userInfo.getNickName());
         alumni.setBloodGroup(userInfo.getBloodGroup());
@@ -221,11 +222,11 @@ public class UserManagementService {
     private AlumniUserDetailDTO toAlumniDTO(Alumni alumni){
         AlumniUserDetailDTO userDetail = new AlumniUserDetailDTO();
         userDetail.setRoll(alumni.getRoll());
-        String[] fullName = alumni.getFullName().split(" ");
-        userDetail.setFirstName(fullName[0]);
-        if (fullName.length == 2) {
-            userDetail.setLastName(fullName[1]);
-        }
+//        String[] fullName = alumni.getFullName().split(" ");
+//        userDetail.setFirstName(fullName[0]);
+//        if (fullName.length == 2) {
+//            userDetail.setLastName(fullName[1]);
+//        }
         userDetail.setNickName(alumni.getNickName());
         userDetail.setFullName(alumni.getFullName());
         userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());

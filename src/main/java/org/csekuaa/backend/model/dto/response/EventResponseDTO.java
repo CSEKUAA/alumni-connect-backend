@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class EventResponseDTO {
-    int id;
+    int eventId;
     String eventName;
     String eventType;
     String description;

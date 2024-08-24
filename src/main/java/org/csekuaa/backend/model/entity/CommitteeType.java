@@ -14,7 +14,7 @@ public class CommitteeType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "committee_type_id", nullable = false)
-    private Integer id;
+    private Integer committeeTypeId;
 
     @Size(max = 45)
     @NotNull

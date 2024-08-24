@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.annotation.ADMIN;
 import org.csekuaa.backend.annotation.SecureAPI;
 import org.csekuaa.backend.model.dto.event.EventTypeDTO;
+import org.csekuaa.backend.model.dto.payloads.ApiResponse;
 import org.csekuaa.backend.service.EventTypeService;
+import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,14 +38,18 @@ public class EventTypeController {
     @PostMapping
     @Operation(summary = "add eventType", description = "only admin role permission user is capable to add eventType")
     @ADMIN
-    public ResponseEntity<EventTypeDTO> createEventType(EventTypeDTO eventTypeDTO) {
-        return ResponseEntity.ok(eventTypeService.createOrUpdate(eventTypeDTO));
+    public ResponseEntity<ApiResponse> createEventType(EventTypeDTO eventTypeDTO) {
+        eventTypeService.createOrUpdate(eventTypeDTO);
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("event.type.save.success")));
+
     }
 
     @PutMapping
     @Operation(summary = "update eventType", description = "only admin role permission user is capable to update eventType")
     @ADMIN
-    public ResponseEntity<EventTypeDTO> updateEventType(EventTypeDTO eventTypeDTO) {
-        return ResponseEntity.ok(eventTypeService.createOrUpdate(eventTypeDTO));
+    public ResponseEntity<ApiResponse> updateEventType(EventTypeDTO eventTypeDTO) {
+        eventTypeService.createOrUpdate(eventTypeDTO);
+        return ResponseEntity.ok(ApiResponse.success(ApplicationMessageResolver.getMessage("event.type.update.success")));
+
     }
 }
