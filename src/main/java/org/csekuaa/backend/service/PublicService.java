@@ -2,6 +2,7 @@ package org.csekuaa.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.files.FileManagementSystem;
+import org.csekuaa.backend.model.dto.alumni.SkillDTO;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.model.dto.request.PageRequestDTO;
@@ -12,11 +13,11 @@ import org.csekuaa.backend.model.entity.Event;
 import org.csekuaa.backend.repository.AlumniRepository;
 import org.csekuaa.backend.repository.DisciplineRepository;
 import org.csekuaa.backend.repository.EventRepository;
+import org.csekuaa.backend.repository.SkillRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -31,6 +32,8 @@ public class PublicService {
     private final FileManagementSystem fileSystem;
 
     private final EventRepository eventRepository;
+
+    private final SkillRepository skillRepository;
 
 
     public Page<AlumniUserDetailDTO> fetchAllUsers(PageRequestDTO pageRequestDTO) {
@@ -80,5 +83,17 @@ public class PublicService {
         eventResponseDTO.setUpdatedDate(event.getUpdatedOn()!=null?event.getUpdatedOn().toString():null);
 
         return eventResponseDTO;
+    }
+
+    public List<SkillDTO> getAllSkill() {
+
+        return skillRepository.findAll()
+                .stream()
+                .map(skill -> {
+                    SkillDTO skillDTO = new SkillDTO();
+                    skillDTO.setSkillId(skill.getSkillId());
+                    skillDTO.setSkillName(skill.getSkillName());
+                    return skillDTO;
+                }).toList();
     }
 }

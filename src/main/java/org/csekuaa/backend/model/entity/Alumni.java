@@ -11,6 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -122,6 +123,7 @@ public class Alumni {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+
     public Optional<BloodGroup> getBloodGroup() {
         return Optional.ofNullable(bloodGroup);
     }
@@ -152,6 +154,10 @@ public class Alumni {
     public Optional<District> getPermanentCity() {
         return Optional.ofNullable(permanentCity);
     }
+
+    @OneToMany(mappedBy = "alumni")
+    private Set<AlumniSkill> alumniSkills;
+
     @OneToMany(mappedBy = "alumni")
     private Set<AlumniExternalLink> alumniExternalLinks;
 
