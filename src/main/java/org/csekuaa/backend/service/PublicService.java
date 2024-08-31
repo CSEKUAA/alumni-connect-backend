@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.files.FileManagementSystem;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
+import org.csekuaa.backend.model.dto.request.DisciplineDTO;
 import org.csekuaa.backend.model.dto.request.PageRequestDTO;
 import org.csekuaa.backend.model.dto.response.EventResponseDTO;
 import org.csekuaa.backend.model.entity.Alumni;
@@ -32,22 +33,11 @@ public class PublicService {
 
     private final EventRepository eventRepository;
 
-
     public Page<AlumniUserDetailDTO> fetchAllUsers(PageRequestDTO pageRequestDTO) {
         Discipline discipline=disciplineRepository.findDisciplineByDisciplineShortName(pageRequestDTO.getDisciplineName());
         Page<Alumni> alumniList = alumniRepository.findAllByDiscipline(discipline, PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize(), Sort.by(Sort.Direction.ASC, "roll")));
 
         return alumniList.map(this::toAlumniDTO);
-    }
-
-    private AlumniUserDetailDTO toAlumniDTO(Alumni alumni){
-        AlumniUserDetailDTO userDetail = new AlumniUserDetailDTO();
-        userDetail.setRoll(alumni.getRoll());
-        userDetail.setNickName(alumni.getNickName());
-        userDetail.setFullName(alumni.getFullName());
-        userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
-        userDetail.setPhoto(alumni.getPhoto()==null?"--":getDownloadLink(alumni.getPhoto()));
-        return userDetail;
     }
 
     public String getDownloadLink(String photoLink) {
@@ -60,10 +50,28 @@ public class PublicService {
         return eventPage.stream().map(this::toEventDTO).toList();
     }
 
+    public Page<EventResponseDTO> findAllPagedEvents(PageRequestDTO pageRequestDTO) {
+        Page<Event> eventPage = eventRepository.findAll(PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize(), Sort.by(Sort.Direction.ASC, "eventDate")));
+
+        return eventPage.map(this::toEventDTO);
+    }
+
     public EventResponseDTO findById(Integer id) {
         Event event = eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No event found with id: " + id));
         return toEventDTO(event);
     }
+
+    public List<DisciplineDTO> getAllDiscipline() {
+        return disciplineRepository.findAll().stream()
+                .map(e -> {
+                    DisciplineDTO dto = new DisciplineDTO();
+                    dto.setDisciplineCode(e.getDisciplineCode());
+                    dto.setShortName(e.getDisciplineShortName());
+                    dto.setFullName(e.getDisciplineFullName());
+                    return dto;
+                }).toList();
+    }
+
     private EventResponseDTO toEventDTO(Event event) {
 
         EventResponseDTO eventResponseDTO = new EventResponseDTO();
@@ -80,5 +88,15 @@ public class PublicService {
         eventResponseDTO.setUpdatedDate(event.getUpdatedOn()!=null?event.getUpdatedOn().toString():null);
 
         return eventResponseDTO;
+    }
+
+    private AlumniUserDetailDTO toAlumniDTO(Alumni alumni){
+        AlumniUserDetailDTO userDetail = new AlumniUserDetailDTO();
+        userDetail.setRoll(alumni.getRoll());
+        userDetail.setNickName(alumni.getNickName());
+        userDetail.setFullName(alumni.getFullName());
+        userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
+        userDetail.setPhoto(alumni.getPhoto()==null?"--":getDownloadLink(alumni.getPhoto()));
+        return userDetail;
     }
 }
