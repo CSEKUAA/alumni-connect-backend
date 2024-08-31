@@ -27,7 +27,7 @@ public class PublicController {
     final PublicService publicService;
 
     @PostMapping("all-user")
-    public ResponseEntity<Page<AlumniUserDetailDTO>> fetchAllUserInfo(@RequestBody PageRequestDTO pageRequestDTO){
+    public ResponseEntity<Page<AlumniUserDetailDTO>> fetchAllUserInfo(@RequestBody PageRequestDTO pageRequestDTO) {
         Page<AlumniUserDetailDTO> userDetail = publicService.fetchAllUsers(pageRequestDTO);
         return ResponseEntity.ok(userDetail);
     }
@@ -57,4 +57,12 @@ public class PublicController {
     @SecureAPI
     public ResponseEntity<EventResponseDTO> getEvent(@PathVariable @NotNull int id) {
         return ResponseEntity.ok(publicService.findById(id));
-    }}
+    }
+
+    @GetMapping("/all-skill")
+    @Operation(summary = "get skill", description = "anyone is capable to get skills")
+    @SecureAPI
+    public ResponseEntity<?> getAllSkill() {
+        return ResponseEntity.ok(publicService.getAllSkill());
+    }
+}

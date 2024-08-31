@@ -2,6 +2,7 @@ package org.csekuaa.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.files.FileManagementSystem;
+import org.csekuaa.backend.model.dto.alumni.SkillDTO;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
@@ -13,11 +14,11 @@ import org.csekuaa.backend.model.entity.Event;
 import org.csekuaa.backend.repository.AlumniRepository;
 import org.csekuaa.backend.repository.DisciplineRepository;
 import org.csekuaa.backend.repository.EventRepository;
+import org.csekuaa.backend.repository.SkillRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -32,6 +33,8 @@ public class PublicService {
     private final FileManagementSystem fileSystem;
 
     private final EventRepository eventRepository;
+
+    private final SkillRepository skillRepository;
 
     public Page<AlumniUserDetailDTO> fetchAllUsers(PageRequestDTO pageRequestDTO) {
         Discipline discipline=disciplineRepository.findDisciplineByDisciplineShortName(pageRequestDTO.getDisciplineName());
@@ -90,13 +93,24 @@ public class PublicService {
         return eventResponseDTO;
     }
 
-    private AlumniUserDetailDTO toAlumniDTO(Alumni alumni){
+    private AlumniUserDetailDTO toAlumniDTO(Alumni alumni) {
         AlumniUserDetailDTO userDetail = new AlumniUserDetailDTO();
         userDetail.setRoll(alumni.getRoll());
         userDetail.setNickName(alumni.getNickName());
         userDetail.setFullName(alumni.getFullName());
         userDetail.setDiscipline(alumni.getDiscipline().getDisciplineFullName());
-        userDetail.setPhoto(alumni.getPhoto()==null?"--":getDownloadLink(alumni.getPhoto()));
+        userDetail.setPhoto(alumni.getPhoto() == null ? "--" : getDownloadLink(alumni.getPhoto()));
         return userDetail;
+    }
+    public List<SkillDTO> getAllSkill() {
+
+        return skillRepository.findAll()
+                .stream()
+                .map(skill -> {
+                    SkillDTO skillDTO = new SkillDTO();
+                    skillDTO.setSkillId(skill.getSkillId());
+                    skillDTO.setSkillName(skill.getSkillName());
+                    return skillDTO;
+                }).toList();
     }
 }

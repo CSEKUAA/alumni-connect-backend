@@ -58,4 +58,8 @@ public class Event {
     @Column(name = "updated_on")
     private Instant updatedOn;
 
+    @Size(max = 255)
+    @Column(name = "photo", length = 255)
+    private String photo;
+
 }
