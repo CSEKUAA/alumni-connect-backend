@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.annotation.SecureAPI;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
+import org.csekuaa.backend.model.dto.request.DisciplineDTO;
 import org.csekuaa.backend.model.dto.request.PageRequestDTO;
 import org.csekuaa.backend.model.dto.response.EventResponseDTO;
 import org.csekuaa.backend.service.PublicService;
@@ -31,10 +32,23 @@ public class PublicController {
         return ResponseEntity.ok(userDetail);
     }
 
+    @GetMapping("discipline")
+    @Operation(summary = "view all disciplines", description = "anyone is capable to view disciplines")
+    public ResponseEntity<List<DisciplineDTO>> getAllDiscipline() {
+        return ResponseEntity.ok(publicService.getAllDiscipline());
+    }
+
     @GetMapping("/all-event")
     @Operation(summary = "view event list", description = "anyone is capable to view event list")
     public ResponseEntity<List<EventResponseDTO>> getEventList() {
         List<EventResponseDTO> response = publicService.findAll();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/all-event")
+    @Operation(summary = "view event list", description = "anyone is capable to view event list")
+    public ResponseEntity<Page<EventResponseDTO>> getEvents(@RequestBody PageRequestDTO pageRequestDTO) {
+        Page<EventResponseDTO> response = publicService.findAllPagedEvents(pageRequestDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
