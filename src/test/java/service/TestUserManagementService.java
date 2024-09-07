@@ -5,23 +5,16 @@ import org.csekuaa.backend.repository.AlumniRepository;
 import org.csekuaa.backend.repository.DisciplineRepository;
 import org.csekuaa.backend.repository.FileSystemRepository;
 import org.csekuaa.backend.repository.RoleRepository;
-import org.csekuaa.backend.service.FileService;
 import org.csekuaa.backend.service.UserDetailsParser;
 import org.csekuaa.backend.service.UserManagementService;
 import org.csekuaa.backend.service.event.UserRegistrationEventListener;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Stream;
 
 //@SpringBootTest(classes = UserManagementService.class)
 public class TestUserManagementService {
