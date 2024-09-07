@@ -3,21 +3,28 @@ package org.csekuaa.backend.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.csekuaa.backend.files.FileManagementSystem;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.model.dto.request.EventRequestDTO;
 import org.csekuaa.backend.model.dto.request.PageRequestDTO;
 import org.csekuaa.backend.model.dto.response.EventResponseDTO;
 import org.csekuaa.backend.model.entity.Event;
 import org.csekuaa.backend.model.entity.EventType;
+import org.csekuaa.backend.model.entity.FileSystem;
+import org.csekuaa.backend.model.enums.FileType;
 import org.csekuaa.backend.model.mapper.EventMapper;
 import org.csekuaa.backend.repository.EventRepository;
 import org.csekuaa.backend.repository.EventTypeRepository;
+import org.csekuaa.backend.repository.FileSystemRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +33,8 @@ public class EventService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final EventTypeRepository eventTypeRepository;
+    private final FileManagementSystem fileSystem;
+    private final FileSystemRepository fileSystemRepository;
 
     public Page<EventResponseDTO> findAll(PageRequestDTO pageRequestDTO) {
         Page<Event> eventPage = eventRepository.findAll(PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize(), Sort.by(Sort.Direction.ASC, "eventDate")));
@@ -64,9 +73,9 @@ public class EventService {
     }
 
     private Event toEvent(EventRequestDTO eventRequestDTO) {
-        Instant instantDate = Instant.parse(eventRequestDTO.getEventDate());
+        Instant instantDate = Instant.now();
 
-        LocalTime time = LocalTime.parse(eventRequestDTO.getEventTime());
+        LocalTime time = LocalTime.now();
 
         Event event = new Event();
 
@@ -104,5 +113,17 @@ public class EventService {
 
     private EventType toEventType(String eventType) {
         return eventTypeRepository.findByEventTypeName(eventType);
+    }
+
+    public void uploadPhoto(MultipartFile file, String eventId) {
+        String root = "events";
+        fileSystem.createFolder(root, eventId);
+        fileSystem.uploadFile(root,eventId,file);
+        FileSystem fileSystem1 = new FileSystem();
+        fileSystem1.setFileName(file.getOriginalFilename());
+        fileSystem1.setVersion(1);
+        fileSystem1.setCreatedAt(LocalDateTime.now());
+        fileSystem1.setFileType(FileType.EVENTS);
+        fileSystemRepository.save(fileSystem1);
     }
 }

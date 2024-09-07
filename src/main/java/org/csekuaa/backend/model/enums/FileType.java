@@ -4,5 +4,6 @@ public enum FileType {
     PROFILE,
     IMAGE,
     CV,
-    DOCUMENT
+    DOCUMENT,
+    EVENTS
 }
