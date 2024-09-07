@@ -5,6 +5,7 @@ import org.csekuaa.backend.model.dto.alumni.AlumniSkillDTO;
 import org.csekuaa.backend.model.dto.alumni.ExternalLinkDTO;
 import org.csekuaa.backend.model.dto.alumni.SkillDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
+import org.csekuaa.backend.model.entity.Alumni;
 import org.csekuaa.backend.model.entity.AlumniExternalLink;
 import org.csekuaa.backend.model.entity.AlumniSkill;
 import org.csekuaa.backend.model.entity.Skill;
@@ -38,14 +39,17 @@ public class SkillService {
     }
 
     public void addAlumniSkill(List<AlumniSkillDTO> alumniSkillDTO) {
+        Alumni currentAlumni = userDetailsParser.getCurrentAlumni();
+        alumniSkillRepository.deleteByAlumniId(currentAlumni.getAlumni_id());
+
         List<AlumniSkill> alumniSkills = alumniSkillDTO.stream()
-                .map(a -> {
-                            AlumniSkill alumniSkill = new AlumniSkill();
-                            alumniSkill.setSkill(getSkillById(a));
-                            alumniSkill.setAlumni(userDetailsParser.getCurrentAlumni());
-                            return alumniSkill;
-                        }
-                ).toList();
+            .map(a -> {
+                        AlumniSkill alumniSkill = new AlumniSkill();
+                        alumniSkill.setSkill(getSkillById(a));
+                        alumniSkill.setAlumni(userDetailsParser.getCurrentAlumni());
+                        return alumniSkill;
+                    }
+            ).toList();
         alumniSkillRepository.saveAll(alumniSkills);
     }
 
