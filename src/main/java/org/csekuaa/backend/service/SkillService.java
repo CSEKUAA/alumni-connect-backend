@@ -2,19 +2,16 @@ package org.csekuaa.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.model.dto.alumni.AlumniSkillDTO;
-import org.csekuaa.backend.model.dto.alumni.ExternalLinkDTO;
 import org.csekuaa.backend.model.dto.alumni.SkillDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
 import org.csekuaa.backend.model.entity.Alumni;
 import org.csekuaa.backend.model.entity.AlumniExternalLink;
 import org.csekuaa.backend.model.entity.AlumniSkill;
 import org.csekuaa.backend.model.entity.Skill;
-import org.csekuaa.backend.repository.AlumniRepository;
 import org.csekuaa.backend.repository.AlumniSkillRepository;
 import org.csekuaa.backend.repository.SkillRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

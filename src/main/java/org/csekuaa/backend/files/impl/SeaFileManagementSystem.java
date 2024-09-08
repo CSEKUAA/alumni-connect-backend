@@ -124,6 +124,14 @@ public class SeaFileManagementSystem implements FileManagementSystem {
     }
 
     @Override
+    public void createFolder(String root, String subFolder) {
+            if (!isSubDirectoryExist(root, subFolder)) {
+                log.info("sub directory {} is already exists", subFolder);
+                createSubFolder(root, subFolder);
+            }
+    }
+
+    @Override
     public boolean isRootDirectoryExist(String root) {
         String url = "/api2/repos/" + repository + "/dir/";
         FileStructure[] files = restClient.get()

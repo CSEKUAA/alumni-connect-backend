@@ -9,8 +9,12 @@ import org.csekuaa.backend.annotation.USER;
 import org.csekuaa.backend.model.dto.content.ContentDTO;
 import org.csekuaa.backend.model.dto.payloads.ApiResponse;
 import org.csekuaa.backend.service.ContentService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -53,5 +57,19 @@ public class ContentController {
         return ResponseEntity.ok(contentService.fetchAllContentType());
       //    return ResponseEntity.ok("jjjjjjjjjjjjjjjjjjjjjjjjjjjj");
 
+    }
+
+    @PostMapping(value = "cv",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @SecureAPI
+    public ResponseEntity<?> uploadCV(@RequestParam("file") MultipartFile file){
+        contentService.uploadCV(file);
+        return ResponseEntity.ok(ApiResponse.success("cv updated successfully successfully."));
+    }
+
+    @GetMapping("cv")
+    @SecureAPI
+    public ResponseEntity<List<String>> downloadCV(){
+        List<String> userCVs = contentService.getUserCV();
+        return ResponseEntity.ok(userCVs);
     }
 }

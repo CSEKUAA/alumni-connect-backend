@@ -31,4 +31,6 @@ public interface FileManagementSystem {
     void removeFile(String root, String fileName);
 
     void renameFile(String root, String fileName);
+
+    void createFolder(String root, String subFolder);
 }
