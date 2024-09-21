@@ -99,6 +99,7 @@ public class AuthenticationService {
         loginResponseDTO.setToken(EncryptionUtil.encryptJWT(token,aesKey));
         loginResponseDTO.setRefreshToken(jwtTokenService.generateRefreshToken());
         loginResponseDTO.setExpireTime(tokenExpireDatetime.format(isoFormatterWithoutMillis));
+        loginResponseDTO.setExpiresInMinutes(tokenExpireTime);
         Token createToken = new Token();
         createToken.setTokenName(token);
         createToken.setTokenStartTime(LocalDateTime.now());
