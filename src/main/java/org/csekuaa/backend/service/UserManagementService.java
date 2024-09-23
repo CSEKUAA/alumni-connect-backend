@@ -124,6 +124,24 @@ public class UserManagementService {
         return userDetail;
     }
 
+    public AlumniUserDetailDTO getUserInfoById(int userId){
+        Alumni alumni = alumniRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
+        AlumniUserDetailDTO userDetail = toAlumniDTO(alumni);
+        userDetail.setMembershipInfos(getMembershipInfo(alumni.getUser()));
+        userDetail.setExternalLinkInfo(getAlumniExternalLinkInfo(alumni));
+        return userDetail;
+    }
+
+    public AlumniUserDetailDTO getUserInfoByStudentId(String studentId){
+        Alumni alumni = alumniRepository.findByRoll(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException(ApplicationMessageResolver.getMessage("login.user.not.found")));
+        AlumniUserDetailDTO userDetail = toAlumniDTO(alumni);
+        userDetail.setMembershipInfos(getMembershipInfo(alumni.getUser()));
+        userDetail.setExternalLinkInfo(getAlumniExternalLinkInfo(alumni));
+        return userDetail;
+    }
+
     public void addDiscipline(DisciplineDTO dto) {
         Discipline discipline = new Discipline();
         discipline.setDisciplineCode(dto.getDisciplineCode());

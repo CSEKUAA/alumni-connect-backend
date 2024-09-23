@@ -2,6 +2,7 @@ package org.csekuaa.backend.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.annotation.ADMIN;
 import org.csekuaa.backend.annotation.SecureAPI;
@@ -60,6 +61,13 @@ public class UserManagementController {
     @SecureAPI
     public ResponseEntity<?> fetchUserInfo(){
         AlumniUserDetailDTO userDetail = userManagementService.fetchCurrentUserInfo();
+        return ResponseEntity.ok(userDetail);
+    }
+
+    @GetMapping("get-user/{studentId}")
+    @SecureAPI
+    public ResponseEntity<?> getUserInfo(@PathVariable @NotNull String studentId){
+        AlumniUserDetailDTO userDetail = userManagementService.getUserInfoByStudentId(studentId);
         return ResponseEntity.ok(userDetail);
     }
 
