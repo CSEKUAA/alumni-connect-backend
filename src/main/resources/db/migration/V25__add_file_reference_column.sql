@@ -1,0 +1,1 @@
+ALTER TABLE file_system ADD COLUMN file_reference int NULL;

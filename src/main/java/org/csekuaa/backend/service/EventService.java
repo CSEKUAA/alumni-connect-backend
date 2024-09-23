@@ -25,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -107,8 +109,16 @@ public class EventService {
         eventResponseDTO.setLink(event.getEventLink());
         eventResponseDTO.setCreatedDate(event.getCreatedDate().toString());
         eventResponseDTO.setUpdatedDate(event.getUpdatedOn()!=null?event.getUpdatedOn().toString():null);
-
+        eventResponseDTO.setImages(createImages(event.getEventId()));
         return eventResponseDTO;
+    }
+
+    private List<String> createImages(int eventId) {
+        String root = "events";
+        List<FileSystem> files = fileSystemRepository.findByReferenceAndFileType(eventId, FileType.EVENTS);
+        String baseLink = "/" + root + "/"+eventId+"/";
+        return files.stream().sorted(Comparator.comparing(FileSystem::getCreatedAt).reversed())
+                .map(e -> fileSystem.downloadFile(baseLink + e.getFileName())).toList();
     }
 
     private EventType toEventType(String eventType) {

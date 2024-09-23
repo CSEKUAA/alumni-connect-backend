@@ -1,8 +1,8 @@
 package org.csekuaa.backend.model.dto.response;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,4 +20,5 @@ public class EventResponseDTO {
     String link;
     String createdDate;
     String updatedDate;
+    List<String> images;
 }

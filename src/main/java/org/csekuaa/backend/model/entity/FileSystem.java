@@ -28,8 +28,12 @@ public class FileSystem {
 
     private LocalDateTime createdAt;
 
+    @Column(name = "file_reference")
+    private Integer fileReference;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "alumni_id", referencedColumnName = "alumni_id")
     private Alumni alumni;
+
 
 }
