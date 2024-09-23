@@ -107,8 +107,9 @@ public class ContentService {
         int userId = userDetailsParser.getCurrentAlumni().getAlumni_id();
         List<FileSystem> files = fileSystemRepository.findByAlumniIdAndFileType(userId, FileType.CV);
         String baseLink = "/" + root + "/cv/";
-        return files.stream().sorted(Comparator.comparing(FileSystem::getCreatedAt).reversed())
-                .map(e-> getDownloadLink(baseLink+ e.getFileName())).toList();
+        String lastUpdatedCv = files.stream().sorted(Comparator.comparing(FileSystem::getCreatedAt))
+                .map(e -> getDownloadLink(baseLink + e.getFileName())).findFirst().orElse("");
+        return List.of(lastUpdatedCv);
     }
 
     public String getDownloadLink(String photoLink) {
