@@ -134,6 +134,7 @@ public class EventService {
         fileSystem1.setVersion(1);
         fileSystem1.setCreatedAt(LocalDateTime.now());
         fileSystem1.setFileType(FileType.EVENTS);
+        fileSystem1.setFileReference(Integer.valueOf(eventId));
         fileSystemRepository.save(fileSystem1);
     }
 }
