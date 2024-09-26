@@ -111,6 +111,8 @@ public class UserManagementService {
         alumni.setDesignation(userInfo.getDesignation());
         alumni.setCompany(userInfo.getCompany());
         alumni.setCompanyAddress(userInfo.getCompanyAddress());
+        alumni.setEmail(userInfo.getEmail());
+        alumni.setPhone(userInfo.getPhoneNumber());
         alumniRepository.save(alumni);
     }
 
