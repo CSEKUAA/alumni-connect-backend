@@ -25,4 +25,6 @@ public class AlumniUserProfileRequestDTO {
     private String designation;
     private String company;
     private String companyAddress;
+    private String email;
+    private String phoneNumber;
 }
