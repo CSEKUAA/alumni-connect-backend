@@ -19,9 +19,9 @@ public interface AlumniRepository extends JpaRepository<Alumni, Integer> {
 
     @Query("SELECT a FROM Alumni a " +
             "WHERE a.discipline = :discipline " +
-            "AND (:batchCode ='' OR SUBSTRING(a.roll, 1, 2) LIKE %:batchCode%) " +
-            "AND (:studentId IS NULL OR a.roll LIKE %:studentId%) " +
-            "AND (:name IS NULL OR a.fullName LIKE %:name%)")
+            "AND (:batchCode = '' OR SUBSTRING(a.roll, 1, 2) LIKE %:batchCode%) " +
+            "AND (:studentId = '' OR a.roll LIKE %:studentId%) " +
+            "AND (:name = '' OR a.fullName LIKE %:name%)")
     Page<Alumni> findALlByCriteria(
             @Param("discipline") Discipline discipline,
             @Param("batchCode") String batchCode,
