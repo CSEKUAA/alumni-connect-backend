@@ -1,13 +1,17 @@
 package org.csekuaa.backend.service;
 
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.files.FileManagementSystem;
 import org.csekuaa.backend.model.dto.alumni.SkillDTO;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
+import org.csekuaa.backend.model.dto.request.AlumniFilterRequestDTO;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
 import org.csekuaa.backend.model.dto.request.PageRequestDTO;
+import org.csekuaa.backend.model.dto.response.BatchResponseDTO;
 import org.csekuaa.backend.model.dto.response.EventResponseDTO;
+import org.csekuaa.backend.model.dto.response.StudentIDResponseDTO;
 import org.csekuaa.backend.model.entity.Alumni;
 import org.csekuaa.backend.model.entity.Discipline;
 import org.csekuaa.backend.model.entity.Event;
@@ -15,12 +19,15 @@ import org.csekuaa.backend.repository.AlumniRepository;
 import org.csekuaa.backend.repository.DisciplineRepository;
 import org.csekuaa.backend.repository.EventRepository;
 import org.csekuaa.backend.repository.SkillRepository;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,9 +43,14 @@ public class PublicService {
 
     private final SkillRepository skillRepository;
 
-    public Page<AlumniUserDetailDTO> fetchAllUsers(PageRequestDTO pageRequestDTO) {
+    public Page<AlumniUserDetailDTO> fetchAllUsers(AlumniFilterRequestDTO pageRequestDTO) {
         Discipline discipline=disciplineRepository.findDisciplineByDisciplineShortName(pageRequestDTO.getDisciplineName());
-        Page<Alumni> alumniList = alumniRepository.findAllByDiscipline(discipline, PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize(), Sort.by(Sort.Direction.ASC, "roll")));
+        Page<Alumni> alumniList = alumniRepository.findALlByCriteria(
+                discipline,
+                pageRequestDTO.getBatchCode(),
+                pageRequestDTO.getStudentId(),
+                pageRequestDTO.getName(),
+                PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize(), Sort.by(Sort.Direction.ASC, "roll")));
 
         return alumniList.map(this::toAlumniDTO);
     }
@@ -112,5 +124,23 @@ public class PublicService {
                     skillDTO.setSkillName(skill.getSkillName());
                     return skillDTO;
                 }).toList();
+    }
+
+    public List<BatchResponseDTO> getAllBatchesByDeptCode(String deptCode) {
+        return alumniRepository.findAlumniesByDeptCode(deptCode)
+                .stream()
+                .map(alumni -> new BatchResponseDTO(deptCode, alumni.getRoll().substring(0,2)))
+                .distinct()
+                .sorted()
+                .toList();
+    }
+
+    public List<StudentIDResponseDTO> getAllStudentIdByBatchCode(String deptCode, String batchCode) {
+        return alumniRepository.findAlumniesByDeptCode(deptCode)
+                .stream()
+                .filter(alumni -> alumni.getRoll().substring(0,2).equalsIgnoreCase(batchCode))
+                .map(alumni -> new StudentIDResponseDTO(batchCode, alumni.getRoll()))
+                .sorted()
+                .toList();
     }
 }
