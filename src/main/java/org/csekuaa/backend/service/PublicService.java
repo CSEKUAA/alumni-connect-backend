@@ -127,7 +127,7 @@ public class PublicService {
     }
 
     public List<BatchResponseDTO> getAllBatchesByDeptCode(String deptCode) {
-        return alumniRepository.findAlumniesByDeptCode(deptCode)
+        return alumniRepository.findAllByDepartmentCode(deptCode)
                 .stream()
                 .map(alumni -> new BatchResponseDTO(deptCode, alumni.getRoll().substring(0,2)))
                 .distinct()
@@ -136,7 +136,7 @@ public class PublicService {
     }
 
     public List<StudentIDResponseDTO> getAllStudentIdByBatchCode(String deptCode, String batchCode) {
-        return alumniRepository.findAlumniesByDeptCode(deptCode)
+        return alumniRepository.findAllByDepartmentCode(deptCode)
                 .stream()
                 .filter(alumni -> alumni.getRoll().substring(0,2).equalsIgnoreCase(batchCode))
                 .map(alumni -> new StudentIDResponseDTO(batchCode, alumni.getRoll()))

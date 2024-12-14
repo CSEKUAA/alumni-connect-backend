@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface AlumniRepository extends JpaRepository<Alumni, Integer> {
@@ -15,7 +16,7 @@ public interface AlumniRepository extends JpaRepository<Alumni, Integer> {
     Page<Alumni> findAllByDiscipline(Discipline discipline, Pageable pageable);
 
     @Query("SELECT a FROM Alumni a WHERE a.discipline.disciplineShortName=:deptCode")
-    Optional<Alumni> findAlumniesByDeptCode(@Param("deptCode") String deptCode);
+    List<Alumni> findAllByDepartmentCode(@Param("deptCode") String deptCode);
 
     @Query("SELECT a FROM Alumni a " +
             "WHERE a.discipline = :discipline " +
