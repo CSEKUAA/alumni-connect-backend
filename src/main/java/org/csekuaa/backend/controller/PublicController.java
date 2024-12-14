@@ -6,9 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.annotation.SecureAPI;
 import org.csekuaa.backend.model.dto.alumni.AlumniUserDetailDTO;
+import org.csekuaa.backend.model.dto.request.AlumniFilterRequestDTO;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
 import org.csekuaa.backend.model.dto.request.PageRequestDTO;
+import org.csekuaa.backend.model.dto.response.BatchResponseDTO;
 import org.csekuaa.backend.model.dto.response.EventResponseDTO;
+import org.csekuaa.backend.model.dto.response.StudentIDResponseDTO;
 import org.csekuaa.backend.service.PublicService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -27,7 +30,7 @@ public class PublicController {
     final PublicService publicService;
 
     @PostMapping("all-user")
-    public ResponseEntity<Page<AlumniUserDetailDTO>> fetchAllUserInfo(@RequestBody PageRequestDTO pageRequestDTO) {
+    public ResponseEntity<Page<AlumniUserDetailDTO>> fetchAllUserInfo(@RequestBody AlumniFilterRequestDTO pageRequestDTO) {
         Page<AlumniUserDetailDTO> userDetail = publicService.fetchAllUsers(pageRequestDTO);
         return ResponseEntity.ok(userDetail);
     }
@@ -64,5 +67,19 @@ public class PublicController {
     @SecureAPI
     public ResponseEntity<?> getAllSkill() {
         return ResponseEntity.ok(publicService.getAllSkill());
+    }
+
+    @GetMapping("/all-batch/{deptCode}")
+    @Operation(summary = "get all batches", description = "public view")
+    public ResponseEntity<?> getAllBatch(@PathVariable @NotNull String deptCode) {
+        List<BatchResponseDTO> batches = publicService.getAllBatchesByDeptCode(deptCode);
+        return new ResponseEntity<>(batches, HttpStatus.OK);
+    }
+
+    @GetMapping("/all-studentids/{deptCode}/{batchCode}")
+    @Operation(summary = "get all sids", description = "public view")
+    public ResponseEntity<?> getAllStudentIds(@PathVariable @NotNull String deptCode, @PathVariable @NotNull String batchCode) {
+        List<StudentIDResponseDTO> studentIds = publicService.getAllStudentIdByBatchCode(deptCode,batchCode);
+        return new ResponseEntity<>(studentIds, HttpStatus.OK);
     }
 }
