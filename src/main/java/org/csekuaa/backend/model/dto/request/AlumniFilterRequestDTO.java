@@ -14,4 +14,5 @@ public class AlumniFilterRequestDTO {
     private String batchCode="";
     private String studentId="";
     private String name="";
+    private String skill="";
 }

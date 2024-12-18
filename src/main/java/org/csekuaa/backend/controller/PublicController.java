@@ -86,7 +86,7 @@ public class PublicController {
 
     @GetMapping("committee-member/{committeeId}")
     @Operation(summary = "view committee member", description = "anyone is capable to view committee member details")
-    public ResponseEntity<?> getCommitteeMember(Integer committeeId) {
+    public ResponseEntity<?> getCommitteeMember(@PathVariable @NotNull Integer committeeId) {
         List<CommitteeMemberResponseDTO> memberList = publicService.findByCommitteeId(committeeId);
         return new ResponseEntity<>(memberList,HttpStatus.OK);
     }

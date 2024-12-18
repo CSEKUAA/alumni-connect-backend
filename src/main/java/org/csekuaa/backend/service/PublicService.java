@@ -21,7 +21,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,14 +43,31 @@ public class PublicService {
 
     public Page<AlumniUserDetailDTO> fetchAllUsers(AlumniFilterRequestDTO pageRequestDTO) {
         Discipline discipline=disciplineRepository.findDisciplineByDisciplineShortName(pageRequestDTO.getDisciplineName());
-        Page<Alumni> alumniList = alumniRepository.findALlByCriteria(
-                discipline,
-                pageRequestDTO.getBatchCode(),
-                pageRequestDTO.getStudentId(),
-                pageRequestDTO.getName(),
-                PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize(), Sort.by(Sort.Direction.ASC, "roll")));
+        if(pageRequestDTO.getSkill().isEmpty()) {
+            Page<Alumni> alumniList = alumniRepository.findALlByCriteria(
+                    discipline,
+                    pageRequestDTO.getBatchCode(),
+                    pageRequestDTO.getStudentId(),
+                    pageRequestDTO.getName(),
+                    PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize(), Sort.by(Sort.Direction.ASC, "roll")));
 
-        return alumniList.map(this::toAlumniDTO);
+            return alumniList.map(this::toAlumniDTO);
+        }
+        else {
+            List<String> skillNames = Arrays.stream(pageRequestDTO.getSkill().split(","))
+                    .map(String::trim)
+                    .toList();
+
+            Page<Alumni> alumniList = alumniRepository.findALlByCriteria(
+                    discipline,
+                    pageRequestDTO.getBatchCode(),
+                    pageRequestDTO.getStudentId(),
+                    pageRequestDTO.getName(),
+                    skillNames,
+                    PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize(), Sort.by(Sort.Direction.ASC, "roll")));
+
+            return alumniList.map(this::toAlumniDTO);
+        }
     }
 
     public String getDownloadLink(String photoLink) {

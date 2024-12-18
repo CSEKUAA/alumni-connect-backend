@@ -2,6 +2,7 @@ package org.csekuaa.backend.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.annotation.ADMIN;
 import org.csekuaa.backend.annotation.SecureAPI;
@@ -32,7 +33,7 @@ public class CommitteeMemberController {
 
     @GetMapping("/{committeeId}")
     @Operation(summary = "view committee member", description = "anyone is capable to view committee member details")
-    public ResponseEntity<List<CommitteeMemberResponseDTO>> getCommitteeMember(Integer committeeId) {
+    public ResponseEntity<List<CommitteeMemberResponseDTO>> getCommitteeMember(@PathVariable @NonNull Integer committeeId) {
         return ResponseEntity.ok(committeeMemberService.findByCommitteeId(committeeId));
     }
 
