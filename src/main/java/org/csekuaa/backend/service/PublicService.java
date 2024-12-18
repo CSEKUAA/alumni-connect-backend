@@ -1,6 +1,5 @@
 package org.csekuaa.backend.service;
 
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.csekuaa.backend.files.FileManagementSystem;
 import org.csekuaa.backend.model.dto.alumni.SkillDTO;
@@ -10,24 +9,19 @@ import org.csekuaa.backend.model.dto.request.AlumniFilterRequestDTO;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
 import org.csekuaa.backend.model.dto.request.PageRequestDTO;
 import org.csekuaa.backend.model.dto.response.BatchResponseDTO;
+import org.csekuaa.backend.model.dto.response.CommitteeMemberResponseDTO;
 import org.csekuaa.backend.model.dto.response.EventResponseDTO;
 import org.csekuaa.backend.model.dto.response.StudentIDResponseDTO;
 import org.csekuaa.backend.model.entity.Alumni;
 import org.csekuaa.backend.model.entity.Discipline;
 import org.csekuaa.backend.model.entity.Event;
-import org.csekuaa.backend.repository.AlumniRepository;
-import org.csekuaa.backend.repository.DisciplineRepository;
-import org.csekuaa.backend.repository.EventRepository;
-import org.csekuaa.backend.repository.SkillRepository;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
+import org.csekuaa.backend.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +36,8 @@ public class PublicService {
     private final EventRepository eventRepository;
 
     private final SkillRepository skillRepository;
+
+    private final CommitteeMemberRepository committeeMemberRepository;
 
     public Page<AlumniUserDetailDTO> fetchAllUsers(AlumniFilterRequestDTO pageRequestDTO) {
         Discipline discipline=disciplineRepository.findDisciplineByDisciplineShortName(pageRequestDTO.getDisciplineName());
@@ -142,5 +138,10 @@ public class PublicService {
                 .map(alumni -> new StudentIDResponseDTO(batchCode, alumni.getRoll()))
                 .sorted()
                 .toList();
+    }
+
+    public List<CommitteeMemberResponseDTO> findByCommitteeId(Integer committeeId) {
+        return committeeMemberRepository.getAllCommitteeMembersByCommitteeId(committeeId);
+
     }
 }

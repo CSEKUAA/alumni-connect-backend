@@ -7,6 +7,7 @@ import org.csekuaa.backend.annotation.ADMIN;
 import org.csekuaa.backend.annotation.SecureAPI;
 import org.csekuaa.backend.model.dto.committee.CommitteeMemberDTO;
 import org.csekuaa.backend.model.dto.payloads.ApiResponse;
+import org.csekuaa.backend.model.dto.response.CommitteeMemberResponseDTO;
 import org.csekuaa.backend.service.CommitteeMemberService;
 import org.csekuaa.backend.service.message.ApplicationMessageResolver;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/committeeMember/")
+@RequestMapping("/api/committee-member/")
 @RequiredArgsConstructor
 @Tag(name = "CommitteeMember")
 @CrossOrigin(origins = "*")
@@ -29,10 +30,10 @@ public class CommitteeMemberController {
 //        return ResponseEntity.ok(committeeMemberService.findAll());
 //    }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{committee-id}")
     @Operation(summary = "view committee member", description = "anyone is capable to view committee member details")
-    public ResponseEntity<CommitteeMemberDTO> getCommitteeMember(Integer id) {
-        return ResponseEntity.ok(committeeMemberService.findById(id));
+    public ResponseEntity<List<CommitteeMemberResponseDTO>> getCommitteeMember(Integer committeeId) {
+        return ResponseEntity.ok(committeeMemberService.findByCommitteeId(committeeId));
     }
 
     @PostMapping

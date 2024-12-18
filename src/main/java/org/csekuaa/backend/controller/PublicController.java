@@ -10,6 +10,7 @@ import org.csekuaa.backend.model.dto.request.AlumniFilterRequestDTO;
 import org.csekuaa.backend.model.dto.request.DisciplineDTO;
 import org.csekuaa.backend.model.dto.request.PageRequestDTO;
 import org.csekuaa.backend.model.dto.response.BatchResponseDTO;
+import org.csekuaa.backend.model.dto.response.CommitteeMemberResponseDTO;
 import org.csekuaa.backend.model.dto.response.EventResponseDTO;
 import org.csekuaa.backend.model.dto.response.StudentIDResponseDTO;
 import org.csekuaa.backend.service.PublicService;
@@ -81,5 +82,12 @@ public class PublicController {
     public ResponseEntity<?> getAllStudentIds(@PathVariable @NotNull String deptCode, @PathVariable @NotNull String batchCode) {
         List<StudentIDResponseDTO> studentIds = publicService.getAllStudentIdByBatchCode(deptCode,batchCode);
         return new ResponseEntity<>(studentIds, HttpStatus.OK);
+    }
+
+    @GetMapping("/{committee-id}")
+    @Operation(summary = "view committee member", description = "anyone is capable to view committee member details")
+    public ResponseEntity<?> getCommitteeMember(Integer committeeId) {
+        List<CommitteeMemberResponseDTO> memberList = publicService.findByCommitteeId(committeeId);
+        return new ResponseEntity<>(memberList,HttpStatus.OK);
     }
 }

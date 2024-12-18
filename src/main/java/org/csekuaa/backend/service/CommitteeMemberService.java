@@ -3,11 +3,10 @@ package org.csekuaa.backend.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.csekuaa.backend.model.dto.committee.CommitteeDTO;
 import org.csekuaa.backend.model.dto.committee.CommitteeMemberDTO;
 import org.csekuaa.backend.model.dto.exception.ResourceNotFoundException;
+import org.csekuaa.backend.model.dto.response.CommitteeMemberResponseDTO;
 import org.csekuaa.backend.model.entity.*;
-import org.csekuaa.backend.model.mapper.CommitteeMemberMapper;
 import org.csekuaa.backend.repository.CommitteeMemberRepository;
 import org.csekuaa.backend.repository.CommitteeRepository;
 import org.csekuaa.backend.repository.DesignationRepository;
@@ -27,22 +26,20 @@ public class CommitteeMemberService {
     private final DesignationRepository designationRepository;
   //  private final CommitteeMemberMapper committeeMemberMapper;
 
-    public List<CommitteeMemberDTO> findAll() {
-       // return committeeMemberMapper.toDto(committeeMemberRepository.findAll());
-        return null;
-    }
 
-    public CommitteeMemberDTO findById(Integer id) {
-        return committeeMemberRepository.findById(id)
-                .stream()
-                .map(contentType -> {
-                    CommitteeMemberDTO committeeDTO = new CommitteeMemberDTO();
-                    committeeDTO.setCommitteeMemberId(contentType.getCommitteeMemberId());
-                    committeeDTO.setCommitteeId(contentType.getCommittee().getCommitteeId());
-                    committeeDTO.setUserId(contentType.getUser().getUserId());
-                    committeeDTO.setDesignationId(contentType.getDesignation().getDesignationId());
-                   return  committeeDTO;
-                }).toList().get(0);
+
+    public List<CommitteeMemberResponseDTO> findByCommitteeId(Integer committeeId) {
+        return committeeMemberRepository.getAllCommitteeMembersByCommitteeId(committeeId);
+//        return committeeMemberRepository.getAllCommitteeMembersByCommitteeId()
+//                .stream()
+//                .map(contentType -> {
+//                    CommitteeMemberDTO committeeDTO = new CommitteeMemberDTO();
+//                    committeeDTO.setCommitteeMemberId(contentType.getCommitteeMemberId());
+//                    committeeDTO.setCommitteeId(contentType.getCommittee().getCommitteeId());
+//                    committeeDTO.setUserId(contentType.getUser().getUserId());
+//                    committeeDTO.setDesignationId(contentType.getDesignation().getDesignationId());
+//                   return  committeeDTO;
+//                }).toList().get(0);
        // return committeeMemberMapper.toDto(committeeMemberRepository.findById(id).orElse(null));
     }
 
