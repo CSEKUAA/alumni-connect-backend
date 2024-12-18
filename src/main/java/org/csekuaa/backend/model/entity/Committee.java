@@ -47,4 +47,10 @@ public class Committee {
     @Column(name = "parent_committee_id")
     private Integer parentCommitteeId;
 
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
+    @Column(name = "is_home", nullable = false)
+    private Boolean isHome;
+
 }

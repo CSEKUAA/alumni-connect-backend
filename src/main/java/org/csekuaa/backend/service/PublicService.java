@@ -141,7 +141,7 @@ public class PublicService {
     }
 
     public List<CommitteeMemberResponseDTO> findByCommitteeId(Integer committeeId) {
-        return committeeMemberRepository.getAllCommitteeMembersByCommitteeId(committeeId);
+        return committeeMemberRepository.getCommitteeMembersInHomepage(committeeId);
 
     }
 }
