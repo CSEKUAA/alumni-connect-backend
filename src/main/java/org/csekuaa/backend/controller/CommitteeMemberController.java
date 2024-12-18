@@ -30,7 +30,7 @@ public class CommitteeMemberController {
 //        return ResponseEntity.ok(committeeMemberService.findAll());
 //    }
 
-    @GetMapping("/{committee-id}")
+    @GetMapping("/{committeeId}")
     @Operation(summary = "view committee member", description = "anyone is capable to view committee member details")
     public ResponseEntity<List<CommitteeMemberResponseDTO>> getCommitteeMember(Integer committeeId) {
         return ResponseEntity.ok(committeeMemberService.findByCommitteeId(committeeId));

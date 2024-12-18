@@ -84,7 +84,7 @@ public class PublicController {
         return new ResponseEntity<>(studentIds, HttpStatus.OK);
     }
 
-    @GetMapping("/{committee-id}")
+    @GetMapping("committee-member/{committeeId}")
     @Operation(summary = "view committee member", description = "anyone is capable to view committee member details")
     public ResponseEntity<?> getCommitteeMember(Integer committeeId) {
         List<CommitteeMemberResponseDTO> memberList = publicService.findByCommitteeId(committeeId);
